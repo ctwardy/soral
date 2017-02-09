@@ -5,68 +5,106 @@
 /** \file Alloc-CC.cpp
  *  \brief Alloc-CC.cpp contains the CharnesCooper specific allocation code
  *
+ * Implements a specific allocation object which uses the Charnes Cooper 
+ * allocation method. See the header file for more information about the
+ * algorithm. 
  *
  * Contains calcAllocation() and the functions used by the iterators
- * for moving over allocations. The code here is all for CharnesCooper which
- * stored its allocation in an Array2D object.
+ * for moving over allocations. Currently stores its allocation in 
+ * an Array2D object.
  *
- * <b><u>Version History</u></b>
+ * <b>Version History</b>
  *
  * \verbatim
  *-----+----------+-----+-----------------------------------------------------
  * Who |   When   | Ver | What
  *-----+----------+-----+-----------------------------------------------------
  * GT  | 05/12/01 |  1  | Created.
- *----------------------------------------------------------------------------
+ *-----+----------+-----+-----------------------------------------------------
  * GT  | 12/01/01 |  2  | Modified.
- *----------------------------------------------------------------------------
+ *-----+----------+-----+-----------------------------------------------------
  * GT  | 02/02/02 |  3  | Modified.
- *----------------------------------------------------------------------------
+ *-----+----------+-----+-----------------------------------------------------
  * GT  | 25/02/02 |  4  | Minor modifications.
- *----------------------------------------------------------------------------
+ *-----+----------+-----+-----------------------------------------------------
  * ASO | 5/12/02  |  5  | New functions added
- *----------------------------------------------------------------------------
+ *-----+----------+-----+-----------------------------------------------------
  * ASO | 9/12/02  |  6  | New functions from 5 altered and completed
- *----------------------------------------------------------------------------
+ *-----+----------+-----+-----------------------------------------------------
+ * ASO | ?/02/03  |  7  | Andre replaced selection sort with quicksort cvs 1.7
+ *-----+----------+-----+-----------------------------------------------------
+ * crt | 04mar03  |  8  | Merged in cc-alloc.cpp and removed that. (cvs 1.10)
+ *-----+----------+-----+-----------------------------------------------------
+ * crt | 28mar03  |  9  | Privatization. Reprotection. Other changes.
+ *-----+----------+-----+-----------------------------------------------------
  * \endverbatim
  */
 
-#include "Allocatn.h"
-#include <iostream> // ASO 29/11/02 changed to iostream from iostream.h to meet the C++ standard
+//============================================================================//
+// Written by Gareth Thompson and Andre Oboler            http://sarbayes.org //
+//----------------------------------------------------------------------------//
+// The SORAL implementation is free software, but it is Copyright (C)         //
+// 2001-2003 the authors and Monash University (the SARBayes project).        //
+// It is distributed under the terms of the GNU General Public License.       //
+// See the file COPYING for copying permission.                               //
+//                                                                            //
+// If those licencing arrangements are not satisfactory, please contact us!   //
+// We are willing to offer alternative arrangements, if the need should arise.//
+//                                                                            //
+// THIS MATERIAL IS PROVIDED AS IS, WITH ABSOLUTELY NO WARRANTY EXPRESSED OR  //
+// IMPLIED.  ANY USE IS AT YOUR OWN RISK.                                     //
+//                                                                            //
+// Permission is hereby granted to use or copy this program for any purpose,  //
+// provided the above notices are retained on all copies.  Permission to      //
+// modify the code and to distribute modified code is granted, provided the   //
+// above notices are retained, in accordance with the GNU GPL.                //
+//============================================================================//
+
+#include "Alloc-CC.h"
+#include <iostream> // ASO 29/11/02 changed from iostream.h to meet the C++ standard
+#include "memory.h"
 
 using namespace std; // ASO 29/11/02 needed as iostream declares function in std.
 
-
-// ASO 9/12/02 - Should CharnesCooper contain myAssignments?
-// If the structure of myAssignments differs with each implementation
-// (CC, washburn etc) then it should nto be stored in the base class.
-// If not it should be in the base class. The start of a constructor is below...
-// it may not be correct.
-
-/*
-void CharnesCooper::CharnesCooper(int p_no_resources, int p_no_areas, const double *p_effectiveness,
-		const double *p_POC)
-		:Allocation(p_no_resources, p_no_areas, *p_effectiveness, *p_POC)
-{
-	memset(myAssignments, 0, (sizeof(double) * p_no_areas * p_no_resources));
-}
-*/
-
-/// Returns the area number of the first area in this allocation.
-/***************************************************************************/
+/*************************************************************************/
+/// Constructor calls calcAllocation and uses Array2D to store allocation.
 /**
- * firstArea()
+ * Constructor for the Charnes Cooper allocation object. (File description 
+ * and header file description have more information about the algorithm.)
  *
+ * Author : Michael Eldridge
+ * 
+ */
+
+CharnesCooper::CharnesCooper(const int p_no_resources, 
+									  const int p_no_areas, 
+									  const Array2D& p_effectiveness,
+									  const valarray<double> p_endurance, 
+									  const valarray<double> p_POC)
+  :Allocation(p_no_resources, p_no_areas, p_effectiveness, p_endurance, p_POC),
+	myAssignments(p_no_areas, p_no_resources),
+	myAvailable(p_endurance[0])
+{
+#ifdef _ALLOCATION_TESTMODE
+   cout << "Creating a Charnes Cooper allocation (CharnesCooper::CharnesCooper)" << endl;
+#endif
+	calcAllocation();
+}
+
+// crt 5mar03: removed do-nothing destructor so now it uses the default.
+
+/*************************************************************************/
+/// Returns the area number of the first area in this allocation.
+/**
  * Returns the area number of the first area in this allocation.
  *
- * If the allocation is empty, returns -1
- *
- * Future change: It would be better if it through an exception
+ * If the allocation is empty, returns NULL.
+ * \todo: It would be better if it threw an exception
  *
  * Author: Andre Oboler (ASO)
  */
 
-int CharnesCooper::firstArea(void)
+ActiveArea* CharnesCooper::firstArea(void) const
 {
   int i;
   int j;
@@ -76,48 +114,38 @@ int CharnesCooper::firstArea(void)
   {
     for (j=0; j < myNumResources; j++)
     {
-	  /*if(testmode==true)
-	  {
-			cout << "Checking value[AreaIndex=" << i << "][ResourceIndex=" << j <<"] = " << myAssignments.value[i][j] << "\n";
-	  }*/
-      if (myAssignments.value[i][j]!=0)
+      if (myAssignments[i][j]!=0)
       {
-		return i;
+		  return new ActiveArea(i);
       }
     }
   }
 
   // If no resource was found
-  return -1;
+  return NULL;
 }
 
  /// Returns the area number of the first area in this allocation.
 /***************************************************************************/
 /**
- * firstArea()
- *
  * Returns the first AreaAssignment (an area and a time) that a given
- * resource was assignmened to.
+ * resource was assigned to.
  *
- * If the resource does not exist in this allocation an area assignment of
- * area -1 for time 0 is returned.
+ * If the resource does not exist in this allocation, it returns NULL.
  *
- * Future change: It would be better if it through an exception
+ * \todo: It would be better if it threw an exception
  *
  * Author: Andre Oboler (ASO)
  */
 
-AreaAssignment* CharnesCooper::firstArea(int resource)
+AreaAssignment* CharnesCooper::firstArea(const int resource) const
 {
-
-  int i;
-
   // Find index of first non zero area for this resource
-  for(i=0; i<myNumAreas; i++)
+  for(int i=0; i<myNumAreas; i++)
   {
-    if (myAssignments.value[i][resource]!=0)
+    if (myAssignments[i][resource]!=0)
     {
-      return new AreaAssignment(i, myAssignments.value[i][resource]);
+      return new AreaAssignment(i, myAssignments[i][resource]);
     }
   }
 
@@ -125,67 +153,73 @@ AreaAssignment* CharnesCooper::firstArea(int resource)
   return NULL;
 }
 
- /// Given an area number, returns the next area that has something assignned to it
- /****************************************************************************/
- /**
- * nextArea()
- *
- * Given an area number, returns the next area that has something assignned to
+/// Given an area number, returns the next area that has something assigned to it
+/****************************************************************************/
+/**
+ * Given an area number, returns the next area that has something assigned to
  * it in this set of allocations.
  *
  * If there is no other area with an allocation of resources greater than 0,
- * the function returns -1.
- * NOTE: This function searches by AREA, that is, it searches through all area N
- * and all resources before searchting through area N+1 and all resources... etc.
+ * the function returns NULL.
+ * NOTE: This function searches by AREA: ie it searches through all of area N
+ * and all resources before searching through area N+1 and all resources. Etc.
  *
- * Given a resource and an area,
- * returns the next area (and time) that has _this resource_ was assigned to.
- *
- * If there are no more areas or the resource is nto assigned to any more areas
- * returns an area of -1 for time 0
- *
- * Future change: It would be better if it through exceptions
+ * \todo: It would be better if it threw exceptions?
  *
  * Author: Andre Oboler (ASO)
  */
 
-int CharnesCooper::nextArea(int area)
+ActiveArea* CharnesCooper::nextArea(const int currentArea) const
 {
   int tempArea;
   int tempResource;
 
   // Across 1 step
-  for (tempArea=area+1; tempArea<myNumAreas ; tempArea++)
+  for (tempArea=currentArea+1; tempArea<myNumAreas ; tempArea++)
   {
     // step down to bottom looking for a non zero cell
     for(tempResource=0; tempResource<myNumResources; tempResource++)
     {
-      if (myAssignments.value[tempArea][tempResource] > 0)
+      if (myAssignments[tempArea][tempResource] > 0)
       {
 	// Return the area with a non zero resource allocation
-	// We do not care about which resourse is here.
-	return tempArea;
+	return new ActiveArea(tempArea);
       }
     }
   }
 
   // No more areas with assignments
-  return -1;
+  return NULL;
 }
 
-AreaAssignment* CharnesCooper::nextArea(int resource, int area) // params: What we are talking about, where we are now (in that order)
+ /// Given a resource and an area number, returns the next area to which this resource is assigned.
+/****************************************************************************/
+/**
+ * Given a resource and an area number, returns the next area 
+ * (returned as an AreaAssignment of area and time) to which 
+ * <em>this</em> resource is assigned.
+ *
+ * If this resource is not assigned to any more areas,
+ * the function returns NULL.
+ *
+ * \todo: It would be better if it threw exceptions or enum NO_MORE_AREAS?
+ *
+ * Author: Andre Oboler (ASO)
+ */
+
+AreaAssignment* CharnesCooper::nextArea(const int resource, 
+										const int currentArea) const
 {
   int tempArea;
 
   // Across 1 step
-  for (tempArea=area+1; tempArea<myNumAreas ; tempArea++)
+  for (tempArea=currentArea+1; tempArea<myNumAreas ; tempArea++)
   {
-    if (myAssignments.value[tempArea][resource] > 0)
+    if (myAssignments[tempArea][resource] > 0)
     {
       // Return the area with a non zero resource allocation
-      // We do not care about which resourse is here.
-      return new AreaAssignment(tempArea,
-				myAssignments.value[tempArea][resource]);
+      return new AreaAssignment(tempArea, 
+										  myAssignments[tempArea][resource]);
     }
   }
 
@@ -195,34 +229,32 @@ AreaAssignment* CharnesCooper::nextArea(int resource, int area) // params: What 
 
 
 /// Given an area, it returns the first resource assigned to that area
- /*****************************************************************************/
- /**
- * firstRes()
- *
+/****************************************************************************/
+/**
  * Given an area, it returns the first resource assigned to that
  * area (returned as a ResourceAssignment with the resource and time).
  *
- * If there are no resources, it returns an assingnment of resource -1 for time 0.
+ * If there are no resources, it returns NULL
  *
- * Future change: It would be better if it through exceptions
+ * \todo: It would be better if it through exceptions, or used enums.
  *
  * Author: Andre Oboler (ASO)
  */
 
-ResourceAssignment* CharnesCooper::firstRes(int area)
+ResourceAssignment* CharnesCooper::firstRes(const int area) const
 {
   int tempResource;
 
   // step down to bottom looking for a non zero cell
   for(tempResource=0; tempResource<myNumResources; tempResource++)
   {
-    if (myAssignments.value[area][tempResource] > 0)
+    if (myAssignments[area][tempResource] > 0)
     {
        // Return the resource with a non zero allocation
        // We know the area (passed in) and only return the resource and time
 
       return new ResourceAssignment(tempResource,
-				    myAssignments.value[area][tempResource]);
+				    myAssignments[area][tempResource]);
     }
   }
 
@@ -233,34 +265,32 @@ ResourceAssignment* CharnesCooper::firstRes(int area)
 /// Given a resource and an area, it returns the next ResourceAssignment for that area
 /****************************************************************************/
 /**
- * nextRes()
- *
  * Given a resource and an area, it returns
  * the next resource assigned to that area (as a ResourceAssignment).
  *
- * If there are no next resources, it returns an assingnment of resource -1 for time 0.
- * This is a sentinal value.
+ * If there are no next resources, it returns NULL.
  *
- * Future change: This one should perhaps NOT throw an exception.
- * Or return a "warning" exception "No more resources"
+ * \todo: Perhaps we should NOT suggest that this one throw an exception.
+ * Maybe return a "warning" exception: "No more resources"
  *
  * Author: Andre Oboler (ASO)
  */
 
-ResourceAssignment* CharnesCooper::nextRes(int Area, int Resource) // params: What we are talking about, where we are now (in that order)
+ResourceAssignment* CharnesCooper::nextRes(const int area, 
+										   const int currentResource) const
 {
 
   int tempResource;
   // step down to bottom looking for a non zero cell
-  for(tempResource=Resource+1; tempResource<myNumResources; tempResource++)
+  for(tempResource=currentResource+1; tempResource<myNumResources; tempResource++)
   {
-    if (myAssignments.value[Area][tempResource] > 0)
+    if (myAssignments[area][tempResource] > 0)
     {
-      // Return the resource (and time) with a non zero allocation
-      // We already know the area as it was passed in (so no need
+      // Return the resource (and time) with a nonzero allocation
+      // We already know the area, as it was passed in (so no need
       // to return this to the user)
       return new ResourceAssignment(tempResource,
-				    myAssignments.value[Area][tempResource]);
+				    myAssignments[area][tempResource]);
     }
   }
 
@@ -269,6 +299,7 @@ ResourceAssignment* CharnesCooper::nextRes(int Area, int Resource) // params: Wh
 }
 
 /// Top level of quickSort algorithm. The recursive part is in qSort.
+/************************************************************************/
 /** 
  * Sorts a list of ints (which are the index numbers of a set of areas)
  * into decending order by their area's PSR values.
@@ -281,17 +312,12 @@ ResourceAssignment* CharnesCooper::nextRes(int Area, int Resource) // params: Wh
 void CharnesCooper::quickSort(int items[], int arraySize)
 {
   qSort(items, 0, arraySize - 1);
-
-  /*for (int i=0; i< arraySize; i++)
-  {
-	cout << "[" << i << "]" << items[i] << " " << calcInitialPSR(0, items[i]) << " ";
-  }	*/
 }
 
-
+/// Recursive part of quickSort algorithm.
 void CharnesCooper::qSort(int items[], int left, int right)
 {
-  int initialLeft, initialRight, temp;
+  int initialLeft, initialRight;
   int pivot;
 
   initialLeft = left;
@@ -339,8 +365,8 @@ void CharnesCooper::qSort(int items[], int left, int right)
  * Note: Charnes Cooper only uses 1 resource
  *
  * Uses the Charnes-Cooper algorithm to calculate the optimal assignment of
- * resource 0 to the set of areas. The search endurance (time the resource is
- * available for) is stored in myAvailable[0].
+ * resource 0 to the set of areas. The remaining search endurance 
+ * (time the resource is still available for) is stored in myAvailable.
  *
  *
  * This set of assignments is stored in myAssignments.
@@ -364,7 +390,7 @@ void CharnesCooper::calcAllocation()
   /* Delete any current assignments for resource 0 */
   for (j=0; j<myNumAreas; j++)
   {
-    myAssignments.value[j][0] = 0.0;
+    myAssignments[j][0] = 0.0;
   }
 
   /*
@@ -396,11 +422,7 @@ void CharnesCooper::calcAllocation()
     areaList[j] = j;
   }
 
-  /*
-   * Sort list of areas into descending order of PSR for resource
-   * 0.  Uses selection sort.
-   */
-
+  // Sort list of areas into descending order of PSR for resource 0.
   quickSort(areaList, myNumAreas);
 
   #ifdef _ALLOCATION_TESTMODE
@@ -409,48 +431,21 @@ void CharnesCooper::calcAllocation()
 	cout << "[" << i << "]" << areaList[i] << " " << calcInitialPSR(0, areaList[i]) << " ";
   }
   #endif
-/*
-  double minPSR;
-  int minIndex;
-  int m, n;
 
-  for (m=myNumAreas-1; m>0; m--)
-  {
-    /* Find minimum PSR in areaList[0,...,m] */
-/*    minIndex = 0;
-    minPSR = calcInitialPSR(0, areaList[0]);
 
-    for (n=1; n<=m; n++)
-    {
-      if (calcInitialPSR(0, areaList[n]) < minPSR)
-      {
-        minIndex = n;
-        minPSR = calcInitialPSR(0, areaList[n]);
-      }
-    }
-
-    int temp = areaList[minIndex];
-    areaList[minIndex] = areaList[m];
-    areaList[m] = temp;
-  }
-
-  */
-
-  // double searchEndRem = myAvailable[0];  //Remaining search endurance (after any assignments that have been made)
-											// No need for this extra layer. Just reduce the stored level of available resource
-  double PSRmax;                            //Maximum PSR of areas
-  double PSR2;                              //2nd highest PSR of areas
-  int lastArea = 0;                         //Index of last area in areaList that has equal highest PSR
+  double PSRmax;                        //Maximum PSR of areas
+  double PSR2;                          //2nd highest PSR of areas
+  int lastArea = 0;                     //Index of last area in areaList w/highest PSR
   double totalInvEffectiveness = 0.0 ;      //Sum of inverse effectiveness values for all areas in areaList[0,...,lastArea]
 
   /* Initialise above variables */
   PSRmax = calcInitialPSR(0, areaList[lastArea]);
-  totalInvEffectiveness += 1 / myEffectiveness.value[areaList[lastArea]][0];
+  totalInvEffectiveness += 1 / myEffectiveness[areaList[lastArea]][0];
 
   while (lastArea < myNumAreas-1 && calcInitialPSR(0, areaList[lastArea+1]) >= PSRmax)
   {
     lastArea++;
-    totalInvEffectiveness += 1 / myEffectiveness.value[areaList[lastArea]][0];
+    totalInvEffectiveness += 1 / myEffectiveness[areaList[lastArea]][0];
   }
 
   if (lastArea < myNumAreas-1)
@@ -483,13 +478,13 @@ void CharnesCooper::calcAllocation()
       for (j=0; j<myNumAreas; j++)
       {
         /* Proportion of remaining search endurance to assign to this area */
-        proportion = (1 / myEffectiveness.value[j][0] ) / totalInvEffectiveness;
+        proportion = (1 / myEffectiveness[j][0] ) / totalInvEffectiveness;
 
         /* Time to assign to this area */
-        time = proportion * myAvailable[0];
+        time = proportion * myAvailable;
 
         /* Make assignment */
-        myAssignments.value[j][0] += time;
+        myAssignments[j][0] += time;
       }
 
       /* All hours have now been assigned for searching. */
@@ -497,16 +492,16 @@ void CharnesCooper::calcAllocation()
     }
 
     /*
-     * Resource 0 does not have equal PSR in all areas.  The areas with PSR = PSRmax
-     * have their PSR driven down to PSR2, or are driven down as far as possible if
-     * there is insufficient search endurance remaining (myAvailable[0]) to drive them
-     * down to PSR2.
+     * Resource 0 does not have equal PSR in all areas.  
+	  * The areas with PSR = PSRmax have their PSR driven down to PSR2, or are
+	  * driven down as far as possible if there is insufficient search endurance
+	  * remaining (myAvailable) to drive them down to PSR2.
      */
 
     /*
-     * Determine what searching is necessary to drive the PSR of all areas currently
-     * at PSRmax down to PSR2.  No calculation is performed if PSR2 is zero,
-     * as an infinite amount of searching is then required.
+     * Determine what searching is necessary to drive the PSR of all areas 
+	  * currently at PSRmax down to PSR2.  No calculation is performed if PSR2 
+	  * is zero, as an infinite amount of searching is then required.
      */
     timeNeeded = new double[lastArea + 1];   //Search time to drive PSR down to PSR2 for each area at PSRmax
     double totalTimeNeeded = 0.0;            //Total search time needed for all areas
@@ -525,25 +520,25 @@ void CharnesCooper::calcAllocation()
        */
       for (j=0; j<=lastArea; j++)
       {
-        timeNeeded[j] = coverageNeeded / (myEffectiveness.value[areaList[j]][0]);
+        timeNeeded[j] = coverageNeeded / (myEffectiveness[areaList[j]][0]);
         totalTimeNeeded += timeNeeded[j];
       }
     }
 
     /*
-     * Check if remaining search endurance (myAvailable[0]) is insufficient to drive
-     * the PSR of all areas currently at PSRmax down to PSR2.  myAvailable[0] is
+     * Check if remaining search endurance (myAvailable) is insufficient to drive
+     * the PSR of all areas currently at PSRmax down to PSR2.  myAvailable is
      * always insufficient if PSR2 is zero, as an infinite amount of
      * searching is then required.
      */
-    if (!(PSR2 > 0.0) || myAvailable[0] < totalTimeNeeded)
+    if (!(PSR2 > 0.0) || myAvailable < totalTimeNeeded)
     {
       /*
-       * With insufficient search endurance remaining, myAvailable[0]
-       * is split between areas in such a way that all areas that currently have
-       * PSR = PSRmax have the same final PSR.  That is, the search time assigned
-       * to each area is proportional to the inverse of resource 0's effectiveness
-       * in that area.
+       * With insufficient search endurance remaining, myAvailable
+       * is split between areas in such a way that all areas that currently 
+		 * have PSR = PSRmax have the same final PSR.  That is, the search time 
+		 * assigned to each area is proportional to the inverse of  the 
+		 * resource's effectiveness in that area.
        */
 
       double proportion;
@@ -551,13 +546,13 @@ void CharnesCooper::calcAllocation()
       for (j=0; j<=lastArea; j++)
       {
         /* Proportion of remaining search endurance to assign to this area */
-        proportion = (1 / (myEffectiveness.value[areaList[j]][0]) ) / totalInvEffectiveness;
+        proportion = (1 / (myEffectiveness[areaList[j]][0]) ) / totalInvEffectiveness;
 
         /* Time to assign to this area */
-        time = proportion * myAvailable[0];
+        time = proportion * myAvailable;
 
         /* Make assignment */
-        myAssignments.value[areaList[j]][0] += time;
+        myAssignments[areaList[j]][0] += time;
       }
 
       /* All hours have now been assigned for searching. */
@@ -566,25 +561,26 @@ void CharnesCooper::calcAllocation()
     else
     {
       /*
-       * Sufficient search endurance (myAvailable[0]) remains to drive PSR of all areas at
-       * PSRmax down to PSR2.  Assign the required time to each area (as calculated above).
+       * Sufficient search endurance (myAvailable) remains to drive PSR of all 
+		 * areas at PSRmax down to PSR2.  Assign the required time to each area 
+		 * (as calculated above).
        */
       for (j=0; j<=lastArea; j++)
       {
-        myAssignments.value[areaList[j]][0] += timeNeeded[j];
+        myAssignments[areaList[j]][0] += timeNeeded[j];
       }
 
-      myAvailable[0] -= totalTimeNeeded;
+      myAvailable -= totalTimeNeeded;
 
       /* Update lastArea, PSRmax, PSR2 and totalInvEffectiveness for next iteration */
       PSRmax = PSR2;
       lastArea++;
-      totalInvEffectiveness += 1 / myEffectiveness.value[areaList[lastArea]][0];
+      totalInvEffectiveness += 1 / myEffectiveness[areaList[lastArea]][0];
 
       while (lastArea < myNumAreas-1 && calcInitialPSR(0, areaList[lastArea+1]) >= PSRmax)
       {
         lastArea++;
-        totalInvEffectiveness += 1 / myEffectiveness.value[areaList[lastArea]][0];
+        totalInvEffectiveness += 1 / myEffectiveness[areaList[lastArea]][0];
       }
 
       if (lastArea < myNumAreas-1)
@@ -600,7 +596,7 @@ void CharnesCooper::calcAllocation()
   }
 
   /* Free dynamically allocated memory */
-  delete areaList;
+  delete[] areaList;
   areaList = 0;
   delete timeNeeded;
   timeNeeded = 0;

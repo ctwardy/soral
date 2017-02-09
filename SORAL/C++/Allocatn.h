@@ -3,814 +3,501 @@
  *                                                                   *
  *********************************************************************/
 /** \file Allocatn.h
- *  \brief Allocatn.h Calculate and store an allocation of resources to areas (abstract)
+ *  \brief Allocatn.h Defines base classes for resource allocation.
  *
  *
  * An Allocation object is used to create an assignment of resources to
  * areas for a single sortie, and to calculate various measures about that
- * allocation. It may be used in two distinct ways:
- *
- * 1. Calculating an optimal allocation.
- *    The following steps are performed:
- *    .) The user selects a particular allocation type (e.g. CharnesCooper
- *       class to use the Charnes-Cooper allocation algorithm.)
- *    a) The numbers of resources and areas, POC values and
- *       (estimated) effectiveness values are specified upon
- *       construction of the object.
- *    b) calcAllocation() is called with the search endurance (time
- *       available) for each resource.  This causes the optimal
- *       allocation to be calculated and stored.
- *    c) Information about the allocation is obtained.
- *       getAssignmentsForResource(), getAssignmentsForArea() and
- *       getAssignedAreas() may be used to obtain the assignments,
- *       whilst getCoverage(), getPOD(), getPOS(), getNewPOC() and
- *       getTotalPOS() may be used to evaluate the success of the
- *       allocation.
- *
- * 2. Evaluating the success of a user-specified allocation.
- *    The following steps are performed:
- *    a) The numbers of resources and areas, POC values and
- *       (measured) effectiveness values are specified upon
- *       construction of the object.
- *    b) setAllocation() is called to specify the actual amount
- *       of time for which each resource searches each area.
- *    c) Information about the allocation is obtained.
- *       getCoverage(), getPOD(), getPOS(), getNewPOC() and
- *       getTotalPOS() are used to evaluate the success of the
- *       allocation.
+ * allocation. This file defines the base level (abstract) allocation 
+ * class. All other allocations inherit from this one. It <em>also</em>
+ * defines the iterators used to extract allocations from <em>any</em>
+ * concrete allocation object.
  *
  * <b>Version History</b>
  *
  * \verbatim
- *-----+----------+-----+-----------------------------------------------------
- * Who |   When   | Ver | What
- *-----+----------+-----+-----------------------------------------------------
- * ME  | 05/12/01 |  1  | Created.
- *----------------------------------------------------------------------------
- * GT  | 02/02/02 |  2  | Slight modifications.
- *----------------------------------------------------------------------------
- * GT  | 25/02/02 |  3  | Modifications (bug fixing).
- *----------------------------------------------------------------------------
- * ASO | 10/12/02 |  5  | Re-written for new iterator design
- *----------------------------------------------------------------------------
- * crt | 13jan03  |  5  | Minor documentation edits. (CVS 1.4)
- *----------------------------------------------------------------------------
+ *-----+---------+-----+-----------------------------------------------------
+ * Who |   When  | Ver | What
+ *-----+---------+-----+-----------------------------------------------------
+ * ME  | 05dec01 |  1  | Created.
+ *-----+---------+-----+-----------------------------------------------------
+ * GT  | 02feb02 |  2  | Slight modifications.
+ *-----+---------+-----+-----------------------------------------------------
+ * GT  | 25feb02 |  3  | Modifications (bug fixing).
+ *-----+---------+-----+-----------------------------------------------------
+ * ASO | 10dec02 |  4  | Re-written for new iterator design
+ *-----+---------+-----+-----------------------------------------------------
+ * crt | 13jan03 |  5  | Minor documentation edits. (CVS 1.4)
+ *-----+---------+-----+-----------------------------------------------------
+ * crt | 04mar03 |  6  | (Received as CVS-1.11) After code review.
+ *     |         |     | Removed subclasses to new files, cleaned 
+ *     |         |     | comments, fixed vars, and more.
+ *-----+---------+-----+-----------------------------------------------------
+ * crt | 10mar03 |  7  | Reduced forward decls, add enums, clean. (cvs 1.15)
+ *-----+---------+-----+-----------------------------------------------------
+ * ASO | 25mar03 |  8  | Vector to valarray.
+ *-----+---------+-----+-----------------------------------------------------
+ * crt | 26mar03 |  9  | Made protected private. Other minor. (cvs 1.21)
+ *-----+---------+-----+-----------------------------------------------------
+ * crt | 18apr03 | 10  | Declared iterator destructors. GT spotted bug.
+ *-----+---------+-----+-----------------------------------------------------
+ * crt | 01may03 | 11  | Iterators return objects, not pointers
+ *-----+---------+-----+-----------------------------------------------------
  * \endverbatim
  */
+
+//===========================================================================//
+// Written by Michael Eldridge, Gareth Thompson, Andre Oboler, and C. Twardy //
+//                                                       http://sarbayes.org //
+//---------------------------------------------------------------------------//
+// The SORAL implementation is free software, but it is Copyright (C)        //
+// 2001-2003 the authors and Monash University (the SARBayes project).       //
+// It is distributed under the terms of the GNU General Public License.      //
+// See the file COPYING for copying permission.                              //
+//                                                                           //
+// If those licencing arrangements are not satisfactory, please contact us!  //
+// We are willing to offer alternative arrangements if the need should arise.//
+//                                                                           //
+// THIS MATERIAL IS PROVIDED AS IS, WITH ABSOLUTELY NO WARRANTY EXPRESSED OR //
+// IMPLIED.  ANY USE IS AT YOUR OWN RISK.                                    //
+//                                                                           //
+// Permission is hereby granted to use or copy this program for any purpose, //
+// provided the above notices are retained on all copies.  Permission to     //
+// modify the code and to distribute modified code is granted, provided the  //
+// above notices are retained, in accordance with the GNU GPL.               //
+//===========================================================================//
 
 #ifndef _allocation_h_
 #define _allocation_h_
 
 #include <vector>
 #include <math.h>
+#include <valarray>
 #include "containr.h"
 #include "Array2D.h"
 
 using namespace std;
 
-// Forward declarations.
 
+// Forward declarations.
 class Allocation;
-class CharnesCooper;
+
 
 // Class Definitions.
 
-/*************************************************************************************/
-/// Iterate through all resource assignments in a given area
+/**** AreaIterator **********************************************************/
+/// Iterate through all area assignments for a given resource
 /**
- * AreaIterator:
+ * An iterator which iterates through the area assignments
+ * for a specified resource.  Conceptually, returns a pair (A,T) 
+ * of (area, duration assigned there), thus "area iterator".
  *
- * An iterator which is designed to iterate through the resources that have been allocated
- * to the specified area.
+ * Like the other iterators, it uses accessor functions defined 
+ * in Allocatn.h and implemented in each allocation class.
  *
  * Author : Michael Eldridge
  *
  */
 
-class AreaIterator // ASO removed inheritance prior to removing base class
+class AreaIterator 
 {
-	// Constructors.
-
+	// Constructors and Destructors
 	public:
-		//Altered by Gareth Thompson 24-2-2002
-		//myAssignments has been moved to the CharnesCooper class, so these iterators
-		//are now specific to that class
-		AreaIterator(Allocation& p_allocation, int p_area_no);
-		//ASO 29/11/02 line above and this switched back. AreaIterator(CharnesCooper *p_allocation, int p_area_no);
-
+		AreaIterator(const Allocation& p_allocation, const int p_resource_num);
 		~AreaIterator();
-	private:
-		//AreaIterator(const AreaIterator &p_area_itr);
-		//AreaIterator &operator=(const AreaIterator &p_area_itr);
+
+   private:
+		/// Disable copy constructor by declaring private, and not defining.
+		AreaIterator(const AreaIterator &p_area_itr);
+
+		/// Disable assignment operator by declaring private, and not defining.
+		AreaIterator &operator=(const AreaIterator &p_area_itr);
 
 
-		public:
+	// Methods
+
+   public:
 		void operator++(void);
-		AreaAssignment* operator*(void);
-		AreaAssignment* get(void);
-		int getResource(void)
+
+		AreaAssignment operator*(void) const;
+
+		bool atEnd(void) const;
+
+		int getResource(void) const
 		{
-			return resource;
+			return myResource;
 		}
 
 
-
-		bool atEnd(void);
-
 	// Member Variables.
 
-		protected:
-		//Altered by Gareth Thompson 24-2-2002
-		//myAssignments has been moved to the CharnesCooper class, so these iterators
-		//are now specific to that class
-		//ASO 29/11/02 lines below switched
-
+	protected:
 		/// The allocation being iterated over
-		Allocation& myAllocation;
+		const Allocation& myAllocation;
 
 		/// The current area + time pair for this resource
 		AreaAssignment *current;
 
 		//public:
-		/// The resource who's areas the iterator is moving over
-		int resource; /**< This value may not change */
+		/// The resource for which we're reading assignments.
+		const int myResource; /**< This value may not change */
 
 
 
 };
 
-/************************************************************************************/
-/// Iterate through all areas a given resource is assigned to
+/**** ResourceIterator ******************************************************/
+/// Iterate through all resources assigned to a given area
 /**
- * ResourceIterator:
+ * An iterator which iterates through the resources assigned to
+ * a given area. Conceptually, returns a pair (R,T) of 
+ * (resource, time allocated here). Thus "resource iterator".
  *
- * An iterator which is designed to iterate through the areas that the specified resource
- * has been assigned to.
+ * Like the other iterators, it uses accessor functions defined 
+ * in Allocatn.h and implemented in each allocation class.
  *
  * Author : Michael Eldridge
  *
  */
 
-class ResourceIterator // ASO 28/11/02 no longer inherits from a base iterator class
+class ResourceIterator
 {
-	// Constructors.
+	// Constructors and Destructors
 
 	public:
-		//Altered by Gareth Thompson 24-2-2002
-		//myAssignments has been moved to the CharnesCooper class, so these iterators
-		//are now specific to that class
-		// 29/11/02 - ASO switched lines below.
-		/// From an allocation and area create an object to iterate over resources assigned there
-		/**
-		 * Constructor that takes an allocation (could be any sub type)
-		 * and an area number and then allows the user to iterates over
-		 * all resources allocated to that area (and how long they are there for)
-		 */
-		ResourceIterator(Allocation& p_allocation, int tempArea);
-		//ResourceIterator(CharnesCooper *p_allocation, int p_resource_no);
-
+		ResourceIterator(const Allocation& p_allocation, const int p_area_num);
 		~ResourceIterator();
-	private:
-		//Do I still need these?
-		//ResourceIterator(const ResourceIterator &p_resource_itr);
-		//ResourceIterator &operator=(const ResourceIterator &p_resource_itr);
 
+	private:
+		/// Disable copy constructor by declaring private, and not defining.
+		ResourceIterator(const ResourceIterator &p_resource_itr);
+
+		/// Disable assignment operator by declaring private, and not defining.
+		ResourceIterator &operator=(const ResourceIterator &p_resource_itr);
+
+
+	// Methods
 	public:
 
 		void operator++(void);
 
 		//Altered by Gareth Thompson 24-2-2002, to avoid returning a reference to a local variable
-		ResourceAssignment* get(void);
-		ResourceAssignment* operator*(void);
+		ResourceAssignment operator*(void) const;
 
-		bool atEnd(void);
-		int getArea(void)
+		bool atEnd(void) const;
+
+		int getArea(void) const
 		{
-			return area;
+			return myArea;
 		}
 
 	// Member Variables.
+	protected:
+		const Allocation& myAllocation;
 
-		protected:
-		//Altered by Gareth Thompson 24-2-2002
-		//myAssignments has been moved to the CharnesCooper class, so these iterators
-		//are now specific to that class
-		// ASO 29/11/02 - Lines below switched
-		Allocation& myAllocation;
-		//CharnesCooper *myAllocation;
-
-		/* End block of moved code */
-		/***************************/
-
-		ResourceAssignment* current; // The current assignment ResourceIterator is "pointing to"
+		/// The current resource + time pair for this area
+		ResourceAssignment* current; 
 
 		//public:
-		int area; // The area we are looking for assignments in.
+		// The area we are looking for assignments in.
+		const int myArea; /**< This value may not change */
 
 };
 
-/***********************************************************************/
+/**** ActiveAreasIterator ****************************************************/
 /// Iterate through those areas that have something assigned to them
 /**
- * ActiveAreasIterator:
+ * An iterator that iterates through all and only those areas
+ * which have resources assigned to them. Like the other iterators, 
+ * it uses accessor functions defined in Allocatn.h and implemented 
+ * in each allocation class.
  *
- * An iterator that has been designed to iterate through all the areas that have resources
- * assigned to them.
  *
  * Author : Michael Eldridge
- *
  */
 
-class ActiveAreasIterator // ASO removed inheritence prior to removign base class
+class ActiveAreasIterator // ASO removed inheritence prior to removing base class
 {
-	// Constructors.
-
+	// Constructors and Destructors
 	public:
-		//Altered by Gareth Thompson 24-2-2002
-		//myAssignments has been moved to the CharnesCooper class, so these iterators
-		//are now specific to that class
-		// ASO 29/11/02 - Switched lines below
-		ActiveAreasIterator(Allocation& p_allocation);
-		//ActiveAreasIterator(CharnesCooper *p_allocation);
-
+		ActiveAreasIterator(const Allocation& p_allocation);
 		~ActiveAreasIterator();
 
 	private:
-		//ActiveAreasIterator(const ResourceIterator &p_resource_itr);
-		//ActiveAreasIterator &operator=(const ActiveAreasIterator &p_resource_itr);
+		/// Disable copy constructor by declaring private, and not defining.
+		ActiveAreasIterator(ActiveAreasIterator &p_activeArea_itr);
 
+		/// Disable assignment operator by declaring private, and not defining.
+		ActiveAreasIterator &operator=(ActiveAreasIterator &p_activeArea_itr);
 
-
-		public:
-
-		void operator++(void);
-
-		// Perhaps it shoudl be: ActiveArea* get(void);
-		int get(void);
+	// Methods
 
 	public:
-		bool atEnd(void);
-		int operator*(void);
+
+		ActiveArea operator*(void) const; 
+		void operator++(void);
+		bool atEnd(void) const;
+
 
 	// Member Variables.
 
-
 	protected:
-		//Altered by Gareth Thompson 24-2-2002
-		//myAssignments has been moved to the CharnesCooper class, so these iterators
-		//are now specific to that class
-		//ASO 29/11/02 - Lines below switched
-		/// The allocation object being iterated over
-		Allocation& myAllocation; /**< This will be some child class of the virtual Allocation class */
-		//CharnesCooper *myAllocation;
-		int current; /**< The current area being pointed to */
 
-	// Functions.
+		const Allocation& myAllocation; /**< This will be an instance of some child class of the virtual Allocation class */
 
-		// Now handled in allocation classes:
-		//	private:
-		//		bool CheckForResources(int areaNum);
+		ActiveArea* current; /**< The current area being pointed to */
+
 };
-/*************************************************************************************/
+
+
+
+
+/**** Allocation ************************************************************/
 /// This is the virtual allocation class from which all others are derived
 /**
- * Allocation:
+ * The abstract allocation class. Provides a standard interface for the 
+ * concrete allocation algorithms that can be run from this library. This 
+ * abstract class also handles the calculations common to all allocations 
+ * (Coverage, POD, POS, New POC, etc.) so that individual algorithms do not 
+ * have to reimplement them.
+ * 
+ * Crucially, it also provides the iterators which are common for <em>all</em>
+ * allocations, so that users have a common interface even if all algorithms 
+ * have different internal data structures. To make this possible, each 
+ * specific allocation algorithm must implement the six simple virtual 
+ * accessor functions defined here. Not a bad tradeoff. (In addition, 
+ * algorithm writers please kindly implement calcAllocation() and call it 
+ * from your constructor. The code doesn't care, but it will help other 
+ * readers figure out what's going on.)
  *
- * The main allocation control class. Provides an interface to the search algorithms that
- * can be executed from this library.
+ * The public interface is designed with a few things in mind:
+ *  - All allocations should have a common interface
+ *  - The object just does allocations, and reports some vital numbers
+ *    relevant to those allocations.
+ *  - The interface should provide just enough to extract everything
+ *    you need. The user should keep track of other things, like 
+ *    resource or area names, etc.
+ *  - Allocation objects should be self-sufficient. They must be able
+ *    to hang around for a whole search (as a history, for example)
+ *    without risk of their data expiring. Therefore they copy their
+ *    input to (hidden) local variables.
+ *  - Since they may be used as histories, they must provide get 
+ *    functions even to variables the user would obviously know when
+ *    they created the allocation object.
+ *  - But we deliberately do <em>not</em> provide some get functions,
+ *    because if the user has forgotten those, they are probably also
+ *    misusing the allocation object.
  *
- * Author : Michael Eldridge
+ * <b>Note on protected versus private</b>: 
+ * Prevailing wisdom says that member variables are always private. But
+ * we have made some protected instead, because child classes are themselves
+ * allocations, and need to refer to variables like myEffectiveness quite
+ * often. Forcing them to use the indirection of a get function, which is
+ * just an alias for returning the variable makes their code uglier. Such 
+ * variables are already const, so only deliberate misuse presents a 
+ * problem. Yes an end-user could inherit from the class just to get at 
+ * the variables directly. But you know what? This is open source. A user
+ * that wants to modify the variables that badly can probably manage 
+ * anyway. Call it low-clutter programming. Eschew superfluous indirection.
+ *
+ * Some members remain private: the calculated variables are not always 
+ * calculated in advance, so access <em>must</em> go through the get
+ * functions. This is not a concern with variables passed in as const.
+ * Those are always defined and don't change, so if you're an allocation
+ * object yourself, why not just use them?
+ * 
+ * <b>Note on functions not provided:</b>
+ * We do not provide getNumAreas() and getNumResources(). As pure
+ * allocation objects, all we care about are the resources and areas
+ * we get passed, and to us they are just sequential numbers from 0. 
+ * We don't care if the user only sent us a subset of resources (or
+ * areas), or if the user later gets more resources or splits areas.
+ * So the user had darn well better keep around
+ * an index to take him from our sequential numbers back to actual
+ * areas in effect at the time the allocation was made. And if they
+ * have to ask us how many areas and resources we had, they've already
+ * messed up. (Besides, if they <em>really</em> need this, they can
+ * use the iterators and count.)
+ * 
+ * We do not provide a getPOC() function. If the user doesn't know what
+ * our original POC map looked like (oops?), they can get it in at least
+ * two ways:
+ *  - Use the getNewPOC() from the previous allocation.  
+ *    (You do remember what order you ran the allocations, don't you?)
+ *  - POS = oldPOC - newPOC. You do the math.
+ * But may I remind the user that if they don't keep track of this 
+ * themselves, and they have added, deleted, merged, or split areas,
+ * they're already toast.
+ *
+ * We do not provide an assignment operator. That would be nuts. 
+ *
+ * <b>Note on valarray</b>: We make extensive use of valarray. Why?
+ * We had at one stage replaced our "double *" with
+ * vectors, to gain all the notation, encapsulation, and memory cleanup 
+ * advantages of classes. In our first code review Michael noted that
+ * vectors have a lot of overhead and that we never need dynamic resizing.
+ * David pointed out that valarrays provided all the advantages of vectors
+ * without the overhead: they don't resize (easily), and they're designed 
+ * from the ground up for speed. Thanks Bjarne!
+ * 
+ * Code Author : Michael Eldridge
+ * Polemics    : Charles Twardy
+ * Sponsored by: The letter É. (Is your editor unicode?)
  *
  */
 
 class Allocation
 {
-	// Constructors.
+	// Constructors and Destructors
 
 	public:
-		Allocation(int p_no_resources, int p_no_areas, const Array2D& p_effectiveness,
-			const vector<double>& p_available, const vector<double>& p_POC);
-
-
+		Allocation(const int p_no_resources, 
+					  const int p_no_areas, 
+					  const Array2D& p_effectiveness,
+					  const valarray<double> p_endurance, 
+					  const valarray<double> p_POC);
+		 /// The default copy constructor for the base case
+		Allocation(const Allocation &p_allocation); // added ASO 30mar03
 		virtual ~Allocation();
 	private:
-		Allocation(const Allocation &p_allocation);
-		// Removed ASO 17/12/02 Allocation &operator=(const Allocation &p_allocation);
 
 	// Functions.
 	public:
 
-		//Altered by Gareth Thompson 24-2-2002: searchEndurance now const
-		virtual void calcAllocation() = 0;
+		double getEndurance(int resourceNum);///\todo Define here? Inline?
+		double getEffectiveness(int areaNum, int resourceNum);///\todo Define here? Inline?
+		virtual void calcAllocation() = 0;       // pure virtual
 
-		//ASO 28/11/02 Return types changed from iterator to specific flavors of iterator
-		AreaIterator *getAssignmentsForArea(int areaNum);
-		ResourceIterator *getAssignmentsForResource(int resourceNum);	// Altered by Andre Oboler 28/11/02. As this a signature nothing should be set.
-		// WAS: Iterator *getAssignmentsForResource(int resourceNum = 0);
-		ActiveAreasIterator *getAssignedAreas(void);
+		///\todo Once upon a time these were virtual. Any reason to change back?
+		double getCoverage(int areaNum);
+		double getPOD(int areaNum);
+		double getPOS(int areaNum);
+		double getNewPOC(int areaNum);
+		double getTotalPOS(void);
 
+   private:   // No one should see these directly. Even the kids.
 
-		virtual double getCoverage(int areaNum);
-		virtual double getPOD(int areaNum);
-		virtual double getPOS(int areaNum);
-		virtual double getNewPOC(int areaNum);
-		virtual double getTotalPOS(void);
-		double getAvailable(int resourceNum);
-		bool haveAvailable(void);
+		virtual double calcCoverage(const int areaNum);
 
-	//ASO 5/12/02 attempted to change this to private to meet spec..
-	// C++ does not allow derived classes to access private features of the base class
-	// protected must be used instead.
-	protected:
-		virtual double calcCoverage(int areaNum);
-
-		virtual double calcPOD(int areaNum)
+		virtual double calcPOD(const int areaNum)
 		{
-			//Altered by Gareth Thompson 24-2-2002 to simply RETURN POD value
-			//*(myPOD + areaNum) = 1 - exp(-1 * getCoverage(areaNum));
-			//return *(myPOD + areaNum);
 			return 1 - exp(-1 * getCoverage(areaNum));
 		}
 
 		virtual double calcPOS(int areaNum)
 		{
-			//Altered by Gareth Thompson 24-2-2002 to simply RETURN POS value
-			//*(myPOS + areaNum) = getPOD(areaNum) * getNewPOC(areaNum);
-			//return *(myPOS + areaNum);
-
-			// ASO 19/1/03 change part of conversion to vectors
-			//return getPOD(areaNum) * (*(myPOC + areaNum));
 			return getPOD(areaNum) * (myPOC[areaNum]);
 		}
 
-		virtual double calcNewPOC(int areaNum)
+		virtual double calcNewPOC(const int areaNum)
 		{
-			//Altered by Gareth Thompson 24-2-2002 to simply RETURN New POC value
-			//*(myNewPOC + areaNum) = (1 - getPOD(areaNum) * (*(myPOC + areaNum)));
-			//return *(myNewPOC + areaNum);
-
-			// ASO 19/1/03 change part of conversion to vectors
-			//return (1 - getPOD(areaNum)) * (*(myPOC + areaNum));
-			return (1 - getPOD(areaNum)) * (myPOC[areaNum]);
+		   return (1 - getPOD(areaNum)) * (myPOC[areaNum]);
+			// crt: could also do myPOC[areaNum] - getPOS(areaNum)
 		}
 
-
-		virtual double calcInitialPSR(int resourceNum, int areaNum)
-		{
-			// ASO 19/1/03 change part of conversion to vectors
-			//return (myEffectiveness.value[areaNum][resourceNum]) * (*(myPOC + areaNum));
-			return (myEffectiveness.value[areaNum][resourceNum]) * (myPOC[areaNum]);
-		}
-
-		//What is this? It is not in the documentation. - ASO 5/12/02
-		// Removed ASO 17/12/02
-		/*virtual int Index(int resourceNum, int areaNum)
-		{
-			return (resourceNum * myNumAreas) + areaNum;
-		}*/
 
 		// ASO 05/12/02 - Functions created
-		// NB: If you change the signature of these make sure to change all implementations as well.
+		// NB: If you change the signatures of these make sure to change
+		//     ALL implementations as well. (ie if you use int* or ActiveArea* 
+		//     to avoid memory leaks and/or for consistency.
+		// ASO C++ reminder: The "= 0" denotes these functions as pure virtual.
+		// Also: we return pointers rather than objects so users can keep
+		// a single pointer in their loop, and so we can return NULL when req.
+		virtual ActiveArea* firstArea(void) const =0;
 
-		// ASO C++ reminder: The "= 0" at the end denotes these functions as pure virtual.
-		virtual int firstArea(void) =0;
+		virtual ActiveArea* nextArea(const int currentArea) const =0;
 
-		virtual int nextArea(int area) =0;
+		virtual AreaAssignment* firstArea(const int resource) const =0;
 
-		virtual AreaAssignment* firstArea(int Resource)=0;
+		// ASO 30mar03 - currentArea: emphasizes that we're getting next area
+		// Resource does not change, hence not called "current".
+		virtual AreaAssignment* nextArea(const int resource, const int currentArea) const =0;
 
-		virtual AreaAssignment* nextArea(int Resource, int Area)=0; // params: What we are talking about, where we are now (in that order)
+		virtual ResourceAssignment* firstRes(const int area) const =0;
 
-		virtual ResourceAssignment* firstRes(int Area) =0;
+		// ASO 30mar03 - currentResource: emphasizes that we're getting next res.
+		// Area does not change, hence not called "current".
+		virtual ResourceAssignment* nextRes(const int area, const int currentResource) const =0;
 
-		virtual ResourceAssignment* nextRes(int Area, int Resource) =0; // params: What we are talking about, where we are now (in that order)
-
-
-
-
-
-	//Gareth Thompson 24-2-2002:
-	//Removed testing functions which directly access myAssignments and placed them in CharnesCooper class
-	//(As myAssignments is now a member of the derived CharnesCooper class)
-	//protected:
-	//	virtual void SetTableValue(int p_x, int p_y, int p_value);
-	//	virtual void PrintTable(void);
 
 	// Member Variables.
 	public:
+		// Each allocator stores its own assignments as it chooses. 
+		// No public vars. To convert subtypes, define copy constructors.
 
-		// ASO 29/11/02: Moved back here from CC
-		// ASO 17/12/02 Back to CC and made protected (so only iterators use it)
-		// This should be put in each algorithm because it will be a different structure for each
-		//double *myAssignments;
-
-	protected:
-		//Gareth Thompson 24-2-2002: removed myAssignments and placed in derived class
+   protected: // Variables the kids need to see. Const only please.
 
 		/// The total number of areas
 		const int myNumAreas;
+
 		/// The total number of resource groups
 		const int myNumResources;
-		/// The probability of containment
-		vector<double> myPOC;
-		/// The effectiveness of each resource in each area
-		const Array2D& myEffectiveness;
-		/// The following is a duplication of myEffectivness
-		/**
-		 *  It is needed for the conversion to UserDef i.e. so it can
-		 *  be used in the constructor of another layer of
-		 *  the allocation object underlying UserDef.
-		 *
-		 *  See the constructor UserDef(Allocation oldAllocation) for further details.
-		 *  Disabled 19/1/02 (should no longer be needed as allocation takes an Array2D)
-		 */
-		//const double *myEffectivenessUserDef;
 
-		/// The number of resource hours available for each resource
-		vector<double> myAvailable;
+		/// The original probability of containment (ie probability of area, POA)
+		valarray<double> myPOC;
+
+		/// The effectiveness of each resource in each area. (W*v/A)
+		const Array2D& myEffectiveness;
+
+		/// The amount of time originally made available for each resource
+		/**
+		 * myEndurance is used to store the number of hours 
+		 * <em>originally</em> passed in. This means it will not change. 
+		 * UserDef and other functions will need their own storage for
+		 * unassigned hours (suggest myAvailable or myUnassignedResources). 
+		 * This move is to clean up semantics.
+		 */
+		const valarray<double> myEndurance;
+
+		/// A flag to force recalculation. For UserDef.
+		/**
+		 * The only non-const protected data member. Normally, an allocation
+		 * is set in stone as soon as the object exists, so we can calculate
+		 * coverage, POD, newPOC, and POS once and store them. But UserDef
+		 * could change again at any time, and defeat our cleverness.
+		 * Either we need to make the get functions virtual (just for 
+		 * UserDef), or make them always calculate on the fly (expensive
+		 * for repeated getTotalPOS operations), or provide a flag to
+		 * force recalculation. Here's the flag. Since we have protected
+		 * data members, we put it here because quite obviously it exists
+		 * precisely so that the kids can set it. (Well, one of them anyway.)
+		 * 
+		 * If you remove it, please change the logic in the appropriate
+		 * get functions. And beware: since we provide it, some non-UserDef
+		 * algorithm may just use it. Though I can't just now see <em>why</em>.
+		 *
+		 * Author: crt
+		 */
+		bool forceRecalc; // Wish we could set it to false here.
+
+   private: // Calculated variables. NO direct access!
+
 		/// coverage
-		vector<double> myCoverage;
-		/// probability of discovery
-		vector<double> myPOD;
-		/// probability of search
-		vector<double> myPOS;
+		valarray<double> myCoverage;
+
+		/// probability of detection
+		valarray<double> myPOD;
+
+		/// probability of success
+		valarray<double> myPOS;
+
 		/// new probability of containment (after trying a resource allocation)
-		vector<double> myNewPOC;
-		/// Total probability of search
+		valarray<double> myNewPOC;
+
+		/// Total probability of success
 		double myTotalPOS;
 
-		// ASO 5/12/02 moved here
-		// ASO 17/12/02 Removed
-		/*virtual int TableSize(void)
-		{
-			return (myNumAreas * myNumResources);
-		}*/
-
-
-	//Gareth Thompson 24-2-2002:
-	//Removed friend classes which directly access myAssignments and placed them in CharnesCooper class
-	//(As myAssignments is now a member of the derived CharnesCooper class)
-	// Friend Classes.
-	//
-	// ASO 29/11/02: Iterator removed, others now re-enabled
+	// External methods
 	public:
-		/// So that the AreaIterator can access the first and next functions
+		/// So that the AreaIterator can access the first & next functions
 		friend class AreaIterator;
-		/// So that the ResourceIterator can access the first and next functions
+		/// So that the ResourceIterator can access the first & next functions
 		friend class ResourceIterator;
-		/// So that the ActiveAreasIterator can access the first and next functions
+		/// So that the ActiveAreasIterator can access the first & next functions
 		friend class ActiveAreasIterator;
-		/// So allocations can be converted to UserDef
-		friend class UserDef;
 
 };
 
-/*********************************************************************************/
-/// The Charnes-Cooper allocation class
-/**
- * CharnesCooper:
- *
- * Implements the Charnes-Cooper allocation algorithm. The allocation is stored in a
- * matrix.
- *
- * Author : Michael Eldridge
- *
- */
-
-class CharnesCooper : public Allocation
-{
-	// Constructors.
-
-	public:
-		CharnesCooper(int p_no_resources, int p_no_areas, const Array2D& p_effectiveness,
-			const vector<double>& p_available, const vector<double>& p_POC);
-		~CharnesCooper();
-	private:
-		CharnesCooper(const CharnesCooper &p_allocation);
-		CharnesCooper &operator=(const CharnesCooper &p_allocation);
-
-		void quickSort(int items[], int arraySize);
-		void qSort(int items[], int left, int right);
-
-
-	// Allocation Functions.
-
-	protected:
-		//Altered by Gareth Thompson 24-2-2002: searchEndurance now const
-		// ASO Made protected 17/12/02
-		void calcAllocation();
-
-		// Added by ASO 5/12/02
-		int firstArea(void);
-		int nextArea(int area);
-		AreaAssignment* firstArea(int Resource);
-		AreaAssignment* nextArea(int Resource, int Area); // params: What we are talking about, where we are now (in that order)
-		ResourceAssignment* firstRes(int Area);
-		ResourceAssignment* nextRes(int Area, int Resource); // params: What we are talking about, where we are now (in that order)
-
-		// Moved from base allocation class 3/2/03 - ASO
-		virtual inline double calcInitialPSR(int resourceNum, int areaNum)
-		{
-			// ASO 19/1/03 change part of conversion to vectors
-			//return (myEffectiveness.value[areaNum][resourceNum]) * (*(myPOC + areaNum));
-			return (myEffectiveness.value[areaNum][resourceNum]) * (myPOC[areaNum]);
-		}
-
-
-	//Gareth Thompson 24-2-2002:
-	//Removed testing functions (which directly access myAssignments)
-	//from Allocation class and placed them here
-	//(As myAssignments is now a member of the derived CharnesCooper class)
-
-	// Test functions
-
-	public:
-		//Removed - ASO 17/12/02 void SetTableValue(int p_x, int p_y, int p_value);
-		//Removed - ASO 17/12/02 void PrintTable(void);
-
-	// Member variables
-
-	// ASO 29/11/02: Moved back to base class so other classes can use it
-	// ASO 17/12/02 moved back here and changed to a pointer to a 2D array.
-	private:
-		//Gareth Thompson 24-2-2002: Removed from base class and placed here
-		/// The set of assignments, stored as a dynamically allocated matrix
-		Array2D myAssignments;
-
-
-	//Gareth Thompson 24-2-2002:
-	//Removed friend classes (which directly access myAssignments) from base Allocation class
-	// and placed them here
-	//(As myAssignments is now a member of the derived CharnesCooper class)
-
-	// Friend Classes.
-	// ASO 9/12/02
-	// note could make friend functions rather than class to achieve better coupling
-	// i.e. iterators get access only to the 2 functions they need (a first and a next)
-
-	public:
-		//friend class Iterator;
-		friend class AreaIterator;
-		friend class ResourceIterator;
-		friend class ActiveAreasIterator;
-};
-
-/***********************************************************************************/
-/// The user-defined Allocation class. The user may create their own allocation here.
-/**
- * UserDef:
- *
- * Allocation class for user-specified allocations. This class allows the user
- * to create an allocation from scratch, or to import an existing allocation and
- * tweak it. This class is needed because search managers will almost always
- * be aware of more constraints than the current program can handle.
- *
- * Author : Andre Oboler
- */
-
-class UserDef : public Allocation
-{
-	// Constructors.
-
-	public:
-		UserDef(int p_no_resources, int p_no_areas, const Array2D& p_effectiveness,
-			const vector<double>& p_available, const vector<double>& p_POC);
-
-		UserDef(Allocation& oldAllocation);
-
-		~UserDef();
-	private:
-		UserDef(const UserDef &p_allocation);
-		UserDef &operator=(const UserDef &p_allocation);
-
-	// Allocation Functions.
-
-	protected:
-		//void calcAllocation(const double *searchEndurance);
-
-	public:
-		void clearAll();
-		void clearArea(int area);
-		void clearResource(int resource);
-		void remove(int from, int resource, double amount);
-		void remove(int from, int resource);
-		void add(int to, int resource, double amount);
-		void add(int to, int resource);
-		void move(int from, int to, int resource);
-		void move(int from, int to, int resource, double amount);
-
-	// Functions.
-
-
-		// ASO 5/12/02 No longer needed in this class, altering allocation will occur in the manualAllocation class.
-		// Put back in to allow testing to compile ok ASO 9/12/02. [TODO] Weed out of testing and remove.
-		//public:
-		//Removed - ASO 17/12/02 void setAllocation(const double *assignment);
-
-	// Added by ASO 5/12/02
-	protected:
-		int firstArea(void);
-		int nextArea(int area);
-		AreaAssignment* firstArea(int Resource);
-		AreaAssignment* nextArea(int Resource, int Area); // params: What we are talking about, where we are now (in that order)
-		ResourceAssignment* firstRes(int Area);
-		ResourceAssignment* nextRes(int Area, int Resource); // params: What we are talking about, where we are now (in that order)
-
-	//Gareth Thompson 24-2-2002:
-	//Removed testing functions (which directly access myAssignments)
-	//from Allocation class and placed them here
-	//(As myAssignments is now a member of the derived CharnesCooper class)
-
-	// Test functions
-
-	public:
-		//Removed - ASO 17/12/02 void SetTableValue(int p_x, int p_y, int p_value);
-		//Removed - ASO 17/12/02 void PrintTable(void);
-
-	// Member variables
-
-	// ASO 29/11/02: Moved back to base class so other classes can use it
-	// ASO 17/12/02 moved back here and changed to a pointer to a 2D array.
-	private:
-		//Gareth Thompson 24-2-2002: Removed from base class and placed here
-		/// The set of assignments is stored as a dynamically allocated matrix
-		Array2D myAssignments;
-
-
-	//Gareth Thompson 24-2-2002:
-	//Removed friend classes (which directly access myAssignments) from base Allocation class
-	// and placed them here
-	//(As myAssignments is now a member of the derived CharnesCooper class)
-
-	// Friend Classes.
-	// ASO 9/12/02
-	// note could make friend functions rather than class to achieve better coupling
-	// i.e. iterators get access only to the 2 functions they need (a first and a next)
-
-	public:
-		//friend class Iterator;
-		/// So that the AreaIterator can access the first an dnext functions
-		friend class AreaIterator;
-		/// So that the ResourceIterator can access the first an dnext functions
-		friend class ResourceIterator;
-		/// So that the ActiveAreasIterator can access the first an dnext functions
-		friend class ActiveAreasIterator;
-};
-
-/*********************************************************************************/
-/// The Washburn allocation class
-/**
- * Washburn:
- *
- * Implements the Washburn allocation algorithm.
- *
- * Author : David Albrecht
- *
- */
-
-class Washburn : public Allocation
-{
-	// Constructors.
-
-	public:
-		Washburn::Washburn(int p_no_resources, int p_no_areas, const Array2D& p_effectiveness,
-		const vector<double>& p_available, const vector<double>& p_POC);
-		~Washburn();
-	private:
-		Washburn(const Washburn &p_allocation);
-		Washburn &operator=(const Washburn &p_allocation);
-
-	// Allocation Functions.
-
-	protected:
-		void calcAllocation();
-		int firstArea(void);
-		int nextArea(int area);
-		AreaAssignment* firstArea(int Resource);
-		AreaAssignment* nextArea(int Resource, int Area);
-		ResourceAssignment* firstRes(int Area);
-		ResourceAssignment* nextRes(int Area, int Resource);
-
-	// Properties
-	protected:
-	enum {ROOT = 0, NULL_NODE = -1};
-
-	private:
-		const int FALSE_AREA;
-		const double TOL;
-
-		/// Node structure for containing information about area and resource
-		//struct Node
-		class Node
-		{
-		public:
-		  double  time;  // amount of resource used.
-		  bool    isArea; // true if area, false otherwise.
-                  int     number; // resource or area number.
-                  int     parent; // index of parent node.
-                  int     firstChild; // index of first child.
-                  int     nextSibling; // index of next sibling.
-
-		  Node()
-		  {
-		    set(0, false, -1, ROOT, NULL_NODE, NULL_NODE);
-		  }
-
-		  void set(double p_time, bool p_flag, int p_num, int p_parent,
-			   int p_child, int p_sibling)
-		  {
-		    time = p_time;
-		    isArea = p_flag;
-		    number = p_num;
-		    parent = p_parent;
-		    firstChild = p_child;
-		    nextSibling = p_sibling;
-		  }
-                };
-
-		// This typedef is need for the lastest version of C++
-		//typedef vector<Node> AssignmentTree;
-
-		/// Effectiveness matrix required for Washburn to deal
-		/// with the false area.
-		Array2D        myExtendedEffectiveness;
-		/// The set of assignments, stored as a tree.
-
-		//AssignmentTree myAssignments;
-		vector<Node> myAssignments;
-
-		/// Node indices for areas.
-                vector<int>    myAreaIndex;
-		/// Node indices for resources.
-                vector<int>    myResourceIndex;
-		/// The Lagrangian multipiers corresponding to the resource
-		/// constraints.
-                vector<double> myLambda;
-		/// The Lagrangian multipiers corresponding to the sum of the
-		/// resources for an area.
-		vector<double> myMu;
-		/// Coefficients for equations to determine how much resource
-		/// to allocate to the next area.
-		vector<double> myCoefficients;
-		/// Next area for resource to be added to.
-		int myNextArea;
-		/// Next resource to add to next area.
-		int myNextResource;
-
-                // private member functions
-
-		/// check whether the optimum has been reached
-		bool optimum();
-
-		/// update the assignment tree
-		void updateAssignment();
-
-		/// find the child of ROOT in subtree containing the node with index p_index
-		int findRootChild(int p_index);
-
-		/// sum the Mu values in the subtree containing the node with index p_index
-		double sumMu(int p_index);
-
-		/// create the equations for calculating how much of the resource myNextRes
-                /// we can assign to the area myNextArea
-		void createEqn(int p_index, double p_coeff);
-
-		/// solve the equations for calculating how much of the resource myNextRes
-                /// we can assign to the area myNextArea
-		double solveEqn(int p_index, double p_maxTime, int& p_pivot);
-
-		/// update the values in the assignment subtree containing the node with index
-		/// p_index, and the corresponding Lambda and Mu values for the nodes in this
-                /// subtree.
-		void updateValues(int p_index, double factor, double time);
-
-		/// rotate the subtree containing the node with index p_index to make this node
-		/// a child of ROOT.
-		void rotateSubtree(int p_index);
-
-		/// join the subtree containing the node with index p_index to the node
-                /// with index p_parentIndex.
-		void joinSubtree(int p_index, int p_parentIndex);
-
-		/// disconnect the subtree which has the node with index p_index as its root from
-                /// its old subtree.
-
-		void disconnectSubtree(int p_index);
-
-		/// connect the subtree which has the node with index p_index as its root to
-		/// the node with index p_parentIndex.
-
-		void connectSubtree(int p_index, int p_parentIndex);
-
-		/// get the amount of resource p_res allocated to area p_area
-		double getAssignment(int p_res, int p_area);
-
-	public:
-		friend class AreaIterator;
-		friend class ResourceIterator;
-		friend class ActiveAreasIterator;
-		friend class Node;
-};
 
 #endif
 
