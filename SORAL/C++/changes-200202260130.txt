@@ -1,0 +1,172 @@
+####################################################################
+CHANGES TO ALLOCATION LIBRARY CODE (for version released 2002-02-26)
+####################################################################
+
+--------------------------------------------------------------------
+-->MISCELLANEOUS CHANGES
+--------------------------------------------------------------------
+
+Added postfix versions of Iterator::operator++() and Iterator::operator--()
+	This required two lines of code, and makes the iterators much more
+	usable.
+
+Made argument int resourceNum for CharnesCooper::getAssignmentsForResource()
+have a default value of zero.
+	This means that someone who is using the CharnesCooper class (only),
+	and only ever has one resource, does not need to bother specifying
+	the resource number.
+
+Comments in headers of Allocatn.h and Allocatn.cpp altered to reflect the
+usage of the Allocation library in its current state.
+
+--------------------------------------------------------------------
+-->CHANGES DUE TO BUGS REVEALED BY Itr-test.cpp
+   This function tests:
+   - CharnesCooper::getAssignmentsForResource()
+   - CharnesCooper::getAssignmentsForArea()
+   - CharnesCooper::getAssignedAreas()
+   - along with the iterators associated with each of these functions
+--------------------------------------------------------------------
+
+Altered Iterator::goToStart() so that it leaves m_index at -1 if the list
+is empty
+	For an empty list, goToStart() will therefore move to the end of
+	the list, indicating that there are no elements.
+	[This eliminates the problem where the iterator for an empty list
+	provided access to a single element with a time of zero.]
+
+Altered ResourceIterator::operator++() so that it now behaves as follows:
+	- If the iterator is at the last item in the list, it moves to the
+	  end of the list (one past the last item)
+	- If the iterator is at the end of the list (one past the last item),
+	  it remains there
+	- Otherwise, the iterator moves to the next item in the list
+	
+	Previously, operator++() would move the iterator back to the start of
+	the list after moving it beyond the end, which is not the expected
+	behaviour.
+
+Altered AreaIterator::operator--(), AreaIterator::operator++(),
+AssignedAreasIterator::operator--() and AssignedAreasIterator::operator++()
+	The same type of changes as made for ResourceIterator::operator--()
+	and ResourceIterator::operator++() were made.
+
+
+####################################################################
+CHANGES TO ALLOCATION LIBRARY CODE (for version released 2002-02-25)
+####################################################################
+
+--------------------------------------------------------------------
+-->MISCELLANEOUS CHANGES
+--------------------------------------------------------------------
+Removed extraneous output statements and other debugging code from
+main() [CC-test.cpp] and CharnesCooper::calcAllocation().
+	These changes were necessary to put the code back to the way it
+	was before the seg-fault bug was discovered.  Some minor changes
+	to neaten the CharnesCooper::calcAllocation() code were also made.
+
+Removed Allocation::calcPSR().
+	This function was identical to Allocation::calcInitialPSR() and
+	was never called.
+
+Altered operator()() for each of the classes Iterator, AreaIterator,
+ResourceIterator and AssignedAreasIterator to return a Container*
+rather than a Container&.
+	These functions were returning references to local variables,
+	so this change was necessary.  All code that used operator()
+	for any of the iterators also had to be altered.
+
+Argument double *searchEndurance of Allocation::calcAllocation() made const.
+	This was necessary to prevent the array of search endurance values
+	being modified by calcAllocation().
+	It was also necessary to modify CharnesCooper::calcAllocation(), as
+	this function WAS modifying the search endurance values.
+
+myAssignments moved from Allocation class to CharnesCooper class.
+	This moved the storage of assignments from the (abstract) base
+	class to the (concrete) derived class.  This was a fairly major
+	change, which also required the following changes:
+	- Classes Iterator, AreaIterator, ResourceIterator and
+	  AssignedAreasIterator now store a pointer to a CharnesCooper
+	  object, rather than an Allocation object.
+	  [These iterators directly accessed myAssignments.]
+	- Classes Iterator, AreaIterator, ResourceIterator and
+	  AssignedAreasIterator made friends of CharnesCooper, rather than
+	  Allocation.
+	- Removed testing functions SetTableValue() and PrintTable()
+	  from Allocation and placed them in CharnesCooper.
+	  [These functions directly accessed myAssignments.]
+	- Allocation::calcCoverage() altered to obtain the AreaIterator
+	  using getAssignmentsForArea(), rather than the AreaIterator
+	  constructor.  [The constructor cannot be used because it
+	  now requires a CharnesCooper object as argument, but
+	  calcCoverage is a member of the (abstract) class Allocation.]
+
+--------------------------------------------------------------------
+-->CHANGES DUE TO BUGS REVEALED BY Clc-test.cpp
+   This function tests:
+   - CharnesCooper::setAllocation()
+   - CharnesCooper::getCoverage()
+   - CharnesCooper::getPOD()
+   - CharnesCooper::getPOS()
+   - CharnesCooper::getNewPOC()
+   - CharnesCooper::getTotalPOS()
+--------------------------------------------------------------------
+
+Functions calcPOD(), calcPOS() and calcNewPOC() altered so that they
+do NOT save the calculated values in the relevant arrays.
+	These values are saved by getPOD(), getPOS() and getNewPOC(),
+	so they should not be saved by calcPOD(), calcPOS() and
+	calcNewPOC().
+
+calcNewPOC() altered to fix error in calculating values.
+
+getPOD(), getPOS() and getNewPOC() altered to call calcPOD(), calcPOS()
+and calcNewPOC() respectively.
+	Previously, these functions all called calcCoverage(), and
+	therefore returned coverage values.
+
+
+--------------------------------------------------------------------
+-->CHANGES DUE TO BUGS REVEALED BY Itr-test.cpp
+   This function tests:
+   - CharnesCooper::getAssignmentsForResource()
+   - CharnesCooper::getAssignmentsForArea()
+   - CharnesCooper::getAssignedAreas()
+   - along with the iterators associated with each of these functions
+--------------------------------------------------------------------
+
+AreaAssignment altered to encapsulate a resource number, rather than
+an area number.
+	There is no need to store an area number, as it is already known.
+
+ResourceAssignment altered to encapculate an area number, rather than a
+resource number.
+	There is no need to store a resource number, as it is already known.
+
+Altered Iterator::goToEnd() and Iterator::atEnd()
+	Previously, goToEnd() moved the iterator to the last item in
+	the list, whilst atEnd() checked if the iterator was PAST the
+	last item in the list.  The end is now considered to be one
+	item past the last in the list, so goToEnd() moves the item
+	to this location and atEnd() checks if it is there.
+
+Altered ResourceIterator::operator--() so that it now behaves as follows:
+	- If the iterator is at the start of the list (at the first item),
+	  it remains there.
+	- If the iterator is at the end of the list (one past the last
+	  item), it moves back to the last item in the list.
+	- Otherwise, the iterator moves back to the preceding item in the
+	  list.
+
+	Previously, operator--() would not move the iterator back onto an
+	item if it had been moved beyond the end of the list, which is
+	problematic if goToEnd() takes the item past the end of the list.
+
+
+NOTE: - Changes similar to those made to ResourceIterator::operator--()
+        must be made to AreaIterator::operator--() and
+	AssignedAreasIterator::operator--().  I intend to make these
+	changes shortly.
+      - Itr-test.cpp indicates that there are still further bugs in
+        the code, so further changes may be made.
