@@ -138,8 +138,8 @@ string BigArea::Area::DumpArea(void)
 	temp += ostr6.str();
 	temp +="\n";
 
-	/* Null-terminate temp */
-/*	temp << '\0';
+	// Null-terminate temp
+	temp << '\0';
 
 	return ostr.str();
 

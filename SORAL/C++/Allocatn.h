@@ -233,7 +233,7 @@ class ActiveAreasIterator // ASO removed inheritence prior to removing base clas
 	// Methods
 
 	public:
-
+        int getCurrentActiveAreaNum(void) { return (current == NULL) ? -1 : current->getActiveAreaNum(); }
 		ActiveArea operator*(void) const; 
 		void operator++(void);
 		bool atEnd(void) const;

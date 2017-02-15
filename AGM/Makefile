@@ -2,7 +2,7 @@
 
 SORAL_SOURCE_PATH=../SORAL/C++/
 
-OBJS=Allocatn.o Array2D.o Alloc-CC.o Alloc-W.o itr_area.o itr_assn.o itr_res.o con_area.o con_assn.o con_res.o testing.o Sandr.o Srchman.o menu.o delay.o InputFil.o Input.o Tokenise.o StripWht.o RSizeStr.o FloatCmp.o Resource.o BigArea.o Areas.o setmode.o Err_mngr.o Output.o ChkType.o DataLimt.o ConToStr.o sru.o
+OBJS=Allocatn.o Array2D.o Alloc-CC.o Alloc-W.o itr_area.o itr_assn.o itr_res.o con_area.o con_activ.o con_assn.o con_res.o testing.o Sandr.o Srchman.o menu.o delay.o InputFil.o Input.o Tokenise.o StripWht.o RSizeStr.o FloatCmp.o Resource.o BigArea.o Areas.o setmode.o Err_mngr.o Output.o ChkType.o DataLimt.o ConToStr.o sru.o
 
 main: $(OBJS)
 	g++ -g -o AGMSAR $(OBJS)
@@ -112,6 +112,9 @@ itr_res.o: $(SORAL_SOURCE_PATH)/itr_res.cpp $(SORAL_SOURCE_PATH)/Allocatn.h $(SO
 
 con_area.o: $(SORAL_SOURCE_PATH)/con_area.cpp $(SORAL_SOURCE_PATH)/containr.h
 	g++ -c $(SORAL_SOURCE_PATH)/con_area.cpp
+
+con_activ.o: $(SORAL_SOURCE_PATH)/con_activ.cpp $(SORAL_SOURCE_PATH)/containr.h
+	g++ -c $(SORAL_SOURCE_PATH)/con_activ.cpp
 
 
 con_assn.o: $(SORAL_SOURCE_PATH)/con_assn.cpp $(SORAL_SOURCE_PATH)/containr.h

@@ -60,6 +60,7 @@
 #include "DataLimt.h"
 #include "../SORAL/C++/Allocatn.h"
 #include "../SORAL/C++/containr.h"
+#include "../SORAL/C++/Alloc-CC.h"
 
 #ifdef WIN32
 #include <conio.h>
@@ -1336,16 +1337,15 @@ bool SearchManager::useSORAL(void)
    int resourceNumber, areaIndex, resourceIndex;
 	int num_res = resources->getNumResources();
 	int num_areas = big_area->count();
-	vector<double> availableHours;
-	vector<double> POC;
+	valarray<double> availableHours(num_res);
+	valarray<double> POC(num_areas);
 	//resources->getResourceNumList()
 	vector<int>::iterator ResIter;
 	vector<int>::iterator AreaIter;
-	Array2D* effectiveness = new Array2D(num_areas, num_res);
+	Array2D effectiveness(num_areas, num_res);
 	//Array2D& effectiveness = *effectivenessTemp;
 	ActiveAreasIterator* activeAreas;
 	ResourceIterator* activeRes;
-	ResourceAssignment* resAssign;
 	double time;
 
 
@@ -1357,6 +1357,7 @@ bool SearchManager::useSORAL(void)
 
 	vector<int> tempVectorRes=resources->getResourceNumList();
 
+    int resIndex = 0;
 	for(ResIter=tempVectorRes.begin(); ResIter != tempVectorRes.end(); ResIter++)
 	{
 		if(testmode==true)
@@ -1364,7 +1365,7 @@ bool SearchManager::useSORAL(void)
 			cout << "\nResources and Hours Exported to SORAL\n";
 			cout << "availableHours: Res(" << *ResIter << ")  Hours(" << resources->getHoursRemaining(*ResIter) << ")\n";
 		}
-		availableHours.push_back(resources->getHoursRemaining(*ResIter));
+		availableHours[resIndex++] = resources->getHoursRemaining(*ResIter);
 	}
 
 
@@ -1373,7 +1374,7 @@ bool SearchManager::useSORAL(void)
 	{
 		cout << "availableHours Imported to SORAL: \n";
 		cout << "*";
-		PrintDoubleVector(availableHours);
+		PrintDoubleValArray(availableHours);
 		cout << "\n\n";
 	}
 
@@ -1445,7 +1446,7 @@ bool SearchManager::useSORAL(void)
 	if(testmode==true)
 	{
 		cout << "Effectiveness Array2D\n";
-		effectiveness->print();
+		effectiveness.print();
 	}
 	// effectiveness
 	/****************************
@@ -1462,12 +1463,12 @@ bool SearchManager::useSORAL(void)
 		areaNumber=tempVectorArea[i];
 		tempPOA=big_area->getPOA(areaNumber);
 		tempPOA=tempPOA/100;
-		POC.push_back(tempPOA);
+		POC[i] = tempPOA;
 	}
 	if(testmode==true)
 	{
 		cout << "\n POC = POA\n";
-		PrintDoubleVector(POC);
+		PrintDoubleValArray(POC);
 	}
 
 	/****************************
@@ -1477,8 +1478,8 @@ bool SearchManager::useSORAL(void)
 	 *
 	 ****************************/
 
-	 CharnesCooper theAllocation(num_res, num_areas, (*effectiveness), availableHours, POC);
-	 //Washburn theAllocation(num_res, num_areas, (*effectiveness), availableHours, POC);
+	 CharnesCooper theAllocation(num_res, num_areas, effectiveness, availableHours, POC);
+	 //Washburn theAllocation(num_res, num_areas, effectiveness, availableHours, POC);
 
 
 	 // Causes errors
@@ -1504,7 +1505,7 @@ bool SearchManager::useSORAL(void)
 	i=0;
 	if(testmode==true)
 	{
-		cout << " \n This " << i <<"th Active Area is: Area " << activeAreas->get();
+		cout << " \n This " << i <<"th Active Area is: Area " << activeAreas->getCurrentActiveAreaNum();
 		cout << "\n";
 	}
 
@@ -1512,13 +1513,13 @@ bool SearchManager::useSORAL(void)
 	while(!(activeAreas->atEnd()))
 	{
 
-		areaIndex=activeAreas->get();
+		areaIndex=activeAreas->getCurrentActiveAreaNum();
 		areaNumber=tempVectorArea[areaIndex];
 		activeRes= new ResourceIterator(theAllocation, areaIndex); // theAllocation, resourceNumber
-		resAssign=activeRes->get();
-		resourceIndex=resAssign->getResourceNum();
+		ResourceAssignment resAssign( **activeRes );
+		resourceIndex=resAssign.getResourceNum();
 		resourceNumber=tempVectorRes[resourceIndex];
-		time=resAssign->getTime();
+		time=resAssign.getTime();
 		Assignment* tempAssign = new Assignment(areaNumber, time);
 		resources->addAssignment(resourceNumber, *tempAssign);
 
@@ -1534,7 +1535,7 @@ bool SearchManager::useSORAL(void)
 		if(testmode==true)
 		{
 			i++;
-			cout << " \n This " << i <<"th Active Area is: Area " << activeAreas->get();
+			cout << " \n This " << i <<"th Active Area is: Area " << activeAreas->getCurrentActiveAreaNum();
 			cout << "\n";
 		}
 
