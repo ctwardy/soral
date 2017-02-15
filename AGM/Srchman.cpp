@@ -58,8 +58,8 @@
 #include "Err_mngr.h"
 #include "Assignmt.h"
 #include "DataLimt.h"
-#include "../SARbayes/SORAL/C++/Allocatn.h"
-#include "../SARbayes/SORAL/C++/containr.h"
+#include "../SORAL/C++/Allocatn.h"
+#include "../SORAL/C++/containr.h"
 
 #ifdef WIN32
 #include <conio.h>

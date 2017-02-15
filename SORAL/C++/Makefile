@@ -10,7 +10,7 @@
 #
 #
 # ASO 18feb03 - Added TestBed to what Charles had.
-# ASO 19feb03 - Added UserDef to the makefile
+# ASO 19feb03 - Added userDef to the makefile
 # crt 06mar03 - Alphabetized .o listing. 
 #               Added Alloc-W.o entry. (?!) How was it compiling before? (?!)
 #               Removed extraneous mentions of .h files. 
@@ -19,11 +19,11 @@
 # crt 01may03 - Added "make sample" to make the sample prog. Modified so
 #               you can make both exec and sample.
 
-OBJS = Allocatn.o Array2D.o Alloc-CC.o Alloc-W.o UserDef.o itr_area.o itr_activ.o itr_res.o con_area.o con_activ.o con_res.o 
+OBJS = Allocatn.o Array2D.o Alloc-CC.o Alloc-W.o userDef.o itr_area.o itr_activ.o itr_res.o con_area.o con_activ.o con_res.o 
 TB1  = TestBed.o
 S1   = sample.o
 
-TESTOBJS = AllocatnTESTMODE.o Array2DTESTMODE.o Alloc-CCTESTMODE.o Alloc-WTESTMODE.o UserDefTESTMODE.o itr_areaTESTMODE.o itr_activTESTMODE.o itr_resTESTMODE.o con_areaTESTMODE.o con_activTESTMODE.o con_resTESTMODE.o
+TESTOBJS = AllocatnTESTMODE.o Array2DTESTMODE.o Alloc-CCTESTMODE.o Alloc-WTESTMODE.o userDefTESTMODE.o itr_areaTESTMODE.o itr_activTESTMODE.o itr_resTESTMODE.o con_areaTESTMODE.o con_activTESTMODE.o con_resTESTMODE.o
 TB2      = TestBedTESTMODE.o
 S2       = sampleTESTMODE.o
 
@@ -150,11 +150,11 @@ itr_resTESTMODE.o: itr_res.cpp
 sample.o: sample.cpp
 	g++ -c sample.cpp
 
-UserDef.o: UserDef.cpp 
-	g++ -c UserDef.cpp
+userDef.o: userDef.cpp 
+	g++ -c userDef.cpp
 
-UserDefTESTMODE.o: UserDef.cpp
-	g++ -o UserDefTESTMODE.o -c UserDef.cpp -D _ALLOCATION_TESTMODE
+userDefTESTMODE.o: userDef.cpp
+	g++ -o userDefTESTMODE.o -c userDef.cpp -D _ALLOCATION_TESTMODE
 
 
 TestBed.o: TestBed.cpp

@@ -1,7 +1,11 @@
 # simple make file
 
-main: Allocatn.o array2D.o Alloc-CC.o cc-alloc.o Alloc-W.o itr_area.o itr_assn.o itr_res.o con_area.o con_assn.o con_res.o testing.o Sandr.o Srchman.o menu.o delay.o InputFil.o Input.o Tokenise.o StripWht.o RSizeStr.o FloatCmp.o Resource.o BigArea.o Areas.o setmode.o Err_mngr.o Output.o ChkType.o DataLimt.o ConToStr.o sru.o
-	g++ -g -o AGMSAR Allocatn.o Array2D.o Alloc-CC.o cc-alloc.o Alloc-W.o itr_area.o itr_assn.o itr_res.o con_area.o con_assn.o con_res.o testing.o Sandr.o Srchman.o menu.o delay.o InputFil.o Input.o Tokenise.o StripWht.o RSizeStr.o FloatCmp.o Resource.o BigArea.o Areas.o setmode.o Err_mngr.o Output.o ChkType.o DataLimt.o ConToStr.o sru.o
+SORAL_SOURCE_PATH=../SORAL/C++/
+
+OBJS=Allocatn.o Array2D.o Alloc-CC.o Alloc-W.o itr_area.o itr_assn.o itr_res.o con_area.o con_assn.o con_res.o testing.o Sandr.o Srchman.o menu.o delay.o InputFil.o Input.o Tokenise.o StripWht.o RSizeStr.o FloatCmp.o Resource.o BigArea.o Areas.o setmode.o Err_mngr.o Output.o ChkType.o DataLimt.o ConToStr.o sru.o
+
+main: $(OBJS)
+	g++ -g -o AGMSAR $(OBJS)
 	
 
 Sandr.o: Sandr.cpp Srchman.h
@@ -79,49 +83,49 @@ DataLimt.o: DataLimt.h
 ConToStr.o : global.h
 	g++ -c ConToStr.cpp
 
-Allocatn.o: ../SARbayes/SORAL/C++/Allocatn.cpp ../SARbayes/SORAL/C++/Allocatn.h ../SARbayes/SORAL/C++/containr.h
-	g++ -c ../SARbayes/SORAL/C++/Allocatn.cpp
+Allocatn.o: $(SORAL_SOURCE_PATH)/Allocatn.cpp $(SORAL_SOURCE_PATH)/Allocatn.h $(SORAL_SOURCE_PATH)/containr.h
+	g++ -c $(SORAL_SOURCE_PATH)/Allocatn.cpp
 
-array2D.o: ../SARbayes/SORAL/C++/Array2D.cpp ../SARbayes/SORAL/C++/Array2D.h
-	g++ -c ../SARbayes/SORAL/C++/Array2D.cpp
-
-
-Alloc-CC.o: ../SARbayes/SORAL/C++/Alloc-CC.cpp ../SARbayes/SORAL/C++/Allocatn.h
-	g++ -c ../SARbayes/SORAL/C++/Alloc-CC.cpp
+array2D.o: $(SORAL_SOURCE_PATH)/Array2D.cpp $(SORAL_SOURCE_PATH)/Array2D.h
+	g++ -c $(SORAL_SOURCE_PATH)/Array2D.cpp
 
 
-Alloc-W.o: ../SARbayes/SORAL/C++/Alloc-W.cpp ../SARbayes/SORAL/C++/Allocatn.h
-	g++ -c ../SARbayes/SORAL/C++/Alloc-W.cpp
+Alloc-CC.o: $(SORAL_SOURCE_PATH)/Alloc-CC.cpp $(SORAL_SOURCE_PATH)/Allocatn.h
+	g++ -c $(SORAL_SOURCE_PATH)/Alloc-CC.cpp
 
 
-itr.o: ../SARbayes/SORAL/C++/itr.cpp ../SARbayes/SORAL/C++/Allocatn.h
-	g++ -c ../SARbayes/SORAL/C++/itr.cpp
-
-itr_area.o: ../SARbayes/SORAL/C++/itr_area.cpp ../SARbayes/SORAL/C++/Allocatn.h ../SARbayes/SORAL/C++/containr.h
-	g++ -c ../SARbayes/SORAL/C++/itr_area.cpp
-
-itr_assn.o: ../SARbayes/SORAL/C++/itr_assn.cpp ../SARbayes/SORAL/C++/Allocatn.h ../SARbayes/SORAL/C++/containr.h
-	g++ -c ../SARbayes/SORAL/C++/itr_assn.cpp
-
-itr_res.o: ../SARbayes/SORAL/C++/itr_res.cpp ../SARbayes/SORAL/C++/Allocatn.h ../SARbayes/SORAL/C++/containr.h
-	g++ -c ../SARbayes/SORAL/C++/itr_res.cpp
-
-con_area.o: ../SARbayes/SORAL/C++/con_area.cpp ../SARbayes/SORAL/C++/containr.h
-	g++ -c ../SARbayes/SORAL/C++/con_area.cpp
+Alloc-W.o: $(SORAL_SOURCE_PATH)/Alloc-W.cpp $(SORAL_SOURCE_PATH)/Allocatn.h
+	g++ -c $(SORAL_SOURCE_PATH)/Alloc-W.cpp
 
 
-con_assn.o: ../SARbayes/SORAL/C++/con_assn.cpp ../SARbayes/SORAL/C++/containr.h
-	g++ -c ../SARbayes/SORAL/C++/con_assn.cpp
+itr.o: $(SORAL_SOURCE_PATH)/itr.cpp $(SORAL_SOURCE_PATH)/Allocatn.h
+	g++ -c $(SORAL_SOURCE_PATH)/itr.cpp
+
+itr_area.o: $(SORAL_SOURCE_PATH)/itr_area.cpp $(SORAL_SOURCE_PATH)/Allocatn.h $(SORAL_SOURCE_PATH)/containr.h
+	g++ -c $(SORAL_SOURCE_PATH)/itr_area.cpp
+
+itr_assn.o: $(SORAL_SOURCE_PATH)/itr_assn.cpp $(SORAL_SOURCE_PATH)/Allocatn.h $(SORAL_SOURCE_PATH)/containr.h
+	g++ -c $(SORAL_SOURCE_PATH)/itr_assn.cpp
+
+itr_res.o: $(SORAL_SOURCE_PATH)/itr_res.cpp $(SORAL_SOURCE_PATH)/Allocatn.h $(SORAL_SOURCE_PATH)/containr.h
+	g++ -c $(SORAL_SOURCE_PATH)/itr_res.cpp
+
+con_area.o: $(SORAL_SOURCE_PATH)/con_area.cpp $(SORAL_SOURCE_PATH)/containr.h
+	g++ -c $(SORAL_SOURCE_PATH)/con_area.cpp
 
 
-con_res.o: ../SARbayes/SORAL/C++/con_res.cpp ../SARbayes/SORAL/C++/containr.h
-	g++ -c ../SARbayes/SORAL/C++/con_res.cpp
+con_assn.o: $(SORAL_SOURCE_PATH)/con_assn.cpp $(SORAL_SOURCE_PATH)/containr.h
+	g++ -c $(SORAL_SOURCE_PATH)/con_assn.cpp
 
-cc-alloc.o: ../SARbayes/SORAL/C++/cc-alloc.cpp ../SARbayes/SORAL/C++/Allocatn.h
-	g++ -c ../SARbayes/SORAL/C++/cc-alloc.cpp
 
-testing.o: ../SARbayes/SORAL/C++/testing.cpp ../SARbayes/SORAL/C++/testing.h
-	g++ -c ../SARbayes/SORAL/C++/testing.cpp
+con_res.o: $(SORAL_SOURCE_PATH)/con_res.cpp $(SORAL_SOURCE_PATH)/containr.h
+	g++ -c $(SORAL_SOURCE_PATH)/con_res.cpp
+
+cc-alloc.o: $(SORAL_SOURCE_PATH)/cc-alloc.cpp $(SORAL_SOURCE_PATH)/Allocatn.h
+	g++ -c $(SORAL_SOURCE_PATH)/cc-alloc.cpp
+
+testing.o: $(SORAL_SOURCE_PATH)/testing.cpp $(SORAL_SOURCE_PATH)/testing.h
+	g++ -c $(SORAL_SOURCE_PATH)/testing.cpp
 
 testingTESTMODE.o: testin
 

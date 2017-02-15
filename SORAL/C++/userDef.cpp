@@ -2,8 +2,8 @@
  *      SARBayes OPTIMAL RESOURCE ALLOCATION LIBRARY 2001-03         *         
  *                                                                   *
  *********************************************************************/
-/** \file UserDef.cpp
- *  \brief UserDef.cpp Contains the UserDef Class's functions.
+/** \file userDef.cpp
+ *  \brief userDef.cpp Contains the UserDef Class's functions.
  * 
  * Contains the UserDef class's functions.
  * UserDef is the allocation class that allows the user to set their own 
@@ -67,7 +67,7 @@
 // above notices are retained, in accordance with the GNU GPL.               //
 //===========================================================================//
 
-#include "UserDef.h"
+#include "userDef.h"
 #include <iostream> // ASO 29/11/02 C++ standard is not iostream.h
 
 using namespace std; // ASO 29/11/02 needed: iostream declares functions in std

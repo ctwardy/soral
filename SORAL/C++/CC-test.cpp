@@ -23,8 +23,6 @@
  *---------------------------------------------------------------------------- 
  * \endverbatim
  */
-
-
 //============================================================================//
 // Written by Gareth Thompson.                           http://sarbayes.org  //
 //----------------------------------------------------------------------------//
@@ -33,7 +31,7 @@
 // It is distributed under the terms of the GNU General Public License.       //
 // See the file COPYING for copying permission.                               //
 //                                                                            //
-// If those licencing arrangements are not satisfactory, please contact us!   //
+// If those licensing arrangements are not satisfactory, please contact us!   //
 // We are willing to offer alternative arrangements, if the need should arise.//
 //                                                                            //
 // THIS MATERIAL IS PROVIDED AS IS, WITH ABSOLUTELY NO WARRANTY EXPRESSED OR  //
@@ -44,16 +42,11 @@
 // modify the code and to distribute modified code is granted, provided the   //
 // above notices are retained, in accordance with the GNU GPL.                //
 //============================================================================//
-
-
 #include <iostream.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "Allocatn.h"
 #include "testing.h"
-
-
-
 /*****************************************************************************
  * AllocationTest
  *
@@ -67,7 +60,6 @@
  *
  * Author: Gareth Thompson
  */
-
 //ASO Test Disabled 18/12/02 struct AllocationTest
 //ASO Test Disabled 18/12/02 {
 //ASO Test Disabled 18/12/02   int numResources;
@@ -77,7 +69,6 @@
 //ASO Test Disabled 18/12/02   double searchEndurance;
 //ASO Test Disabled 18/12/02   double expectedAssignments[50];
 //ASO Test Disabled 18/12/02 };
-
 /*****************************************************************************
  * main()
  *
@@ -93,20 +84,15 @@
  *
  * Author: Gareth Thompson
  */
-
 int main()
 {
-
 //ASO Test Disabled 18/12/02  printf("TESTING calcAllocationCharnesCooper()\n");
 //ASO Test Disabled 18/12/02 printf("[Charnes-Cooper allocation function]\n");
 //ASO Test Disabled 18/12/02  printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
-
 //ASO Test Disabled 18/12/02  int i;
-
   /**** CREATE DATA STRUCTURE CONTAINING TEST DATA ****/
 //ASO Test Disabled 18/12/02  const int numTests = 6;
 //ASO Test Disabled 18/12/02  AllocationTest* testData[numTests+1];
-
   /*
    * An AllocationTest object is declared using the folliwing syntax:
    * AllocationTest testX = {numResources, numAreas, {{comma separated list of effectiveness values}},
@@ -122,65 +108,46 @@ int main()
 //ASO Test Disabled 18/12/02  AllocationTest test4 = {1, 4, {{8.0, 4.0, 0.0, 10.0}}, {1.0, 4.0, 20.0, 0.0}, 0.50, {0.108904, 0.391096, 0.0, 0.0}};
 //ASO Test Disabled 18/12/02  AllocationTest test5 = {1, 3, {{6.0, 2.0, 3.0}}, {2.0, 6.0, 4.0}, 0.50, {0.083333, 0.25, 0.166667}};
 //ASO Test Disabled 18/12/02  AllocationTest test6 = {1, 4, {{8.0, 0.0, 0.0, 0.0}}, {0.0, 7.0, 0.0, 5.0}, 0.50, {0.0, 0.0, 0.0, 0.0}};
-
 //ASO Test Disabled 18/12/02  testData[1] = &test1;
 //ASO Test Disabled 18/12/02  testData[2] = &test2;
 //ASO Test Disabled 18/12/02  testData[3] = &test3;
 //ASO Test Disabled 18/12/02  testData[4] = &test4;
 //ASO Test Disabled 18/12/02  testData[5] = &test5;
 //ASO Test Disabled 18/12/02  testData[6] = &test6;
-
   /**** RUN TEST CASES ****/
-
 //ASO Test Disabled 18/12/02  for (int testNum = 1; testNum<=numTests; testNum++)
 //ASO Test Disabled 18/12/02  {
 //ASO Test Disabled 18/12/02	printf("TEST CASE %d\n", testNum);
 //ASO Test Disabled 18/12/02	printf("~~~~~~~~~~~\n\n");
-
 //ASO Test Disabled 18/12/02	CharnesCooper alloc(testData[testNum]->numResources, testData[testNum]->numAreas, &testData[testNum]->effectiveness[0][0], testData[testNum]->POC);
-
 	/*
 	 * Use Charnes-Cooper algorithm to calculate allocation.
 	 * (Default resource allocation algorithm is Charnes Cooper if there is one resource)
 	 */
 	//[TODO - fix] alloc.calcAllocation(&(testData[testNum]->searchEndurance));
-
 	/* Display expected assignments */
 //ASO Test Disabled 18/12/02	printf("Expected allocation:\n");
-
 //ASO Test Disabled 18/12/02	for (i=0; i<testData[testNum]->numAreas; i++)
 //ASO Test Disabled 18/12/02	{
 //ASO Test Disabled 18/12/02	  printf("\tAREA: %d\tTIME: %f\n", i, testData[testNum]->expectedAssignments[i]);
 //ASO Test Disabled 18/12/02	}
-
 //ASO Test Disabled 18/12/02	printf("\n\n");
-
 	/* Display actual assignments */
 //ASO Test Disabled 18/12/02	printf("Actual allocation [only nonzero assignments are shown]:\n");
-
 //ASO Test Disabled 18/12/02	ResourceIterator actualAssignments(&alloc, 0);
-
 	//[TODO - fix] actualAssignments.goToStart();
-
 //ASO Test Disabled 18/12/02	while (!actualAssignments.atEnd())
 //ASO Test Disabled 18/12/02	{
 //[TODO - fix]          printf("\tAREA: %d", actualAssignments.Index());
-
 //[TODO - fix]         ResourceAssignment* con = actualAssignments(); // ASO 10/12/02 Changed to ResourceAssignment from Container
 //[TODO - fix]         printf("\tTIME: %f\n", con->getTime());
 //[TODO - fix]         delete con;
-
 //ASO Test Disabled 18/12/02	  ++actualAssignments;
 //ASO Test Disabled 18/12/02	}
-
 //ASO Test Disabled 18/12/02	printf("\n\n");
-
 //ASO Test Disabled 18/12/02	printf("--> Test %d: ", testNum);
-
 //[TODO - fix]	actualAssignments.goToStart();
-
 //ASO Test Disabled 18/12/02	bool passed = true;
-
 //ASO Test Disabled 18/12/02	while (!actualAssignments.atEnd())
 //ASO Test Disabled 18/12/02	{
 //[TODO - fix]	  ResourceAssignment* con = actualAssignments(); // ASO 10/12/02 Changed to ResourceAssignment from Container
@@ -193,10 +160,8 @@ int main()
 //ASO Test Disabled 18/12/02            passed = false;
 //ASO Test Disabled 18/12/02          }
  //[TODO - fix]	  delete con;
-
 //ASO Test Disabled 18/12/02	  ++actualAssignments;
 //ASO Test Disabled 18/12/02	}
-
 //ASO Test Disabled 18/12/02	for (i = 0; i < testData[testNum]->numAreas; i++)
 //ASO Test Disabled 18/12/02	{
 //ASO Test Disabled 18/12/02	  if (testData[testNum]->expectedAssignments[i] != 0.0)
@@ -205,7 +170,6 @@ int main()
 //ASO Test Disabled 18/12/02		break;
 //ASO Test Disabled 18/12/02	  }
 //ASO Test Disabled 18/12/02	}
-
 //ASO Test Disabled 18/12/02	if (passed)
 //ASO Test Disabled 18/12/02	{
 //ASO Test Disabled 18/12/02	  printf("PASSED\n\n\n");
@@ -215,7 +179,5 @@ int main()
 //ASO Test Disabled 18/12/02	  printf("FAILED\n\n\n");
 //ASO Test Disabled 18/12/02	}
 //ASO Test Disabled 18/12/02  }
-
 return 0;
 }
-

@@ -137,6 +137,10 @@ int main(int argc, char* argv[])
 				search_manager->OutputAllPOAs();
 				cout << "</POA>" << endl;
 		  }
+	   case ERROR:
+		  {
+				cerr << "ERROR" << endl;
+		  }
 	}
 
 #ifdef WIN32
