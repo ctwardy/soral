@@ -37,58 +37,47 @@
  * Who |   When   | Ver | What
  *-----+----------+-----+-----------------------------------------------------
  * GT  | 24/04/01 |  1  | Created.
- *---------------------------------------------------------------------------- * AO  | 07/03/08 | 1.1 | Gareth altered copyright notice etc for release,
+ *---------------------------------------------------------------------------- * AO  | 07/03/08 | 1.1 | Gareth altered copyright notice etc for release,
  *     |          |     | Andre updated version info and (c) date
  *----------------------------------------------------------------------------
- */
-
-#include "global.h"
-#include <stdio.h>
-#include <cmath>
-
-using namespace std;
-
-
-/******************************************************************************
- * FloatEqual()
- *
- * Determines if two floating point numbers are equal.  Floating
- * point numbers are defined to be equal if they differ by less
- * than PRECISION.
- *
- * Author : Gareth Thompson
- */
-
-bool FloatEqual(double num1, double num2)
-{
-	if (testmode) cout << "entering FloatEqual(" << num1 << ", " << num2 << ")\n";
-
-	double diff = fabs(num1 - num2);
-
-	if (testmode)
-	{
-		cout << "Difference between values ";
-		printf("%f, %f gives %f\n", num1, num2 ,diff);
-	}
-
-	return (diff < PRECISION);
-}
-
-
-
-/******************************************************************************
- * FloatLess()
- *
- * Determines if the first floating point argument is less
- * than the second by more than PRECISION (floating point numbers
- * are defined to be equal if they differ by less than PRECISION).
- *
- * Author : Gareth Thompson
- */
-
-bool FloatLess(double num1, double num2)
-{
-	if (testmode) cout << "entering FloatLess(" << num1 << ", " << num2 << ")\n";
-
-	return ( (num1 < num2) && !FloatEqual(num1, num2) );
-}
+ */
+#include "global.h"
+#include <stdio.h>
+#include <cmath>
+using namespace std;
+
+/******************************************************************************
+ * FloatEqual()
+ *
+ * Determines if two floating point numbers are equal.  Floating
+ * point numbers are defined to be equal if they differ by less
+ * than PRECISION.
+ *
+ * Author : Gareth Thompson
+ */
+bool FloatEqual(double num1, double num2)
+{
+	if (testmode) cout << "entering FloatEqual(" << num1 << ", " << num2 << ")\n";
+	double diff = fabs(num1 - num2);
+	if (testmode)
+	{
+		cout << "Difference between values ";
+		printf("%f, %f gives %f\n", num1, num2 ,diff);
+	}
+	return (diff < PRECISION);
+}
+
+/******************************************************************************
+ * FloatLess()
+ *
+ * Determines if the first floating point argument is less
+ * than the second by more than PRECISION (floating point numbers
+ * are defined to be equal if they differ by less than PRECISION).
+ *
+ * Author : Gareth Thompson
+ */
+bool FloatLess(double num1, double num2)
+{
+	if (testmode) cout << "entering FloatLess(" << num1 << ", " << num2 << ")\n";
+	return ( (num1 < num2) && !FloatEqual(num1, num2) );
+}

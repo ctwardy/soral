@@ -36,77 +36,64 @@
  * Who |   When   | Ver | What
  *-----+----------+-----+-----------------------------------------------------
  * GT  | 17/04/01 |  1  | Created.
- *---------------------------------------------------------------------------- * AO  | 07/03/08 | 1.1 | Gareth altered copyright notice etc for release,
+ *---------------------------------------------------------------------------- * AO  | 07/03/08 | 1.1 | Gareth altered copyright notice etc for release,
  *     |          |     | Andre updated version info and (c) date
  *----------------------------------------------------------------------------
- */
-
-#include <vector>
-#include <string>
-#include "global.h"
-
-using namespace std;
-
-
-/******************************************************************************
- * StripWhite(string)
- *
- * Takes a string, and returns a version of that string that has all
- * leading an trailing whitespace removed.
- * The string returned may still contain whitespace between non-whitespace
- * characters.
- * If the string passes as argument contains no non-whitespace
- * characters, the string returned will have length 0.
- *
- * Author : Gareth Thompson
- */
-
-string StripWhite(string str)
-{
-	if (testmode) cout << "entering StripWhite(" << str << ")\n";
-
-	/* Find first non-whitespace character */
-	int firstChar = 0;
-	while (firstChar < str.length() && isspace(str[firstChar]))
-	{
-		firstChar++;
-	}
-
-	/* Find last non-whitespace character */
-	int lastChar = str.length() - 1;
-	while (lastChar >= firstChar && isspace(str[lastChar]))
-	{
-		lastChar--;
-	}
-
-	return str.substr(firstChar, lastChar-firstChar+1);
-}
-
-
-
-/******************************************************************************
- * StripWhite(vector<string>)
- *
- * Takes a vector of strings, and returns a version of
- * that vector where each string has all leading and
- * trailing whitespace removed.
- * The output for special cases of input strings is
- * described under StripWhite(string) above.
- *
- * Author : Gareth Thompson
- */
-
-vector<string> StripWhite(vector<string> data)
-{
-	if (testmode) cout << "entering StripWhite(vector<str>)\n";
-
-	/* Strip whitespace from each string in vector in turn */
-	vector<string>::iterator i;
-
-	for (i=data.begin(); i < data.end(); i++)
-	{
-		*i = StripWhite(*i);
-	}
-
-	return data;
-}
+ */
+#include <vector>
+#include <string>
+#include "global.h"
+using namespace std;
+
+/******************************************************************************
+ * StripWhite(string)
+ *
+ * Takes a string, and returns a version of that string that has all
+ * leading an trailing whitespace removed.
+ * The string returned may still contain whitespace between non-whitespace
+ * characters.
+ * If the string passes as argument contains no non-whitespace
+ * characters, the string returned will have length 0.
+ *
+ * Author : Gareth Thompson
+ */
+string StripWhite(string str)
+{
+	if (testmode) cout << "entering StripWhite(" << str << ")\n";
+	/* Find first non-whitespace character */
+	int firstChar = 0;
+	while (firstChar < str.length() && isspace(str[firstChar]))
+	{
+		firstChar++;
+	}
+	/* Find last non-whitespace character */
+	int lastChar = str.length() - 1;
+	while (lastChar >= firstChar && isspace(str[lastChar]))
+	{
+		lastChar--;
+	}
+	return str.substr(firstChar, lastChar-firstChar+1);
+}
+
+/******************************************************************************
+ * StripWhite(vector<string>)
+ *
+ * Takes a vector of strings, and returns a version of
+ * that vector where each string has all leading and
+ * trailing whitespace removed.
+ * The output for special cases of input strings is
+ * described under StripWhite(string) above.
+ *
+ * Author : Gareth Thompson
+ */
+vector<string> StripWhite(vector<string> data)
+{
+	if (testmode) cout << "entering StripWhite(vector<str>)\n";
+	/* Strip whitespace from each string in vector in turn */
+	vector<string>::iterator i;
+	for (i=data.begin(); i < data.end(); i++)
+	{
+		*i = StripWhite(*i);
+	}
+	return data;
+}

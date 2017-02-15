@@ -36,47 +36,36 @@
  * Who |   When   | Ver | What
  *-----+----------+-----+-----------------------------------------------------
  * GT  | 02/04/01 |  1  | Created.
- *---------------------------------------------------------------------------- * AO  | 07/03/08 | 1.1 | Gareth altered copyright notice etc for release,
+ *---------------------------------------------------------------------------- * AO  | 07/03/08 | 1.1 | Gareth altered copyright notice etc for release,
  *     |          |     | Andre updated version info and (c) date
  *----------------------------------------------------------------------------
- */
-
-#ifndef InputFil_h
-#define InputFil_h
-
-#include <string>
-#include <fstream>
-
-using namespace std;
-
-class InputFile
-{
-	public:
-		/* Constructor does NOT open a file */
-		InputFile(void)
-		: myFile(0), myLastRecLine(0)
-		{}
-
-		/* Destructor: delete any ifstream object created */
-		~InputFile(void)
-		{
-			delete myFile;
-		}
-
-		inline int lastRecLine(void) { return myLastRecLine; }
-
-		bool open(string filename);
-		void close(void);
-		bool getRecord(string& record);
-
-		void test(void); /* testing function */
-
-	private:
-		bool isRecord(string str);
-
-	private:
-		ifstream* myFile;   /* currently open file */
-		int myLastRecLine;  /* line number of last record read from file */
-
-};
-#endif
+ */
+#ifndef InputFil_h
+#define InputFil_h
+#include <string>
+#include <fstream>
+using namespace std;
+class InputFile
+{
+	public:
+		/* Constructor does NOT open a file */
+		InputFile(void)
+		: myFile(0), myLastRecLine(0)
+		{}
+		/* Destructor: delete any ifstream object created */
+		~InputFile(void)
+		{
+			delete myFile;
+		}
+		inline int lastRecLine(void) { return myLastRecLine; }
+		bool open(string filename);
+		void close(void);
+		bool getRecord(string& record);
+		void test(void); /* testing function */
+	private:
+		bool isRecord(string str);
+	private:
+		ifstream* myFile;   /* currently open file */
+		int myLastRecLine;  /* line number of last record read from file */
+};
+#endif

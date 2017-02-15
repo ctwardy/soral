@@ -45,7 +45,6 @@
  *     |          |     | Andre updated version info and (c) date
  *----------------------------------------------------------------------------
  */
-
 #include "setmode.h"
 #include "Srchman.h"
 #include "Err_mngr.h"
@@ -53,9 +52,7 @@
 #include <string>
 #include <fstream>
 
-
 using namespace std;
-
 /******************************************************************************
  * FindSubmode()
  *
@@ -64,7 +61,6 @@ using namespace std;
  * Searchs for a sub mode selection when it has been determined that we are
  * running in batch mode
  */
-
 Program_mode SetupMode::FindSubmode(int argc, char *argv[])
 {
 	string s;
@@ -73,7 +69,6 @@ Program_mode SetupMode::FindSubmode(int argc, char *argv[])
 	string auto_mode = "--auto";
 	string autofile_mode = "--autofile";
 	string soral_mode = "--soral";         // use SORAL
-
 	for (int i = 0 ; i < argc ; i++)
 	{
 		s = argv[i];
@@ -103,7 +98,6 @@ Program_mode SetupMode::FindSubmode(int argc, char *argv[])
 	}
 	return ERROR;
 }
-
 /******************************************************************************
  * FindMode()
  *
@@ -111,12 +105,10 @@ Program_mode SetupMode::FindSubmode(int argc, char *argv[])
  *
  * Determines the mode entered in from the command line
  */
-
 Program_mode SetupMode::FindMode(int argc, char *argv[])
 {
 	string s;
 	string batch = "--batch";
-
 	if (testmode) cout << "FindMode values" << endl;
 	for (int i = 0 ; i < argc ; i++)
 	{
@@ -132,7 +124,6 @@ Program_mode SetupMode::FindMode(int argc, char *argv[])
 	}
 	return INTERACTIVE;
 }
-
 /******************************************************************************
  * GetTag()
  *
@@ -140,11 +131,9 @@ Program_mode SetupMode::FindMode(int argc, char *argv[])
  *
  * Searches for file name tags
  */
-
 string SetupMode::GetTag(Tag tag, int argc, char *argv[])
 {
 	string s;
-
 	for (int i = 0 ; i < argc ; i++)
 	{
 		s = argv[i];
@@ -181,7 +170,6 @@ string SetupMode::GetTag(Tag tag, int argc, char *argv[])
 	}
 	return "ERROR";
 }
-
 /******************************************************************************
  * SetMode()
  *
@@ -189,14 +177,12 @@ string SetupMode::GetTag(Tag tag, int argc, char *argv[])
  *
  * Sets the actual mode of the program and loads any data files
  */
-
 Program_mode SetupMode::SetMode(int argc, char *argv[], SearchManager* sm)
 {
 	string area_file, resource_file, assign_file;
 	area_file = GetTag(AREA, argc, argv);
 	resource_file = GetTag(RESOURCE, argc, argv);
 	assign_file = GetTag(ASSIGN, argc, argv);
-
 	switch(FindMode(argc, argv))
 	{
 		case INTERACTIVE:
@@ -224,7 +210,6 @@ Program_mode SetupMode::SetMode(int argc, char *argv[], SearchManager* sm)
 				return Program_mode(INTERACTIVE);
 			}
 			break;
-
 		case BATCH_ADVICE:
 			{
 				if (testmode) cout << "MODE : ADVICE ";
@@ -239,7 +224,6 @@ Program_mode SetupMode::SetMode(int argc, char *argv[], SearchManager* sm)
 				return Program_mode(BATCH_ADVICE);
 			}
 			break;
-
 		case BATCH_AUTO:
 			{
 				if (testmode) cout << "MODE : AUTO " << endl;
@@ -252,10 +236,8 @@ Program_mode SetupMode::SetMode(int argc, char *argv[], SearchManager* sm)
 				sm->LoadAreas(area_file);
 				sm->LoadResources(resource_file);
 				return Program_mode(BATCH_AUTO);
-
 			}
 			break;
-
 		case BATCH_AUTOFILE:
 			{
 				if (testmode) cout << "MODE : AUTOFILE " << endl;
@@ -265,39 +247,30 @@ Program_mode SetupMode::SetMode(int argc, char *argv[], SearchManager* sm)
 					return Program_mode(ERROR);
 				}
 				if (testmode) cout << "Area file: " << area_file << "  Resource file: " << resource_file << "  Write assignments to: " << assign_file << endl;
-
 				// Load data
 				sm->LoadAreas(area_file);
 				sm->LoadResources(resource_file);
-
 				// Now update
 				sm->useSORAL(); // get advice
 				sm->UpdateAllPOAs(); // use the advice
-
 				// Now record to file
-
 				ofstream ass_file;
 				ofstream area_fileStream;
-
 				ass_file.open(assign_file.c_str());
 				sm->OutputResourceAssignments(ass_file);
 				ass_file.close();
-
 				area_fileStream.open(area_file.c_str());
 				sm->OutputAreas(area_fileStream);
 				area_fileStream.close();
-
 				return Program_mode(BATCH_AUTOFILE);
 			}
 			break;
-
 
 		// crt 24Jan03: copied BATCH_AUTOFILE for soral but
 		//              BATCH_AUTO for output because BATCH_AUTOFILE
 		//              clobbers the input files.
 		//   It would be better to change BATCH_AUTOFILE, but that
         //   would break Andre's GUI so I'll let him do it.
-
 		//	ASO - reviewed 3/2/02. This function is undocumented...
 		//  a note needs to be added to error manager to show
 		// that it exists and how to use it. ie for printing
@@ -311,19 +284,15 @@ Program_mode SetupMode::SetMode(int argc, char *argv[], SearchManager* sm)
 					return Program_mode(ERROR);
 				}
 				if (testmode) cout << "Area file: " << area_file << "  Resource file: " << resource_file << "  Write assignments to: " << assign_file << endl;
-
 				// Load data
 				sm->LoadAreas(area_file);
 				sm->LoadResources(resource_file);
-
 				// Now update
 				sm->useSORAL(); // get advice
 				sm->UpdateAllPOAs(); // use the advice
-
 				return Program_mode(BATCH_AUTO_SORAL);
 			}
 			break;
-
 
 		case BATCH_RUN:
 			{
@@ -340,7 +309,6 @@ Program_mode SetupMode::SetMode(int argc, char *argv[], SearchManager* sm)
 				return Program_mode(BATCH_RUN);
 			}
 			break;
-
 		case ERROR:
 			{
 				error_manager->PostError(COMMAND_LINE_ERROR, "Incorrect number of type parameters specified", "The program could not determine how to run from the parameters specified");
@@ -349,4 +317,3 @@ Program_mode SetupMode::SetMode(int argc, char *argv[], SearchManager* sm)
 	}
 	return Program_mode(ERROR);
 }
-

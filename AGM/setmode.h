@@ -43,45 +43,35 @@
  * AO  | 07/03/08 | 2.1 | Gareth altered copyright notice etc for release,
  *     |          |     | Andre updated version info and (c) date
  *----------------------------------------------------------------------------
- */
-
-#include <iostream>
-#include "Err_mngr.h"
-
-using namespace std;
-
-class SearchManager;
-
-typedef enum			// program modes
-{
-	INTERACTIVE,
-	BATCH_ADVICE,
-	BATCH_RUN,
-	BATCH_AUTO,
-	BATCH_AUTOFILE,
-	BATCH_AUTO_SORAL,
-	ERROR
-} Program_mode;
-
-typedef enum			// data file tag types
-{
-	AREA,
-	RESOURCE,
-	ASSIGN
-} Tag;
-
-class SetupMode : public ErrorManager
-{
-	public:
-
-		SetupMode(void) {}
-		~SetupMode(void) {}
-
-		Program_mode SetMode(int argc, char *argv[], SearchManager* sm);
-		Program_mode FindMode(int argc, char *argv[]);
-		Program_mode FindSubmode(int argc, char *argv[]);
-
-		string	GetTag(Tag tag, int argc, char *argv[]);
-
-		void HandleError(int local_error_id) { cout << "ERROR thrown back" << endl; }
-};
+ */
+#include <iostream>
+#include "Err_mngr.h"
+using namespace std;
+class SearchManager;
+typedef enum			// program modes
+{
+	INTERACTIVE,
+	BATCH_ADVICE,
+	BATCH_RUN,
+	BATCH_AUTO,
+	BATCH_AUTOFILE,
+	BATCH_AUTO_SORAL,
+	ERROR
+} Program_mode;
+typedef enum			// data file tag types
+{
+	AREA,
+	RESOURCE,
+	ASSIGN
+} Tag;
+class SetupMode : public ErrorManager
+{
+	public:
+		SetupMode(void) {}
+		~SetupMode(void) {}
+		Program_mode SetMode(int argc, char *argv[], SearchManager* sm);
+		Program_mode FindMode(int argc, char *argv[]);
+		Program_mode FindSubmode(int argc, char *argv[]);
+		string	GetTag(Tag tag, int argc, char *argv[]);
+		void HandleError(int local_error_id) { cout << "ERROR thrown back" << endl; }
+};

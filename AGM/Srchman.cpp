@@ -61,13 +61,10 @@
 #include "../SORAL/C++/Allocatn.h"
 #include "../SORAL/C++/containr.h"
 #include "../SORAL/C++/Alloc-CC.h"
-
 #ifdef WIN32
 #include <conio.h>
 #endif
-
 using namespace std;
-
 /******************************************************************************
  * SearchManager()
  *
@@ -77,14 +74,12 @@ using namespace std;
  *
  * void
  */
-
 SearchManager::SearchManager(void)
 {
 	big_area = new BigArea();
 	resources = new Resources();
 	input_file = new InputFile();
 }
-
 /******************************************************************************
  * ~SearchManager()
  *
@@ -94,14 +89,12 @@ SearchManager::SearchManager(void)
  *
  * Parameters : void
  */
-
 SearchManager::~SearchManager(void)
 {
 	delete big_area;
 	delete resources;
 	delete input_file;
 }
-
 /******************************************************************************
  * LoadAreas()
  *
@@ -111,12 +104,10 @@ SearchManager::~SearchManager(void)
  *
  * Parameters : area_filename is the name of the file to load data from
  */
-
 void SearchManager::LoadAreas(string areas_filename)
 {
 	big_area->loadAreas(areas_filename);
 }
-
 /******************************************************************************
  * LoadResources()
  *
@@ -126,12 +117,10 @@ void SearchManager::LoadAreas(string areas_filename)
  *
  * Parameters : resources_filename is the name of the file to load data from
  */
-
 void SearchManager::LoadResources(string resources_filename)
 {
 	resources->loadSRUs(resources_filename);
 }
-
 /******************************************************************************
  * PrintMap()
  *
@@ -141,13 +130,10 @@ void SearchManager::LoadResources(string resources_filename)
  *
  * Parameters : void
  */
-
 void SearchManager::PrintMap(void)
 {
 	big_area->printmap();
 }
-
-
 
 
 /******************************************************************************
@@ -175,36 +161,28 @@ void SearchManager::PrintMap(void)
  *
  * Parameters : filename is the name of the file containing assignment data
  */
-
 bool SearchManager::LoadAssignments(string filename)
 {
 	InputFile in;
 	string record;
-
 	if (testmode) cout << "Loading assignments from file " << filename << "..." << endl;
-
 	if (!in.open(filename))
 	{
 		error_manager->PostError(WARNING_OPTION, "File "+filename+" could not be opened.  No assignments loaded.", "SearchManager::LoadAssignments() - file could not be opened.");
 		return false;
 	}
-
 	bool added = false;  //	no assignments have been added
-
 	while (in.getRecord(record))
 	{
 		/* Tokenise record read from file at commas */
 		vector<string> data = Tokenise(record, ',');
-
 		/* Strip leading and trailing whitespace from each token */
 		data = StripWhite(data);
-
 		if (testmode)
 		{
 			cout << "SPLIT RECORD: ";
 			PrintStringVector(data);
 		}
-
 		/*
 		 * Having extracted the pieces of data from the record, we now create a new
 		 * assignment using this data.
@@ -217,49 +195,42 @@ bool SearchManager::LoadAssignments(string filename)
 		else
 		{
 			/* Correct number of tokens in this record */
-
 			/* Check if first piece of data is a valid Resource Number */
 			if (!IsInt(data[0]))
 			{
 				error_manager->PostError(WARNING, "File "+filename+" line "+ConvertToStr(in.lastRecLine())+" - Resource Number "+data[0]+" is not a valid integer.  Assignment ignored.", "SearchManager::LoadAssignments() - data[0] does not contain a valid integer.");
 				continue;
 			}
-
 			int resourceNum = atoi(data[0].c_str());
 			if (!resources->isSRU(resourceNum))
 			{
 				error_manager->PostError(WARNING, "File "+filename+" line "+ConvertToStr(in.lastRecLine())+" -  There is no SRU with Resource Number "+data[0]+".  Assignment could not be added.", "SearchManager::LoadAssignments() - data[0] does not contain a valid Resource Number.");
 				continue;
 			}
-
 			/* Check if second piece of data is a valid Area Number */
 			if (!IsInt(data[1]))
 			{
 				error_manager->PostError(WARNING, "File "+filename+" line "+ConvertToStr(in.lastRecLine())+" - Area Number "+data[1]+" is not a valid integer.  Assignment ignored.", "SearchManager::LoadAssignments() - data[1] does not contain a valid integer.");
 				continue;
 			}
-
 			int areaNum = atoi(data[1].c_str());
 			if (!big_area->isArea(areaNum))
 			{
 				error_manager->PostError(WARNING, "File "+filename+" line "+ConvertToStr(in.lastRecLine())+" -  There is no Area with Area Number "+data[1]+".  Assignment could not be added.", "SearchManager::LoadAssignments() - data[1] does not contain a valid Area Number.");
 				continue;
 			}
-
 			/* Check if third piece of data is a valid number of Resource Hours */
 			if (!IsFloat(data[2]))
 			{
 				error_manager->PostError(WARNING, "File "+filename+" line "+ConvertToStr(in.lastRecLine())+" - Resource Hours "+data[2]+" is not a valid floating-point number.  Assignment ignored.", "SearchManager::LoadAssignments() - data[2] does not contain a valid floating-point number.");
 				continue;
 			}
-
 			double resourceHours = atof(data[2].c_str());
 			if (resourceHours <= 0.0)
 			{
 				error_manager->PostError(WARNING, "File "+filename+" line "+ConvertToStr(in.lastRecLine())+" - Resource Hours "+data[2]+" is not positive.  Assignment could not be added.", "SearchManager::LoadAssignments() - data[2] contains a value that is negative or 0.");
 				continue;
 			}
-
 			/* Assignment should now be added */
 			if (!resources->addAssignment(resourceNum, Assignment(areaNum, resourceHours)))
 			{
@@ -270,15 +241,11 @@ bool SearchManager::LoadAssignments(string filename)
 			{
 				added = true;
 			}
-
 		}
 	}
-
 	in.close();
-
 	return added;
 }
-
 
 /******************************************************************************
  * Menu()
@@ -289,15 +256,11 @@ bool SearchManager::LoadAssignments(string filename)
  *
  * Parameters : void
  */
-
 void SearchManager::MenuManager(void)
 {
 	if (testmode) cout << "Started menus" << endl;
-
 	Menu *menus[MENU_COUNT];
-
 	if (testmode) cout << "Creating each of the menu options" << endl;
-
 	if (testmode) cout << "Main menu" << endl;
 	menus[MAIN_MENU] = new MainMenu(10);
 	if (testmode) cout << "Area menu" << endl;
@@ -310,11 +273,8 @@ void SearchManager::MenuManager(void)
 	menus[SAVE_MENU] = new SaveMenu(5);
 	if (testmode) cout << "Correction menu" << endl;
 	menus[CORRECTION_MENU] = new CorrectionMenu(5);
-
 	current_menu = menus[MAIN_MENU];
-
 	int option;
-
 	while (1)
 	{
 		if (testmode) cout << "Printing titles" << endl;
@@ -323,7 +283,6 @@ void SearchManager::MenuManager(void)
 		current_menu->PrintOptions();
 		if (testmode) cout << "Selecting a menu options" << endl;
 		option = current_menu->ExecuteOption();
-
 
 		switch(current_menu->GetMenuType())
 		{
@@ -336,72 +295,56 @@ void SearchManager::MenuManager(void)
 							copyright();
 							delaykey("\n\nPress enter to exit AGM SAR");
 							exit(0);
-
 						}
 						break;
-
 					case 1:		// Resource Properties
 						{
 							current_menu = menus[RESOURCE_MENU];
 						}
 						break;
-
 					case 2:		// Save Current State
 						{
 							current_menu = menus[SAVE_MENU];
 						}
 						break;
-
 					case 3:		// Map Area Properties
 						{
 							current_menu = menus[AREA_MENU];
 						}
 						break;
-
 					case 4:		// Assignment Properties
 						{
 							current_menu = menus[ASSIGNMENT_MENU];
 						}
 						break;
-
 					case 5:		// View Current Resource Assignments
 						{
 							ViewAllAssignmentsTable();
 						}
 						break;
-
 					case 6:		// Request Resource Allocation Advice
 						{
 							BigArea new_big_area;
 							new_big_area = *big_area;
-
 							CalcOptimalAssignment();
-
 							resources->outputAllAssignments(cout);
-
 							*big_area = new_big_area;
 						}
 						break;
-
 					case 7:		// Update POAs using current Resource Allocation
 						{
 							UpdateAllPOAs();
 						}
 						break;
-
 					case 8:		// Update POAs using current Resource Allocation
 					{
 							BigArea new_big_area;
 							new_big_area = *big_area;
-
 							useSORAL();
-
 							resources->outputAllAssignments(cout);
-
 							*big_area = new_big_area;
 					}
 					break;
-
 					case 9:		// display big copyright notice
 						{
 							copyright();
@@ -411,39 +354,31 @@ void SearchManager::MenuManager(void)
 				}
 			}
 			break;
-
 			case AREA:
 			{
 				switch(option)
 				{
 					case 0:		current_menu = menus[MAIN_MENU];		break;
-
 					case 1:
 						{
 							big_area->MenuModifyArea();
 						}
 						break;
-
 					case 2:		big_area->MenuNewArea();				break;
-
 					case 3:
 					{
 						int area_number;
 						bool test = true;
 						string s = "Enter the number of the area you wish to delete : ";
 						area_number = GetValidInputInteger(s, "Invalid input", DataLimits::areaNum_min, DataLimits::areaNum_max);
-
 						vector<int> SRUs = resources->getResourceNumList();
-
 						if (big_area->isArea(area_number))
 						{
 							vector<int>::iterator current;
-
 							for (current = SRUs.begin(); current != SRUs.end() ; current++)
 							{
 								vector<Assignment> ass_list = resources->getAssignments(*current);
 								vector<Assignment>::iterator assignment;
-
 								for (assignment = ass_list.begin() ; assignment != ass_list.end() ; assignment++)
 								{
 									if (assignment->getAreaNum() == area_number)
@@ -453,7 +388,6 @@ void SearchManager::MenuManager(void)
 									}
 								}
 							}
-
 							if (test)
 							{
 								string s = "Are you sure you want to delete Area "+ConvertToStr(area_number)+"?";
@@ -466,7 +400,6 @@ void SearchManager::MenuManager(void)
 							{
 								string s1 = "You have existing assignments to this area.\nPlease remove these and then delete the area.";
 								string s2 = "SearchManager::MenuManager() Deleting an area failed";
-
 								error_manager->PostError(WARNING, s1, s2);
 							}
 						}
@@ -474,7 +407,6 @@ void SearchManager::MenuManager(void)
 						{
 							string s1 = "Area is not a defined area";
 							string s2 = "SearchManager::MenuManager() deleting an area";
-
 							error_manager->PostError(WARNING, s1, s2);
 						}
 					}
@@ -482,11 +414,9 @@ void SearchManager::MenuManager(void)
 					case 4:		big_area->MenuView();					break;
 					case 5:		big_area->ViewAllAreas();				break;
 					case 6:		big_area->MenuLoad();					break;
-
 					case 7:
 						{
 							string s = "Are you sure you wish to delete ALL areas?";
-
 							if (GetResponce(s))
 							{
 								big_area->deleteAllAreas();
@@ -496,7 +426,6 @@ void SearchManager::MenuManager(void)
 				}
 			}
 			break;
-
 			case RESOURCE:
 			{
 				switch (option)
@@ -506,13 +435,11 @@ void SearchManager::MenuManager(void)
 							current_menu = menus[MAIN_MENU];
 						}
 						break;
-
 					case 1:
 						{
 							resources->userEnterSRU();
 						}
 						break;
-
 					case 2:
 						{
 							string file;
@@ -521,7 +448,6 @@ void SearchManager::MenuManager(void)
 							LoadResources(file);
 						}
 						break;
-
 					case 3:
 						{
 							resources->outputAllSRUs(cout);
@@ -531,7 +457,6 @@ void SearchManager::MenuManager(void)
 							if (resources->isSRU(id))
 							{
 								string s = "Are you sure you wish to remove this resource permenantly?";
-
 								if (GetResponce(s))
 								{
 									resources->deleteSRU(id);
@@ -545,27 +470,22 @@ void SearchManager::MenuManager(void)
 							}
 						}
 						break;
-
 					case 4:
 						{
 							string s = "Are you sure you wish to delete ALL resources permenantly?";
-
 							if (GetResponce(s))
 							{
 								resources->deleteAllSRUs();
 							}
 						}
 						break;
-
 					case 5:
 						{
 							resources->outputAllSRUs(cout);
 							int id;
 							string s = "Enter SRU to modify : ";
 							id = GetValidInputInteger(s, "Invalid resource index", DataLimits::resourceNum_min, DataLimits::resourceNum_max);
-
 							s = "Are you sure you wish to modify this resource?";
-
 							if (resources->isSRU(id))
 							{
 								if (GetResponce(s))
@@ -579,14 +499,12 @@ void SearchManager::MenuManager(void)
 							}
 						}
 						break;
-
 					case 6:
 						{
 							resources->viewAllSRUs();
 							int id;
 							string s = "Enter SRU to view : ";
 							id = GetValidInputInteger(s, "Invalid reosurce index", DataLimits::resourceNum_min, DataLimits::resourceNum_max);
-
 							if (resources->isSRU(id))
 							{
 								resources->viewSRU(id);
@@ -598,13 +516,11 @@ void SearchManager::MenuManager(void)
 							}
 						}
 						break;
-
 					case 7:
 						{
 							resources->viewAllSRUs();
 						}
 						break;
-
 					case 8:
 						{
 							current_menu = menus[CORRECTION_MENU];
@@ -613,7 +529,6 @@ void SearchManager::MenuManager(void)
 				}
 			}
 			break;
-
 			case SAVE_MENU:
 			{
 				switch (option)
@@ -623,67 +538,54 @@ void SearchManager::MenuManager(void)
 							current_menu = menus[MAIN_MENU];
 						}
 						break;
-
 					case 1:		// Save current assignment details
 						{
 							ofstream ass_file;
 							cout << "Please enter a file name to save the assignments as : ";
 							string name = GetInputString(cin);
-
 							ass_file.open(name.c_str());
 							resources->outputAllAssignments(ass_file);
 							ass_file.close();
 						}
 						break;
-
 					case 2:		// Save current area details
 						{
 							ofstream area_file;
 							cout << "Please enter a file name to save the assignments as : ";
 							string name = GetInputString(cin);
-
 							area_file.open(name.c_str());
 							big_area->OutputAllAreas(area_file);
 							area_file.close();
 						}
 						break;
-
 					case 3:		// Save current resource details
 						{
 							ofstream res_file;
 							cout << "Please enter a file name to save the resources as : ";
 							string name = GetInputString(cin);
-
 							res_file.open(name.c_str());
 							resources->outputAllSRUs(res_file);
 							res_file.close();
 						}
 						break;
-
 					case 4:		// 	Save all current details
 						{
 							cout << "Files will be saved as <filename>_res.dat, <filename>_area.dat and <filename>_ass.dat" << endl;
 							cout << "Please enter a file name to save the files as : ";
 							string name = GetInputString(cin);
-
 							string ass_file, area_file, res_file;
-
 							ass_file = name + "_ass.dat";
 							area_file = name + "_area.dat";
 							res_file = name + "_res.dat";
-
 							ofstream ass;
 							ofstream res;
 							ofstream area;
-
 							ass.open(ass_file.c_str());
 							resources->outputAllAssignments(ass);
 							ass.close();
-
 							area.open(area_file.c_str());
 							big_area->OutputAllAreas(area);
 							area.close();
-
 							res.open(res_file.c_str());
 							resources->outputAllSRUs(res);
 							res.close();
@@ -692,7 +594,6 @@ void SearchManager::MenuManager(void)
 				}
 			}
 			break;
-
 			case ASSIGNMENT_MENU:
 				{
 					switch(option)
@@ -702,35 +603,27 @@ void SearchManager::MenuManager(void)
 								current_menu = menus[MAIN_MENU];
 							}
 							break;
-
 						case 1:		// add assignment
 							{
 								int resource_index, area_index;
 								double hours;
-
 								string s = "Please enter the index of the resource to be allocated : ";
 								resource_index = GetValidInputInteger(s, "Invalid reource index", DataLimits::resourceNum_min, DataLimits::resourceNum_max);
-
 								if (!resources->isSRU(resource_index))
 								{
 									error_manager->PostError(WARNING, "That is not a valid resource index", "SearchManager::MenuManager() An invaild resource index was specified in add Assignment");
 									break;
 								}
-
 								resources->viewAssignments(resource_index);
-
 								cout << "\n";
 								hours = GetValidInputFloat("Number of hours to assign: ", "Invalid Entry", 0);
-
 								if (resources->getHoursRemaining(resource_index) < hours)
 								{
 									error_manager->PostError(WARNING, "There are not enough hours left for that assignment", "SearchManager::MenuManager() Tried to assign more hours than were available a unit");
 									break;
 								}
-
 								s = "Which area index would you like to assign it to : ";
 								area_index = GetValidInputInteger(s, "Invalid area number", DataLimits::areaNum_min, DataLimits::areaNum_max);
-
 								if (big_area->isArea(area_index))
 								{
 									Assignment assignment(area_index, hours);
@@ -742,44 +635,35 @@ void SearchManager::MenuManager(void)
 								}
 							}
 							break;
-
 						case 2:		// delete assignment
 							{
 								int resource_index;
 								//char responce;
-
 								string s = "Please enter the index of the resource to be de-allocated : ";
 								resource_index = GetValidInputInteger(s, "Invaliod resource index", DataLimits::resourceNum_min, DataLimits::resourceNum_max);
-
 								if (!resources->isSRU(resource_index))
 								{
 									error_manager->PostError(WARNING, "That is not a valid resource index", "SearchManager::MenuManager() while deleteing an assignment, an invaild resource index was specified");
 									break;
 								}
-
 								resources->viewAssignments(resource_index);
-
 								s = "Are you sure you wish to remove all these assignments?";
-
 								if (GetResponce(s))
 								{
 									resources->deleteAssignments(resource_index);
 								}
 							}
 							break;
-
 						case 3:		//load assignments from file
 							{
 								cout << "\nEnter file name: ";
 								string filename = GetInputString(cin);
-
 								LoadAssignments(filename);
 							}
 							break;
 						}
 				}
 				break;
-
 			case CORRECTION_MENU:
 				{
 					switch(option)
@@ -789,38 +673,31 @@ void SearchManager::MenuManager(void)
 								current_menu = menus[RESOURCE_MENU];
 							}
 							break;
-
 						case 1:		// View Correction factors for an SRU
 							{
 								int resource_index;
-
 								string s = "Please enter the index of the resource to be viewed : ";
 								resource_index = GetValidInputInteger(s, "Invalid resource index", DataLimits::resourceNum_min, DataLimits::resourceNum_max);
-
 								if (!resources->isSRU(resource_index))
 								{
 									error_manager->PostError(WARNING, "That is not a valid resource index", "SearchManager::MenuManager() invaild resource index was specified for viewing of correction factors");
 									break;
 								}
-
 								resources->viewCorrectionFactors(resource_index);
 							}
 							break;
-
 						case 2:		// Enter a correction factor for an SRU
 							{
 								int resourceNum = GetValidInputInteger("Enter the Resource Number of the SRU: ", "Invalid entry!");
 								resources->userEnterCorrectionFactor(resourceNum);
 							}
 							break;
-
 						case 3:		// Delete a correction factor for an SRU
 							{
 								int resourceNum = GetValidInputInteger("Enter the Resource Number of the SRU: ", "Invalid entry!");
 								resources->userDeleteCorrectionFactor(resourceNum);
 							}
 							break;
-
 						case 4:		// Delete all correction factors for an SRU
 							{
 								int resourceNum = GetValidInputInteger("Enter the Resource Number of the SRU: ", "Invalid entry!");
@@ -833,7 +710,6 @@ void SearchManager::MenuManager(void)
 		}
 	}
 }
-
 /******************************************************************************
  * GetHoursRemaining()
  *
@@ -841,7 +717,6 @@ void SearchManager::MenuManager(void)
  *
  * Find the number of hours of searching remaining for a unit
  */
-
 double SearchManager::GetHoursRemaining(int resource_num)
 {
 	if (resources->isSRU(resource_num))
@@ -853,7 +728,6 @@ double SearchManager::GetHoursRemaining(int resource_num)
 		return -1;		// this is to show no unit in that resource num existed
 	}
 }
-
 /******************************************************************************
  * AreThereHoursRemaining()
  *
@@ -861,12 +735,10 @@ double SearchManager::GetHoursRemaining(int resource_num)
  *
  * Find the number of hours of searching remaining for a unit
  */
-
 bool SearchManager::AreThereHoursRemaining(int resource_num)
 {
 	return resources->hoursRemaining(resource_num);
 }
-
 /******************************************************************************
  * GetESW()
  *
@@ -874,7 +746,6 @@ bool SearchManager::AreThereHoursRemaining(int resource_num)
  *
  * Get the estimated sweep width of a uint if it exists
  */
-
 double SearchManager::GetESW(int resource_num)
 {
 	if (resources->isSRU(resource_num))
@@ -886,7 +757,6 @@ double SearchManager::GetESW(int resource_num)
 		return -1;		// this is to show no uint in that resource num existed
 	}
 }
-
 /******************************************************************************
  * getSpeed()
  *
@@ -894,7 +764,6 @@ double SearchManager::GetESW(int resource_num)
  *
  * Get the speed of a SNR unit if it exists
  */
-
 double SearchManager::getSpeed(int resource_num)
 {
 	if (resources->isSRU(resource_num))
@@ -906,7 +775,6 @@ double SearchManager::getSpeed(int resource_num)
 		return -1;		// this is to show no uint in that resource num existed
 	}
 }
-
 /******************************************************************************
  * AnyHoursRemaining()
  *
@@ -914,12 +782,10 @@ double SearchManager::getSpeed(int resource_num)
  *
  * See whether there are any searcher hours remaining
  */
-
 bool SearchManager::AnyHoursRemaining(void)
 {
 	return resources->anyHoursRemaining();
 }
-
 /******************************************************************************
  * DeleteAllAssignments()
  *
@@ -927,12 +793,10 @@ bool SearchManager::AnyHoursRemaining(void)
  *
  * Remove all SRU from there current assignemts
  */
-
 void SearchManager::DeleteAllAssignments(void)
 {
 	resources->deleteAllAssignments();
 }
-
 /******************************************************************************
  * AddAssignment()
  *
@@ -940,13 +804,11 @@ void SearchManager::DeleteAllAssignments(void)
  *
  * Set a unit to a SNR assignment
  */
-
 bool SearchManager::AddAssignment(int resource_num, const Assignment& the_assignment)
 {
 	if (resources->isSRU(resource_num))
 	{
 		if (testmode) cout << "Resource NUM " << resource_num << " Assigned " << the_assignment.getResourceHours() << "Hours" << endl;
-
 		return resources->addAssignment(resource_num, the_assignment);
 	}
 	else
@@ -954,7 +816,6 @@ bool SearchManager::AddAssignment(int resource_num, const Assignment& the_assign
 		return false;		// unit didn't exist
 	}
 }
-
 /******************************************************************************
  * GetAssignments()
  *
@@ -962,7 +823,6 @@ bool SearchManager::AddAssignment(int resource_num, const Assignment& the_assign
  *
  * Get the list of assignments for a particular unit
  */
-
 vector<Assignment> SearchManager::GetAssignments(int resource_num)
 {
 	if (resources->isSRU(resource_num))
@@ -975,7 +835,6 @@ vector<Assignment> SearchManager::GetAssignments(int resource_num)
 		return empty_assignments;		// unit didn't exist
 	}
 }
-
 /******************************************************************************
  * GetAreaNumList()
  *
@@ -983,12 +842,10 @@ vector<Assignment> SearchManager::GetAssignments(int resource_num)
  *
  * Get the list of valid area numbers
  */
-
 vector<int> SearchManager::GetAreaNumList(void)
 {
 	return big_area->getAreaNumList();
 }
-
 /******************************************************************************
  * UpdatePOA()
  *
@@ -996,7 +853,6 @@ vector<int> SearchManager::GetAreaNumList(void)
  *
  * Update the POA of an Area
  */
-
 bool SearchManager::UpdatePOA(int area_number, float newPOA)
 {
 	if (big_area->isArea(area_number))
@@ -1009,7 +865,6 @@ bool SearchManager::UpdatePOA(int area_number, float newPOA)
 	}
 	return false;
 }
-
 /******************************************************************************
  * GetPOA()
  *
@@ -1017,7 +872,6 @@ bool SearchManager::UpdatePOA(int area_number, float newPOA)
  *
  * Read the POA of an Area
  */
-
 float SearchManager::GetPOA(int area_number)
 {
 	if (big_area->isArea(area_number))
@@ -1026,7 +880,6 @@ float SearchManager::GetPOA(int area_number)
 	}
 	return -1;
 }
-
 /******************************************************************************
  * GetPden()
  *
@@ -1034,7 +887,6 @@ float SearchManager::GetPOA(int area_number)
  *
  * Find the probability density of an area
  */
-
 float SearchManager::GetPden(int area_number)
 {
 	if (big_area->isArea(area_number))
@@ -1050,7 +902,6 @@ float SearchManager::GetPden(int area_number)
  *
  * Find the size of an area
  */
-
 float SearchManager::GetSize(int area_number)
 {
 	if (big_area->isArea(area_number))
@@ -1059,7 +910,6 @@ float SearchManager::GetSize(int area_number)
 	}
 	return -1;
 }
-
 /******************************************************************************
  * GetEffectiveSweepRate()
  *
@@ -1067,7 +917,6 @@ float SearchManager::GetSize(int area_number)
  *
  * Will return the effect sweep rate of a particular resource
  */
-
 double SearchManager::GetEffectiveSweepRate(int resource_num)
 {
 	if (resources->isSRU(resource_num))
@@ -1079,7 +928,6 @@ double SearchManager::GetEffectiveSweepRate(int resource_num)
 		return -1;		// this is to show no uint in that resource num existed
 	}
 }
-
 /******************************************************************************
  * GetResourceNumList()
  *
@@ -1087,12 +935,10 @@ double SearchManager::GetEffectiveSweepRate(int resource_num)
  *
  * Returns a list of all valid resources currently loaded
  */
-
 vector<int> SearchManager::GetResourceNumList(void)
 {
 	return resources->getResourceNumList();
 }
-
 /******************************************************************************
  * OutputResourceAssignemnts()
  *
@@ -1100,18 +946,15 @@ vector<int> SearchManager::GetResourceNumList(void)
  *
  * Output all the resources assignments to stdout
  */
-
 void SearchManager::OutputResourceAssignments(void)
 {
 	resources->outputAllAssignments(cout);
 }
-
 // Added ASO 21/1/03 to enable autofile mode of AGM
 void SearchManager::OutputResourceAssignments(ostream& out)
 {
 	resources->outputAllAssignments(out);
 }
-
 /******************************************************************************
  * OutputAreas()
  *
@@ -1119,17 +962,14 @@ void SearchManager::OutputResourceAssignments(ostream& out)
  *
  * Output all Areas through the search manager
  */
-
 void SearchManager::OutputAreas(void)
 {
 	big_area->OutputAllAreas(cout);
 }
-
 void SearchManager::OutputAreas(ostream& out)
 {
 	big_area->OutputAllAreas(out);
 }
-
 
 /******************************************************************************
  * OutputAllPOAs()
@@ -1138,12 +978,10 @@ void SearchManager::OutputAreas(ostream& out)
  *
  * Output all the area POA's to std out
  */
-
 void SearchManager::OutputAllPOAs(void)
 {
 	big_area->OutputAllAreas(cout);
 }
-
 /******************************************************************************
  * ViewAllAssignments()
  *
@@ -1151,12 +989,10 @@ void SearchManager::OutputAllPOAs(void)
  *
  * Views all the current assignments in table format
  */
-
 void SearchManager::ViewAllAssignmentsTable(void)
 {
 	resources->viewAllAssignments();
 }
-
 /******************************************************************************
  * ViewAllAssignments()
  *
@@ -1164,12 +1000,10 @@ void SearchManager::ViewAllAssignmentsTable(void)
  *
  * Views all the assignments in file format
  */
-
 void SearchManager::ViewAllAssignments(void)
 {
 	resources->outputAllAssignments(cout);
 }
-
 /******************************************************************************
  * UpdateAllPOAs()
  *
@@ -1184,20 +1018,16 @@ void SearchManager::ViewAllAssignments(void)
  *
  * Author : Gareth Thompson
  */
-
 void SearchManager::UpdateAllPOAs(void)
 {
 	if (testmode) cout << "entering SearchManager::UpdateAllPOAs()\n";
-
 	/* Obtain List of Resources */
 	vector<int> SRUList = resources->getResourceNumList();
-
 	if (testmode)
 	{
 		cout << "List of Resources: \n";
 		PrintIntVector(SRUList);
 	}
-
 	/* Check if there are SRUs present */
 	if (SRUList.size() == 0)
 	{
@@ -1205,7 +1035,6 @@ void SearchManager::UpdateAllPOAs(void)
 		error_manager->PostError(WARNING, "There are no SRUs stored.  No searching occurs and no change is made to areas' POA values.", "SearchManager::UpdateAllPOAs() - getResourceNumList() returned a vector of size 0.");
 		return;
 	}
-
 	/* Calculate results of searches for each SRU in turn */
 	vector<int>::iterator currentSRU;
 	for (currentSRU = SRUList.begin(); currentSRU != SRUList.end(); currentSRU++)
@@ -1215,10 +1044,8 @@ void SearchManager::UpdateAllPOAs(void)
 		{
 			error_manager->PostError(WARNING, "SRU "+ConvertToStr(*currentSRU)+" has Resource-hours that were not assigned for searching.", "SearchManager::UpdateAllPOAs() - resources->hoursRemaining(*currentSRU) returned true");
 		}
-
 		/* Obtain List of Assignments for this SRU */
 		vector<Assignment> assignList = resources->getAssignments(*currentSRU);
-
 		/* Update POA for each assignment in turn */
 		vector<Assignment>::iterator currentAssignment;
 		for (currentAssignment = assignList.begin(); currentAssignment != assignList.end(); currentAssignment++)
@@ -1230,11 +1057,8 @@ void SearchManager::UpdateAllPOAs(void)
 				cout << "Area: " << currentAssignment->getAreaNum() << "\n";
 				cout << "Resource-hours: " << currentAssignment->getResourceHours() << "\n";
 			}
-
 			int areaNum = currentAssignment->getAreaNum();
-
 			if (testmode) cout << "Area number: " << areaNum << "\n";
-
 			/* Area should exist */
 			if (!big_area->isArea(areaNum))
 			{
@@ -1242,22 +1066,17 @@ void SearchManager::UpdateAllPOAs(void)
 				error_manager->PostError(WARNING, "SRU "+ConvertToStr(*currentSRU)+" is assigned to search non-existent Area "+ConvertToStr(areaNum)+".  Assignment ignored.", "SearchManager::UpdateAllPOAs() - big_area->isArea(areaNum) returned false.  An Assignment has been stored for an area that does not exist.");
 				continue;
 			}
-
 			/* Check if Area to search is Rest of World. */
 			if (areaNum == -1)
 			{
 				/* For assignments to Rest of World, produce a warning and continue as normal. */
 				error_manager->PostError(WARNING, "SRU "+ConvertToStr(*currentSRU)+" is assigned to search Rest of World (Area number -1).", "SearchManager::UpdateAllPOAs() - areaNum is -1.");
 			}
-
 			/* Calculate POD for this Search, taking correction factors for terrain and vegetation into account */
 			double areaEffectivelySwept = resources->getEffectiveSweepRate(*currentSRU, big_area->getTerrain(areaNum), big_area->getVegetation(areaNum)) *
 						      currentAssignment->getResourceHours();
-
 			if (testmode) cout << "Area effectively swept: " << areaEffectivelySwept << "\n";
-
 			double size = big_area->getSize(areaNum);
-
 			/* Size should not be equal to 0 */
 			if (size == 0)
 			{
@@ -1265,20 +1084,13 @@ void SearchManager::UpdateAllPOAs(void)
 				error_manager->PostError(WARNING, "Size of Area "+ConvertToStr(areaNum)+" is 0, making calculations impossible.  Assignment of Resource "+ConvertToStr(*currentSRU)+" to this area is ignored.", "SearchManager::UpdateAllPOAs() - big_area->getSize() returned 0.  The size of an area has been stored as 0.");
 				continue;
 			}
-
 			double coverage = areaEffectivelySwept / size;
-
 			if (testmode) cout << "Coverage: " << coverage << "\n";
-
 			double POD = 1.0 - exp(-1 * coverage);
-
 			if (testmode) cout << "POD: " << POD << "\n";
-
 			/* Calculate new POA for Area after this search */
 			double POA = (1-POD) * big_area->getPOA(areaNum);
-
 			if (testmode) cout << "New POA: " << POA << "\n";
-
 			/* New POA for Area should be stored */
 			if (!big_area->updatePOA(areaNum, POA))
 			{
@@ -1289,8 +1101,6 @@ void SearchManager::UpdateAllPOAs(void)
 		}
 	}
 }
-
-
 
 /******************************************************************************
  * CalcOptimalAssignment()
@@ -1305,13 +1115,10 @@ void SearchManager::UpdateAllPOAs(void)
  *
  * Author : Gareth Thompson
  */
-
 bool SearchManager::CalcOptimalAssignment(void)
 {
 	if (testmode) cout << "entering SearchManager::CalcOptimalAssignment()\n";
-
 	vector<int> resourceList = resources->getResourceNumList();
-
 	if (resourceList.size() == 1)
 	{
 		return (CalcOptimalAssignmentCharnCoop(resourceList[0]));
@@ -1320,9 +1127,7 @@ bool SearchManager::CalcOptimalAssignment(void)
 	{
 		return (CalcOptimalAssignmentNoCorrFacts());
 	}
-
 }
-
 /**
  * Added 19/1/03 to integrate with SORAL library
  *
@@ -1331,7 +1136,6 @@ bool SearchManager::CalcOptimalAssignment(void)
  */
 bool SearchManager::useSORAL(void)
 {
-
 	int i,j;
 	int areaNumber; // Note: this is the number NOT the index.
    int resourceNumber, areaIndex, resourceIndex;
@@ -1348,15 +1152,12 @@ bool SearchManager::useSORAL(void)
 	ResourceIterator* activeRes;
 	double time;
 
-
 	/****************************
 	 *
 	 *	Make a list of hours available
 	 *
 	 ****************************/
-
 	vector<int> tempVectorRes=resources->getResourceNumList();
-
     int resIndex = 0;
 	for(ResIter=tempVectorRes.begin(); ResIter != tempVectorRes.end(); ResIter++)
 	{
@@ -1368,8 +1169,6 @@ bool SearchManager::useSORAL(void)
 		availableHours[resIndex++] = resources->getHoursRemaining(*ResIter);
 	}
 
-
-
 	if(testmode==true)
 	{
 		cout << "availableHours Imported to SORAL: \n";
@@ -1378,18 +1177,13 @@ bool SearchManager::useSORAL(void)
 		cout << "\n\n";
 	}
 
-
-
 	/****************************
 	 *
 	 *	Make effectiveness matrix
 	 *
 	 ****************************/
-
 	// Note: do not normalise before using SORAL!
-
 	vector<int> tempVectorArea=big_area->getAreaNumList();
-
 	// Remove any areas with negative AreaNumbers eg home base and rest of world.
 	for(AreaIter=tempVectorArea.begin();AreaIter != tempVectorArea.end(); AreaIter++)
 	{
@@ -1399,7 +1193,6 @@ bool SearchManager::useSORAL(void)
 			num_areas--;
 		}
 	}
-
 
 	if(testmode==true)
 	{
@@ -1415,7 +1208,6 @@ bool SearchManager::useSORAL(void)
 	double speed;
 	double areaSize;
 	double tempEffectiveness;
-
 	// Step 1. Get effectiveness = ESW * speed [* corrFactor] / areaSize
 	for(j=0; j<num_res; j++)
 	{
@@ -1426,10 +1218,8 @@ bool SearchManager::useSORAL(void)
 			resourceNumber=tempVectorRes[j];
 			tempTerr=big_area->getTerrain(areaNumber);
 			tempVeg=big_area->getVegetation(areaNumber);
-
 			// Note getEffectiveSweepRate returns in km^2/hr (assuming standard input files)
 			tempESR=resources->getEffectiveSweepRate(resourceNumber, tempTerr, tempVeg);
-
 
 			if(testmode==true)
 			{
@@ -1439,7 +1229,6 @@ bool SearchManager::useSORAL(void)
 			}
 			areaSize=big_area->getSize(areaNumber);
 			tempEffectiveness= (tempESR) /areaSize;
-
 			effectiveness[i][j]=tempEffectiveness;
 		}
 	}
@@ -1470,37 +1259,30 @@ bool SearchManager::useSORAL(void)
 		cout << "\n POC = POA\n";
 		PrintDoubleValArray(POC);
 	}
-
 	/****************************
 	 *
 	 *	Make the allocation object
 	 *      (FINALLY!)
 	 *
 	 ****************************/
-
 	 CharnesCooper theAllocation(num_res, num_areas, effectiveness, availableHours, POC);
 	 //Washburn theAllocation(num_res, num_areas, effectiveness, availableHours, POC);
 
-
 	 // Causes errors
 	 //cout << theAllocation.getCoverage(0) << " <- Coverage of 1 \n";
-
 	/****************************
 	 *
 	 *	Update AGMs allocations
 	 *  to mirror what SORAL said
 	 *
 	 ****************************/
-
 	 /* Note: Soral uses the index of the resources and variables passed in...
 	  * it does not even know their "numbers".
 	  * before using ANY "current" from an iterator, convert it back to its number.
 	  * eg areaNumber=big_area->getAreaNumList()[activeAreas->get()];
 	  * where activeAreas is a SORAL iterator.
 	  */
-
 	activeAreas= new ActiveAreasIterator(theAllocation);
-
 
 	i=0;
 	if(testmode==true)
@@ -1509,10 +1291,8 @@ bool SearchManager::useSORAL(void)
 		cout << "\n";
 	}
 
-
 	while(!(activeAreas->atEnd()))
 	{
-
 		areaIndex=activeAreas->getCurrentActiveAreaNum();
 		areaNumber=tempVectorArea[areaIndex];
 		activeRes= new ResourceIterator(theAllocation, areaIndex); // theAllocation, resourceNumber
@@ -1522,7 +1302,6 @@ bool SearchManager::useSORAL(void)
 		time=resAssign.getTime();
 		Assignment* tempAssign = new Assignment(areaNumber, time);
 		resources->addAssignment(resourceNumber, *tempAssign);
-
 		// ASO 23/1/03
 		// This line seems to be tricky. Windows wants it as
 		// "(*activeAreas)++" and linux as "*activeAreas++"
@@ -1530,7 +1309,6 @@ bool SearchManager::useSORAL(void)
 		// [TODO]
 		// crt: if it's a problem, just use a = a + 1.....
 		++(*activeAreas);
-
 		//testing
 		if(testmode==true)
 		{
@@ -1538,13 +1316,10 @@ bool SearchManager::useSORAL(void)
 			cout << " \n This " << i <<"th Active Area is: Area " << activeAreas->getCurrentActiveAreaNum();
 			cout << "\n";
 		}
-
 		delete activeRes; // clean up memory
 	}
-
 	return true;
 }
-
 /******************************************************************************
  * CalcOptimalAssignmentNoCorrFacts()
  *
@@ -1564,28 +1339,22 @@ bool SearchManager::useSORAL(void)
  *
  * Author : Gareth Thompson
  */
-
 bool SearchManager::CalcOptimalAssignmentNoCorrFacts(void)
 {
 	if (testmode) cout << "entering SearchManager::CalcOptimalAssignmentNoCorrFacts()\n";
-
 	vector<int>::iterator current;
-
 	/* Clear current assignments */
 	resources->deleteAllAssignments();
-
 	/*
 	 * Check that there is at least one SRU with hours available for searching
 	 * and a positive Effective Sweep Rate.
 	 */
 	vector<int> resourceList = resources->getResourceNumList();
-
 	if (resourceList.size() == 0)
 	{
 		error_manager->PostError(WARNING, "No SRUs are stored, so no assignments can be made.", "SearchManager::CalcOptimalAssignmentNoCorrFacts() - resources->getResourceNumList() returned an empty vector.");
 		return false;
 	}
-
 	bool resourceToSearch = false;
 	for (current = resourceList.begin(); current != resourceList.end(); current++)
 	{
@@ -1595,23 +1364,19 @@ bool SearchManager::CalcOptimalAssignmentNoCorrFacts(void)
 			break;
 		}
 	}
-
 	if (!resourceToSearch)
 	{
 		error_manager->PostError(WARNING, "There are no SRUs with Hours Available for searching, and positive ESW (Sweep Width) and Speed.  No SRUs can do any effective searching, so no sensible allocation can be made.  No assignments set.", "SearchManager::CalcOptimalAssignmentNoCorrFacts() - For every SRU, either resources->getEffectiveSweepRate(*current) or resources->getHoursRemaining(*current) returned 0.");
 		return false;
 	}
-
 	/* Obtain a list of areas */
 	vector<int> areaList = big_area->getAreaNumList();
-
 	if (testmode)
 	{
 		cout << "List of areas:\n";
 		PrintIntVector(areaList);
 		cout << "\n";
 	}
-
 	/* Remove Rest of World (area number -1) from list, if present */
 	for (current = areaList.begin(); current != areaList.end(); current++)
 	{
@@ -1621,28 +1386,24 @@ bool SearchManager::CalcOptimalAssignmentNoCorrFacts(void)
 			temp = *current;
 			cout << "current: " << temp << "\t";
 		}
-
 		if ((*current) == -1)
 		{
 			areaList.erase(current);
 			break;
 		}
 	}
-
 	if (testmode)
 	{
 		cout << "List of areas, with Rest of World removed:\n";
 		PrintIntVector(areaList);
 		cout << "\n";
 	}
-
 	/* Check that there is at least one Area available for searching with a positive Pden */
 	if (areaList.size() == 0)
 	{
 		error_manager->PostError(WARNING, "There are no searchable areas.   No assignments can be made.  [NOTE: Rest of World is not a searchable area.]", "SearchManager::CalcOptimalAssignmentNoCorrFacts() - No areas are present in areaList after Rest of World has been removed.");
 		return false;
 	}
-
 	bool areaToSearch = false;
 	for (current = areaList.begin(); current != areaList.end(); current++)
 	{
@@ -1653,45 +1414,37 @@ bool SearchManager::CalcOptimalAssignmentNoCorrFacts(void)
 			break;
 		}
 	}
-
 	if (!areaToSearch)
 	{
 		error_manager->PostError(WARNING, "There are no Areas with positive Pden (Probability Density) values.  No useful allocation can be found.  No assignments set.", "SearchManager::CalcOptimalAssignmentsNoCorrFacts() - big_area->getPden(*current) returned 0 or less for all valid current.");
 		return false;
 	}
-
 	/* Sort areaList into descending order by Pden */
 	sortList(areaList, &SearchManager::gtPden);
-
 	if (testmode)
 	{
 		cout << "Areas in Pden order (with Rest of World removed):\n";
 		PrintIntVector(areaList);
 		cout << "\n";
 	}
-
 	double pdenMax;  /* Maximum Pden of Areas */
 	double pden2;  /* 2nd highest Pden of Areas */
 	vector<int>::iterator lastArea;  /* Last area in vector with equal-highest Pden */
 	double totalSize;  /* Total size of Areas with equal-highest Pden */
-
 	/* Initialise above data variables */
 	lastArea = areaList.begin();
 	pdenMax = big_area->getPden(*lastArea);
 	totalSize = big_area->getSize(*lastArea);
-
 	while (lastArea < areaList.end()-1 && FloatEqual(big_area->getPden(*(lastArea+1)), pdenMax))
 	{
 		lastArea++;
 		totalSize += big_area->getSize(*lastArea);
 	}
-
 	if (lastArea < areaList.end() - 1)
 	{
 		/* All areas do not have equal Pden.  2nd highest Pden is next in list. */
 		pden2 = big_area->getPden(*(lastArea+1));
 	}
-
 
 	/* Continue to make assignments until no SRUs have Resource-hours remaining to assign. */
 	while (resources->anyHoursRemaining())
@@ -1703,9 +1456,7 @@ bool SearchManager::CalcOptimalAssignmentNoCorrFacts(void)
 			cout << "2nd highest Pden: " << pden2 << "\n";
 			cout << "Total size of areas to search: " << totalSize << endl;
 		}
-
 		double coverageActual;		//Actual coverage to search with for this iteration
-
 		if (lastArea == areaList.end()-1 || pden2 == 0.0)
 		{
 			/*
@@ -1725,22 +1476,15 @@ bool SearchManager::CalcOptimalAssignmentNoCorrFacts(void)
 			 * to drive pdenMax down to pden2.  (Or the maximum coverage
 			 * that can be achieved with the given SRUs, if that is lower).
 			 */
-
 			/* Calculate POD necessary to drive pdenMax down to pden2 */
 			double POD = 1.0 - pden2 / pdenMax;
-
 			if (testmode) cout << "POD: " << POD << endl;
-
 			/* Calculate necessary coverage to achieve this POD */
 			double coverageNeeded = -1 * log(1.0 - POD);
-
 			if (testmode) cout << "Coverage Needed: " << coverageNeeded << endl;
-
 			/* Calculate maximum coverage that can be achieved with remaining resources */
 			double coverageAvailable = resources->getAreaEffectivelySweptRemaining() / totalSize;
-
 			if (testmode) cout << "Coverage Available: " << coverageAvailable << endl;
-
 			/* Calculate the actual coverage to use (minimum of coverageNeeded and coverageActual) */
 			if (coverageNeeded < coverageAvailable)
 			{
@@ -1752,9 +1496,7 @@ bool SearchManager::CalcOptimalAssignmentNoCorrFacts(void)
 			}
 		}
 
-
 		if (testmode) cout << "Coverage to use: " << coverageActual << endl;
-
 		/* Assign SRUs to search each Area with the required coverage */
 		vector<int>::iterator areaToSearch;
 		for (areaToSearch = areaList.begin(); areaToSearch <= lastArea; areaToSearch++)
@@ -1766,31 +1508,22 @@ bool SearchManager::CalcOptimalAssignmentNoCorrFacts(void)
 				return false;
 			}
 		}
-
 		if (testmode) resources->viewAllAssignments();
-
 		/* Update required data variables for the next iteration */
 		pdenMax = pden2;
-
 		while (lastArea < areaList.end()-1 && FloatEqual(big_area->getPden(*(lastArea+1)), pdenMax))
 		{
 			lastArea++;
 			totalSize += big_area->getSize(*lastArea);
 		}
-
 		if (lastArea < areaList.end() - 1)
 		{
 			/* All areas do not have equal Pden.  2nd highest Pden is next in list. */
 			pden2 = big_area->getPden(*(lastArea+1));
 		}
-
 	}
 	return true;
-
 }
-
-
-
 
 
 
@@ -1812,25 +1545,18 @@ bool SearchManager::CalcOptimalAssignmentNoCorrFacts(void)
  *
  * Author : Gareth Thompson
  */
-
 bool SearchManager::assignSRUs(int areaNum, double coverage)
 {
 	if (testmode) cout << "entering AssignSRUs(" << areaNum << ", " << coverage << ")\n";
-
 	/* Check if Area exists */
 	if (!big_area->isArea(areaNum)) return false;
-
 	/* If required coverage is zero, no assignments are necessary */
 	if (coverage == 0.0) return true;
-
 	/* Calculate the Area Effectively Swept to achieve required coverage */
 	double areaToEffectivelySweep = coverage * big_area->getSize(areaNum);
-
 	/* Get list of Resource Numbers available */
 	vector<int> resourceList = resources->getResourceNumList();
-
 	vector<int>::iterator current;
-
 	/*
 	 * Continue to assign resources until the areaEffectivelySwept is reduced to 0 or
 	 * there are no more SRUs to give assignments to.
@@ -1840,15 +1566,12 @@ bool SearchManager::assignSRUs(int areaNum, double coverage)
 		if (resources->hoursRemaining(*current))
 		{
 			/* This SRU has further Resource-hours available for searching.  It can be assigned to search this area. */
-
 			/* Calculate the maximum area that this SRU can effectively sweep */
 			double maxAreaEffecSweep = resources->getEffectiveSweepRate(*current) * resources->getHoursRemaining(*current);
-
 			if (FloatLess(maxAreaEffecSweep, areaToEffectivelySweep))
 			{
 				/* This SRU cannot sweep all the required area. Assign all its hours to sweep this area. */
 				resources->addAssignment((*current), Assignment(areaNum, resources->getHoursRemaining(*current)));
-
 				/* Reduce areaToEffectivelySweep by the amount that has been swept */
 				areaToEffectivelySweep -= maxAreaEffecSweep;
 			}
@@ -1857,18 +1580,14 @@ bool SearchManager::assignSRUs(int areaNum, double coverage)
 				/* This SRU can sweep all the required area. Assign sufficient Resource Hours to do so. */
 				double hoursToSweep = areaToEffectivelySweep / resources->getEffectiveSweepRate(*current);
 				resources->addAssignment((*current), Assignment(areaNum, hoursToSweep));
-
 				/* No more assignments are necessary */
 				return true;
 			}
 		}
 	}
-
 	/* areaToEffectivelySweep was not reduced to zero - insufficient resource-hours were available */
 	return false;
 }
-
-
 
 /******************************************************************************
  * CalcOptimalAssignmentCharnCoop()
@@ -1897,20 +1616,16 @@ bool SearchManager::assignSRUs(int areaNum, double coverage)
  *
  * Author : Gareth Thompson
  */
-
 bool SearchManager::CalcOptimalAssignmentCharnCoop(int resourceNum)
 {
 	if (testmode) cout << "entering CalcOptimalAssignmentCharnCoop()\n";
-
 	vector<int>::iterator current;
-
 	/* Check if SRU Exists */
 	if (!resources->isSRU(resourceNum))
 	{
 		error_manager->PostError(WARNING, "There is no SRU with Resource Number "+ConvertToStr(resourceNum)+".  No assignments could be set.", "SearchManager::CalcOptimalAssignmentCharnCoop() - resources->isSRU(resourceNum) returned false");
 		return false;
 	}
-
 	/* Assignments for SRU should be deleted */
 	if (!resources->deleteAssignments(resourceNum))
 	{
@@ -1918,43 +1633,36 @@ bool SearchManager::CalcOptimalAssignmentCharnCoop(int resourceNum)
 		error_manager->PostError(WARNING, "Miscellaneous error when deleting current assignments for SRU"+ConvertToStr(resourceNum)+".  New assignments could not be set.", "SearchManager::CalcOptimalAssignmentsCharnCoop() - resources->deleteAssignments(resourceNum) returned false for valid resourceNum.");
 		return false;
 	}
-
 	/* Obtain a list of areas */
 	vector<int> areaList = big_area->getAreaNumList();
-
 	if (testmode)
 	{
 		cout << "List of areas:\n";
 		PrintIntVector(areaList);
 		cout << "\n";
 	}
-
 	/* Remove Rest of World (area number -1) from list, if present */
 	for (current = areaList.begin(); current != areaList.end(); current++)
 	{
 		if (testmode) cout << "current: " << *current << "\t";
-
 		if ((*current) == -1)
 		{
 			areaList.erase(current);
 			break;
 		}
 	}
-
 	if (testmode)
 	{
 		cout << "List of areas, with Rest of World removed:\n";
 		PrintIntVector(areaList);
 		cout << "\n";
 	}
-
 	/* Check if there are no areas to search */
 	if (areaList.size() == 0)
 	{
 		error_manager->PostError(WARNING, "There are no searchable areas.   No assignments can be made.  [NOTE: Rest of World is not a searchable area.]", "SearchManager::CalcOptimalAssignmentCharnCoop() - No areas are present in areaList after Rest of World has been removed.");
 		return false;
 	}
-
 	/* Check that SRU has a positive PSR in at least one area */
 	bool areaToSearch = false;
 	for (current = areaList.begin(); current != areaList.end(); current++)
@@ -1966,47 +1674,38 @@ bool SearchManager::CalcOptimalAssignmentCharnCoop(int resourceNum)
 			break;
 		}
 	}
-
 	if (testmode) cout << "Area to search: " << testmode << endl;
-
 	if (!areaToSearch)
 	{
 		error_manager->PostError(WARNING, "SRU "+ConvertToStr(resourceNum)+" does not have a positive PSR (Probable Success Rate) in any area.  No useful allocation can be found.  No assignments set.", "SearchManager::CalcOptimalAssignmentsCharnCoop() - getPSRCorrFacts(resourceNum, *current) returned a value of 0 or less for all valid current.");
 		return false;
 	}
-
 	/* Sort list of areas into descending order of PSR for this SRU */
 	compResNum = resourceNum;	//Compare PSRs for specified Resource Number
 	sortList(areaList, &SearchManager::gtPSR);
-
 	if (testmode)
 	{
 		cout << "List of areas, sorted in PSR order for Resource " << resourceNum << ":\n";
 		PrintIntVector(areaList);
 		cout << "\n";
 	}
-
 	double PSRmax;		//Maximum PSR of areas
 	double PSR2;		//2nd highest PSR of areas
 	vector<int>::iterator lastArea;		//Last area in areaList that has equal highest PSR
-
 	/* Initialise above variables */
 	lastArea = areaList.begin();
 	PSRmax = getPSRCorrFacts(resourceNum, *lastArea);
-
 	while (lastArea < areaList.end()-1 && FloatEqual(getPSRCorrFacts(resourceNum, *(lastArea+1)), PSRmax))
 	{
 		lastArea++;
 		if (testmode) cout << "Last Area incremented to: " << *lastArea << "\n";
 	}
-
 	if (lastArea < (areaList.end() - 1))
 	{
 		/* All areas do not have equal PSR.  2nd highest PSR is next in list. */
 		PSR2 = getPSRCorrFacts(resourceNum, *(lastArea+1));
 		if (testmode) cout << "All areas do not have equal PSR.  2nd highest is: " << PSR2 << "\n";
 	}
-
 	/* Continue to make Assignments until SRU has no Resource-hours remaining to assign. */
 	while (resources->hoursRemaining(resourceNum))
 	{
@@ -2016,7 +1715,6 @@ bool SearchManager::CalcOptimalAssignmentCharnCoop(int resourceNum)
 			cout << "Maximum PSR: " << PSRmax << "\n";
 			cout << "2nd highest PSR: " << PSR2 << "\n";
 		}
-
 		if (lastArea == areaList.end()-1)
 		{
 			/*
@@ -2026,13 +1724,11 @@ bool SearchManager::CalcOptimalAssignmentCharnCoop(int resourceNum)
 			 */
 			double totalHoursAvailable = resources->getHoursRemaining(resourceNum);
 			double totalSizeOverESR = 0;
-
 			if (testmode)
 			{
 				cout << "Equal PSR in all areas.  Making final allocation.\n";
 				cout << "Total hours available: " << totalHoursAvailable << "\n";
 			}
-
 			for (current = areaList.begin(); current != areaList.end(); current++)
 			{
 				totalSizeOverESR += big_area->getSize(*current) /
@@ -2040,26 +1736,18 @@ bool SearchManager::CalcOptimalAssignmentCharnCoop(int resourceNum)
 										     big_area->getTerrain(*current),
 										     big_area->getVegetation(*current));
 			}
-
 			if (testmode) cout << "Total Size/ESR = " << totalSizeOverESR << "\n";
-
 			for (current = areaList.begin(); current != areaList.end(); current++)
 			{
 				double sizeOverESR = big_area->getSize(*current) /
 						     resources->getEffectiveSweepRate(resourceNum,
 										      big_area->getTerrain(*current),
 										      big_area->getVegetation(*current));
-
 				if (testmode) cout << "Area " << *current << ": Size/ESR = " << sizeOverESR << "\n";
-
 				double proportion = sizeOverESR / totalSizeOverESR;
-
 				if (testmode) cout << "Proportion for Area " << *current << " is: " << proportion << "\n";
-
 				double hoursToAssign = proportion * totalHoursAvailable;
-
 				if (testmode) cout << "Hours to assign for Area " << *current << " is " << hoursToAssign << "\n";
-
 				/* Assignment should be added successfully */
 				if (!resources->addAssignment(resourceNum, Assignment(*current, hoursToAssign)))
 				{
@@ -2068,7 +1756,6 @@ bool SearchManager::CalcOptimalAssignmentCharnCoop(int resourceNum)
 					return false;
 				}
 			}
-
 			/* There should now be no Resource hours remaining. */
 			if (resources->hoursRemaining(resourceNum))
 			{
@@ -2076,19 +1763,16 @@ bool SearchManager::CalcOptimalAssignmentCharnCoop(int resourceNum)
 				error_manager->PostError(WARNING, "Miscellaneous error when adding Assignments.  All Resource hours for SRU may not have been used.", "SearchManager::CalcOptimalAssignmentsCharnCoop() - resources->hoursRemaining(resourceNum) returned true when all resource hours have been used.");
 				return false;
 			}
-
 			/* All resource hours are now used. */
 			if (testmode) cout << "Assignments complete...exiting loop\n";
 			break;
 		}
-
 
 		/*
 		 * The SRU does not have equal PSR in all areas.  The areas with PSRmax are now driven down to PSR2, or
 		 * are driven down as far as possible if there are insufficient Resource Hours remaining to drive them
 		 * down to PSR2.
 		 */
-
 		/*
 		 * Calculate hours needed to drive PSRmax down to PSR2, unless PSR2 is 0
 		 * (in which case an infinite number of hours are needed)
@@ -2098,14 +1782,10 @@ bool SearchManager::CalcOptimalAssignmentCharnCoop(int resourceNum)
 		{
 			/* Calculate POD necessary to drive PSRmax down to PSR2 */
 			POD = 1 - PSR2 / PSRmax;
-
 			if (testmode) cout << "POD: " << POD << "\n";
-
 			/* Calculate necessary coverage to achieve this POD */
 			coverageNeeded = -1 * log(1.0 - POD);
-
 			if (testmode) cout << "Coverage Needed: " << coverageNeeded << "\n";
-
 			/* Calculate Number of Resource Hours required to obtain this coverage for all areas with PSRmax. */
 			hoursNeeded = 0;
 			for (current = areaList.begin(); current <= lastArea; current++)
@@ -2114,10 +1794,8 @@ bool SearchManager::CalcOptimalAssignmentCharnCoop(int resourceNum)
 				hoursNeeded += coverageNeeded * big_area->getSize(*current) /
 					       resources->getEffectiveSweepRate(resourceNum, big_area->getTerrain(*current), big_area->getVegetation(*current));
 			}
-
 			if (testmode) cout << "Hours needed: " << hoursNeeded << "\n";
 		}
-
 
 		/*
 		 * Check if number of Resource Hours available is less than or equal to that necessary to obtain
@@ -2132,9 +1810,7 @@ bool SearchManager::CalcOptimalAssignmentCharnCoop(int resourceNum)
 			 * areas that currently have PSRmax have the same final PSR.  Each Area is searched with
 			 * Resource hours proportional to its size divided by Effective Sweep Rate.
 			 */
-
 			if (testmode) cout << "Insufficient resource hours available.  Remainder to be distributed between areas with PSRmax.\n";
-
 			double totalHoursAvailable = resources->getHoursRemaining(resourceNum);
 			double totalSizeOverESR = 0;
 			for (current = areaList.begin(); current <= lastArea; current++)
@@ -2144,26 +1820,18 @@ bool SearchManager::CalcOptimalAssignmentCharnCoop(int resourceNum)
 										     big_area->getTerrain(*current),
 										     big_area->getVegetation(*current));
 			}
-
 			if (testmode) cout << "Total Size/ESR = " << totalSizeOverESR << "\n";
-
 			for (current = areaList.begin(); current <= lastArea; current++)
 			{
 				double sizeOverESR = big_area->getSize(*current) /
 						     resources->getEffectiveSweepRate(resourceNum,
 										      big_area->getTerrain(*current),
 										      big_area->getVegetation(*current));
-
 				if (testmode) cout << "Area " << *current << ": Size/ESR = " << sizeOverESR << "\n";
-
 				double proportion = sizeOverESR / totalSizeOverESR;
-
 				if (testmode) cout << "Proportion for Area " << *current << " is: " << proportion << "\n";
-
 				double hoursToAssign = proportion * totalHoursAvailable;
-
 				if (testmode) cout << "Hours to assign for Area " << *current << " is " << hoursToAssign << "\n";
-
 				/* Assignment should be added successfully */
 				if (!resources->addAssignment(resourceNum, Assignment(*current, hoursToAssign)))
 				{
@@ -2172,7 +1840,6 @@ bool SearchManager::CalcOptimalAssignmentCharnCoop(int resourceNum)
 					return false;
 				}
 			}
-
 			/* There should now be no Resource hours remaining. */
 			if (resources->hoursRemaining(resourceNum))
 			{
@@ -2180,12 +1847,10 @@ bool SearchManager::CalcOptimalAssignmentCharnCoop(int resourceNum)
 				error_manager->PostError(WARNING, "Miscellaneous error when adding Assignments.  All Resource hours for SRU may not have been used.", "SearchManager::CalcOptimalAssignmentsCharnCoop() - resources->hoursRemaining(resourceNum) returned true when all resource hours have been used.");
 				return false;
 			}
-
 			/* All resource hours are now used. */
 			if (testmode) cout << "Assignments complete...exiting loop\n";
 			break;
 		}
-
 		/*
 		 * More Resource Hours are available than necessary to achieve desired coverage.  Sufficient Resource-hours
 		 * are assigned to each Area with PSRmax to achieve the desired coverage (and drive their PSR values down
@@ -2197,9 +1862,7 @@ bool SearchManager::CalcOptimalAssignmentCharnCoop(int resourceNum)
 					       resources->getEffectiveSweepRate(resourceNum,
 										big_area->getTerrain(*current),
 										big_area->getVegetation(*current));
-
 			if (testmode) cout << "Hours needed for Area " << *current << ": " << hoursToAssign << "\n";
-
 			/* Assignment should now be made */
 			if (!resources->addAssignment(resourceNum, Assignment(*current, hoursToAssign)))
 			{
@@ -2208,16 +1871,13 @@ bool SearchManager::CalcOptimalAssignmentCharnCoop(int resourceNum)
 				return false;
 			}
 		}
-
 		/* Update lastArea, PSRmax and PSR2 for next iteration */
 		PSRmax = PSR2;
-
 		while (lastArea < areaList.end()-1 && FloatEqual(getPSRCorrFacts(resourceNum, *(lastArea+1)), PSRmax))
 		{
 			lastArea++;
 			if (testmode) cout << "Last Area incremented to: " << *lastArea << "\n";
 		}
-
 		if (lastArea < (areaList.end() - 1))
 		{
 			/* All areas do not have equal PSR.  2nd highest PSR is next in list. */
@@ -2225,11 +1885,8 @@ bool SearchManager::CalcOptimalAssignmentCharnCoop(int resourceNum)
 			if (testmode) cout << "All areas do not have equal PSR.  2nd highest is: " << PSR2 << "\n";
 		}
 	}
-
 	return true;
 }
-
-
 
 
 /******************************************************************************
@@ -2244,24 +1901,18 @@ bool SearchManager::CalcOptimalAssignmentCharnCoop(int resourceNum)
  *
  * Author : Gareth Thompson
  */
-
 bool SearchManager::gtPden(const int& areaNumA, const int& areaNumB)
 {
 	if (testmode) cout << "entering SearchManager::gtPden(areaNumA, areaNumB)\n";
-
 	if (!big_area->isArea(areaNumA) || !big_area->isArea(areaNumB))
 	{
 		return false;
 	}
-
 	/* Determine Pden for each area */
 	double pdenA = big_area->getPden(areaNumA);
 	double pdenB = big_area->getPden(areaNumB);
-
 	return (pdenA > pdenB);
 }
-
-
 
 /******************************************************************************
  * gtPSR()
@@ -2284,29 +1935,22 @@ bool SearchManager::gtPden(const int& areaNumA, const int& areaNumB)
  *
  * Author : Gareth Thompson
  */
-
 bool SearchManager::gtPSR(const int& areaNumA, const int& areaNumB)
 {
 	if (testmode) cout << "entering SearchManager::gtPSR(areaNumA, areaNumB)\n";
-
 	if (!resources->isSRU(compResNum) || !big_area->isArea(areaNumA) || !big_area->isArea(areaNumB))
 	{
 		return false;
 	}
-
 	/* Determine PSR of SRU in each area */
 	double PSRa = getPSRCorrFacts(compResNum, areaNumA);
 	double PSRb = getPSRCorrFacts(compResNum, areaNumB);
-
 	if (testmode)
 	{
 		cout << "PSRa: " << PSRa << ", PSRb: " << PSRb << endl;
 	}
-
 	return (PSRa > PSRb);
 }
-
-
 
 
 /******************************************************************************
@@ -2334,7 +1978,6 @@ bool SearchManager::gtPSR(const int& areaNumA, const int& areaNumB)
  *
  * Author : Gareth Thompson
  */
-
 void SearchManager::sortList(vector<int>& theList, COMPARE compare)
 {
 	if (testmode)
@@ -2343,10 +1986,8 @@ void SearchManager::sortList(vector<int>& theList, COMPARE compare)
 		PrintIntVector(theList);
 		cout << "), ?)\n";
 	}
-
 	/* If list has size less than 2, it is already sorted */
 	if (theList.size() < 2) return;
-
 	/* Sort list using selection sort */
 	vector<int>::iterator i, j, next;
 	for (i = theList.begin(); i<theList.end()-1; i++)
@@ -2361,23 +2002,18 @@ void SearchManager::sortList(vector<int>& theList, COMPARE compare)
 				next = j;
 			}
 		}
-
 		/* Place next value in position i (swap elements at next and i) */
 		int temp = *i;
 		*i = *next;
 		*next = temp;
-
 		if (testmode)
 		{
 			cout << "List: ";
 			PrintIntVector(theList);
 			cout << "\n";
 		}
-
 	}
 }
-
-
 
 /******************************************************************************
  * getPSRCorrFacts()
@@ -2394,11 +2030,9 @@ void SearchManager::sortList(vector<int>& theList, COMPARE compare)
  *
  * Author : Gareth Thompson
  */
-
 double SearchManager::getPSRCorrFacts(int resourceNum, int areaNum)
 {
 	if (testmode) cout << "entering SearchManager::getPSRCorrFacts(" << resourceNum << ", " << areaNum << ")\n";
-
 	if (resources->isSRU(resourceNum) && big_area->isArea(areaNum))
 	{
 		/* Return PSR value */
@@ -2413,7 +2047,6 @@ double SearchManager::getPSRCorrFacts(int resourceNum, int areaNum)
 	}
 }
 
-
 /******************************************************************************
  * copyright() / CopyrightMini()
  *
@@ -2427,11 +2060,9 @@ double SearchManager::getPSRCorrFacts(int resourceNum, int areaNum)
  *
  * Authors : Andre Oboler, Gareth Thompson
  */
-
 void SearchManager::copyright(void)
 {
 	CopyrightMini();
-
 	if(GetResponce("\nMore?")==true)
 	{
 		cout << "This software was originally developed in 2001 for the subject CSE3301 in the\n";
@@ -2446,10 +2077,8 @@ void SearchManager::copyright(void)
 		cout << "You can find out more about SORAL and other search projects at the SARBayes\n";
 		cout << "web site: http://www.sarbayes.org\n";
 	}
-
 	return;
 }
-
 void SearchManager::CopyrightMini(void)
 {
 		cout << "-- AGM SAR --\n";

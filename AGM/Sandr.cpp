@@ -40,113 +40,97 @@
  * ASO | 2x/01/03 |  2  | Added BATCH_AUTOFILE case
  *-----+----------+-----+-----------------------------------------------------
  * crt | 24/01/03 |  3  | Added BATCH_AUTO_SORAL case. Remove later or merge.
- *---------------------------------------------------------------------------- * AO  | 07/03/08 | 3.1 | Gareth altered copyright notice etc for release,
+ *---------------------------------------------------------------------------- * AO  | 07/03/08 | 3.1 | Gareth altered copyright notice etc for release,
  *     |          |     | Andre updated version info and (c) date
  *----------------------------------------------------------------------------
- */
-
-#include <iostream>
-#include <string>
-#include "Srchman.h"
-#include "Err_mngr.h"
-#include "setmode.h"
-#include "global.h"
-
-
-#ifdef WIN32
-#include <conio.h>
-#endif
-
-#include <time.h>
-
-using namespace std;
-bool testmode = false;
-
-/* Function maintained by: Michael Eldridge */
-
-int main(int argc, char* argv[])
-{
-	SetupMode setup;
-	SearchManager* search_manager = new SearchManager();
-
-	switch (setup.SetMode(argc, argv, search_manager))
-	{
-		case INTERACTIVE:
-			{
-				if (testmode) cout << "Starting the menu manager" << endl;
-				search_manager->CopyrightMini();
-				search_manager->MenuManager();
-			}
-			break;
-
-		case BATCH_ADVICE:
-			{
-				// take in areas and resources
-				search_manager->CalcOptimalAssignment();
-				search_manager->UpdateAllPOAs();
-				cout << "<ASSIGN>" << endl;
-				search_manager->ViewAllAssignments();
-				cout << "</ASSIGN>" << endl;
-				cout << "<POA>" << endl;
-				search_manager->OutputAllPOAs();
-				cout << "</POA>" << endl;
-			}
-			break;
-
-		case BATCH_RUN:
-			{
-				// take in areas and resources and assignments
-				search_manager->UpdateAllPOAs();
-				cout << "<ASSIGN>" << endl;
-				search_manager->ViewAllAssignments();
-				cout << "</ASSIGN>" << endl;
-				cout << "<POA>" << endl;
-				search_manager->OutputAllPOAs();
-				cout << "</POA>" << endl;
-
-			}
-			break;
-
-		case BATCH_AUTO:
-			{
-				// take in areas and resources
-				search_manager->CalcOptimalAssignment();
-				search_manager->UpdateAllPOAs();
-				cout << "<ASSIGN>" << endl;
-				search_manager->ViewAllAssignments();
-				cout << "</ASSIGN>" << endl;
-				cout << "<POA>" << endl;
-				search_manager->OutputAllPOAs();
-				cout << "</POA>" << endl;
-			}
-			break;
-
-		case BATCH_AUTOFILE:
-			{
-				// All done in "set mode", nothing to do here.
-			}
-			break;
-
-	   case BATCH_AUTO_SORAL:
-		  {
-			 // The work is already done. Print to stdout
-				cout << "<ASSIGN>" << endl;
-				search_manager->ViewAllAssignments();
-				cout << "</ASSIGN>" << endl;
-				cout << "<POA>" << endl;
-				search_manager->OutputAllPOAs();
-				cout << "</POA>" << endl;
-		  }
-	   case ERROR:
-		  {
-				cerr << "ERROR" << endl;
-		  }
-	}
-
-#ifdef WIN32
-	getch();
-#endif
-
-	return 0;
-}
-
+ */
+#include <iostream>
+#include <string>
+#include "Srchman.h"
+#include "Err_mngr.h"
+#include "setmode.h"
+#include "global.h"
+
+#ifdef WIN32
+#include <conio.h>
+#endif
+#include <time.h>
+using namespace std;
+bool testmode = false;
+/* Function maintained by: Michael Eldridge */
+int main(int argc, char* argv[])
+{
+	SetupMode setup;
+	SearchManager* search_manager = new SearchManager();
+	switch (setup.SetMode(argc, argv, search_manager))
+	{
+		case INTERACTIVE:
+			{
+				if (testmode) cout << "Starting the menu manager" << endl;
+				search_manager->CopyrightMini();
+				search_manager->MenuManager();
+			}
+			break;
+		case BATCH_ADVICE:
+			{
+				// take in areas and resources
+				search_manager->CalcOptimalAssignment();
+				search_manager->UpdateAllPOAs();
+				cout << "<ASSIGN>" << endl;
+				search_manager->ViewAllAssignments();
+				cout << "</ASSIGN>" << endl;
+				cout << "<POA>" << endl;
+				search_manager->OutputAllPOAs();
+				cout << "</POA>" << endl;
+			}
+			break;
+		case BATCH_RUN:
+			{
+				// take in areas and resources and assignments
+				search_manager->UpdateAllPOAs();
+				cout << "<ASSIGN>" << endl;
+				search_manager->ViewAllAssignments();
+				cout << "</ASSIGN>" << endl;
+				cout << "<POA>" << endl;
+				search_manager->OutputAllPOAs();
+				cout << "</POA>" << endl;
+			}
+			break;
+		case BATCH_AUTO:
+			{
+				// take in areas and resources
+				search_manager->CalcOptimalAssignment();
+				search_manager->UpdateAllPOAs();
+				cout << "<ASSIGN>" << endl;
+				search_manager->ViewAllAssignments();
+				cout << "</ASSIGN>" << endl;
+				cout << "<POA>" << endl;
+				search_manager->OutputAllPOAs();
+				cout << "</POA>" << endl;
+			}
+			break;
+		case BATCH_AUTOFILE:
+			{
+				// All done in "set mode", nothing to do here.
+			}
+			break;
+	   case BATCH_AUTO_SORAL:
+		  {
+			 // The work is already done. Print to stdout
+				cout << "<ASSIGN>" << endl;
+				search_manager->ViewAllAssignments();
+				cout << "</ASSIGN>" << endl;
+				cout << "<POA>" << endl;
+				search_manager->OutputAllPOAs();
+				cout << "</POA>" << endl;
+		  }
+	   case ERROR:
+		  {
+				cerr << "ERROR" << endl;
+		  }
+	}
+#ifdef WIN32
+	getch();
+#endif
+	return 0;
+}

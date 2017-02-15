@@ -36,75 +36,66 @@
  * Who |   When   | Ver | What
  *-----+----------+-----+-----------------------------------------------------
  * GT  | 07/04/01 |  1  | Created.
- *---------------------------------------------------------------------------- * AO  | 07/03/08 | 1.1 | Gareth altered copyright notice etc for release,
+ *---------------------------------------------------------------------------- * AO  | 07/03/08 | 1.1 | Gareth altered copyright notice etc for release,
  *     |          |     | Andre updated version info and (c) date
  *----------------------------------------------------------------------------
- */
-
-#include <iostream>
-#include <string>
-#include "InputFil.h"
-#include "global.h"
-
-using namespace std;
-
-/******************************************************************************
- * test()
- *
- * Tests InputFile's private functions
- *
- * Author : Gareth Thompson
- */
-
-void InputFile::test(void)
-{
-        if (testmode) cout << "entering InputFile::test()\n";
-
-	/* Testing isRecord() */
-
-	string line;
-	cout << "Is a string of whitespace recognised as a record?...";
-	line = "   		   ";
-	if (isRecord(line))
-	{
-		cout << "Yes.  FAILURE." << endl;
-	}
-	else
-	{
-		cout << "No.  SUCCESS." << endl;
-	}
-
-	cout << "Is a string beginning with # recognised as a record?...";
-	line ="   		# Text";
-	if (isRecord(line))
-	{
-		cout << "Yes.  FAILURE." << endl;
-	}
-	else
-	{
-		cout << "No.  SUCCESS." << endl;
-	}
-
-
-	cout << "Is a string beginning with % recognised as a record?...";
-	line ="   		% Text";
-	if (isRecord(line))
-	{
-		cout << "Yes.  FAILURE." << endl;
-	}
-	else
-	{
-		cout << "No.  SUCCESS." << endl;
-	}
-
-	cout << "Is a string beginning with another character recognised as a record?...";
-	line ="   		Text";
-	if (isRecord(line))
-	{
-		cout << "Yes.  SUCCESS." << endl;
-	}
-	else
-	{
-		cout << "No.  SUCCESS." << endl;
-	}
-}
+ */
+#include <iostream>
+#include <string>
+#include "InputFil.h"
+#include "global.h"
+using namespace std;
+/******************************************************************************
+ * test()
+ *
+ * Tests InputFile's private functions
+ *
+ * Author : Gareth Thompson
+ */
+void InputFile::test(void)
+{
+        if (testmode) cout << "entering InputFile::test()\n";
+	/* Testing isRecord() */
+	string line;
+	cout << "Is a string of whitespace recognised as a record?...";
+	line = "   		   ";
+	if (isRecord(line))
+	{
+		cout << "Yes.  FAILURE." << endl;
+	}
+	else
+	{
+		cout << "No.  SUCCESS." << endl;
+	}
+	cout << "Is a string beginning with # recognised as a record?...";
+	line ="   		# Text";
+	if (isRecord(line))
+	{
+		cout << "Yes.  FAILURE." << endl;
+	}
+	else
+	{
+		cout << "No.  SUCCESS." << endl;
+	}
+
+	cout << "Is a string beginning with % recognised as a record?...";
+	line ="   		% Text";
+	if (isRecord(line))
+	{
+		cout << "Yes.  FAILURE." << endl;
+	}
+	else
+	{
+		cout << "No.  SUCCESS." << endl;
+	}
+	cout << "Is a string beginning with another character recognised as a record?...";
+	line ="   		Text";
+	if (isRecord(line))
+	{
+		cout << "Yes.  SUCCESS." << endl;
+	}
+	else
+	{
+		cout << "No.  SUCCESS." << endl;
+	}
+}

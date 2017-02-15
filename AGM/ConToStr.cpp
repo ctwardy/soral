@@ -37,56 +37,45 @@
  * Who |   When   | Ver | What
  *-----+----------+-----+-----------------------------------------------------
  * GT  | 27/05/01 |  1  | Created.
- *---------------------------------------------------------------------------- * AO  | 07/03/08 | 1.1 | Gareth altered copyright notice etc for release,
+ *---------------------------------------------------------------------------- * AO  | 07/03/08 | 1.1 | Gareth altered copyright notice etc for release,
  *     |          |     | Andre updated version info and (c) date
  *----------------------------------------------------------------------------
- */
-
-#include <string>
-#include <sstream>
-#include <cstdio>
-#include "global.h"
-
-using namespace std;
-
-/******************************************************************************
- * ConvertToStr<double>()
- *
- * Takes a double and returns the representation of it,
- * using the %.2f conversion of sprintf, as a string.
- *
- * Author : Gareth Thompson
- */
-
-string ConvertToStr(double d)
-{
-	if (testmode) cout << "entering ConvertToStr(" << d << ")\n";
-
-	char temp[100];   //Enough characters to hold any double
-
-
-	sprintf(temp, "%.2f", d);
-	string str = temp;
-	return str;
-}
-
-/******************************************************************************
- * ConvertToStr<int>()
- *
- * Takes a double and returns the representation of it,
- * using the %.2f conversion of sprintf, as a string.
- *
- * Author : Gareth Thompson
- */
-
-/*string ConvertToStr(int d)
-{
-	if (testmode) cout << "entering ConvertToStr(" << d << ")\n";
-
-	char temp[100];   //Enough characters to hold any int
-
-	sprintf(temp, "%.2f", d);
-	string str = temp;
-	return str;
-}*/
-
+ */
+#include <string>
+#include <sstream>
+#include <cstdio>
+#include "global.h"
+using namespace std;
+/******************************************************************************
+ * ConvertToStr<double>()
+ *
+ * Takes a double and returns the representation of it,
+ * using the %.2f conversion of sprintf, as a string.
+ *
+ * Author : Gareth Thompson
+ */
+string ConvertToStr(double d)
+{
+	if (testmode) cout << "entering ConvertToStr(" << d << ")\n";
+	char temp[100];   //Enough characters to hold any double
+
+	sprintf(temp, "%.2f", d);
+	string str = temp;
+	return str;
+}
+/******************************************************************************
+ * ConvertToStr<int>()
+ *
+ * Takes a double and returns the representation of it,
+ * using the %.2f conversion of sprintf, as a string.
+ *
+ * Author : Gareth Thompson
+ */
+/*string ConvertToStr(int d)
+{
+	if (testmode) cout << "entering ConvertToStr(" << d << ")\n";
+	char temp[100];   //Enough characters to hold any int
+	sprintf(temp, "%.2f", d);
+	string str = temp;
+	return str;
+}*/

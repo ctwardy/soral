@@ -41,78 +41,61 @@
  * AO  | 07/03/08 | 1.7 | Gareth altered copyright notice etc for release,
  *     |          |     | Andre updated version info and (c) date
  *----------------------------------------------------------------------------
- */
-
-#include <vector>
-#include "global.h"
-#include "math.h"
-#include "Assignmt.h"
-#include "Srchman.h"
-
-using namespace std;
-
-
-/******************************************************************************
- * UpdateAllPOAs()
- *
- * Updates the POA values for each Area in the BigArea part of
- * the SearchManager object, using the current assignment of
- * SRUs in the Resources part of the SearchManager object.
- * (The update of POAs assumes that all searches are unsuccessful.)
- *
- * Author : Gareth Thompson
- */
-
-void UpdateAllPOAs(SearchManager* searchMan)
-{
-	if (testmode) cout << "entering UpdtPOAs()\n";
-
-	/* Obtain List of Resources */
-	vector<int> SRUList = searchMan->GetResourceNumList();
-
-	if (testmode) PrintIntVector(SRUList);
-
-	/* Calculate results of searches for each SRU in turn */
-	vector<int>::iterator currentSRU;
-	for (currentSRU = SRUList.begin(); currentSRU != SRUList.end(); currentSRU++)
-	{
-		/* Obtain List of Assignments for this SRU */
-		vector<Assignment> assignList = searchMan->GetAssignments(*currentSRU);
-
-		/* Update POA for each assignment in turn */
-		vector<Assignment>::iterator currentAssignment;
-		for (currentAssignment = assignList.begin(); currentAssignment != assignList.end(); currentAssignment++)
-		{
-			if (testmode)
-			{
-				cout << "Assignment is: \n";
-				cout << "SRU: " << *currentSRU << "\n";
-				cout << "Area: " << currentAssignment->getAreaNum() << "\n";
-				cout << "Resource-hours: " << currentAssignment->getResourceHours() << "\n";
-			}
-
-			/* Calculate POD for this Search */
-			double areaEffectivelySwept = searchMan->GetEffectiveSweepRate(*currentSRU) *
-						      currentAssignment->getResourceHours();
-
-			if (testmode) cout << "Area effectively swept: " << areaEffectivelySwept << "\n";
-
-			double coverage = areaEffectivelySwept /
-					  searchMan->GetSize(currentAssignment->getAreaNum());
-
-			if (testmode) cout << "Coverage: " << coverage << "\n";
-
-			double POD = 1.0 - exp(-1 * coverage);
-
-			if (testmode) cout << "POD: " << POD << "\n";
-
-			/* Calculate new POA for Area after this search */
-			double POA = (1-POD) * searchMan->GetPOA(currentAssignment->getAreaNum());
-
-			if (testmode) cout << "New POA: " << POA << "\n";
-
-			/* Store new POA for Area */
-			searchMan->UpdatePOA(currentAssignment->getAreaNum(), POA);
-		}
-	}
-}
+ */
+#include <vector>
+#include "global.h"
+#include "math.h"
+#include "Assignmt.h"
+#include "Srchman.h"
+using namespace std;
+
+/******************************************************************************
+ * UpdateAllPOAs()
+ *
+ * Updates the POA values for each Area in the BigArea part of
+ * the SearchManager object, using the current assignment of
+ * SRUs in the Resources part of the SearchManager object.
+ * (The update of POAs assumes that all searches are unsuccessful.)
+ *
+ * Author : Gareth Thompson
+ */
+void UpdateAllPOAs(SearchManager* searchMan)
+{
+	if (testmode) cout << "entering UpdtPOAs()\n";
+	/* Obtain List of Resources */
+	vector<int> SRUList = searchMan->GetResourceNumList();
+	if (testmode) PrintIntVector(SRUList);
+	/* Calculate results of searches for each SRU in turn */
+	vector<int>::iterator currentSRU;
+	for (currentSRU = SRUList.begin(); currentSRU != SRUList.end(); currentSRU++)
+	{
+		/* Obtain List of Assignments for this SRU */
+		vector<Assignment> assignList = searchMan->GetAssignments(*currentSRU);
+		/* Update POA for each assignment in turn */
+		vector<Assignment>::iterator currentAssignment;
+		for (currentAssignment = assignList.begin(); currentAssignment != assignList.end(); currentAssignment++)
+		{
+			if (testmode)
+			{
+				cout << "Assignment is: \n";
+				cout << "SRU: " << *currentSRU << "\n";
+				cout << "Area: " << currentAssignment->getAreaNum() << "\n";
+				cout << "Resource-hours: " << currentAssignment->getResourceHours() << "\n";
+			}
+			/* Calculate POD for this Search */
+			double areaEffectivelySwept = searchMan->GetEffectiveSweepRate(*currentSRU) *
+						      currentAssignment->getResourceHours();
+			if (testmode) cout << "Area effectively swept: " << areaEffectivelySwept << "\n";
+			double coverage = areaEffectivelySwept /
+					  searchMan->GetSize(currentAssignment->getAreaNum());
+			if (testmode) cout << "Coverage: " << coverage << "\n";
+			double POD = 1.0 - exp(-1 * coverage);
+			if (testmode) cout << "POD: " << POD << "\n";
+			/* Calculate new POA for Area after this search */
+			double POA = (1-POD) * searchMan->GetPOA(currentAssignment->getAreaNum());
+			if (testmode) cout << "New POA: " << POA << "\n";
+			/* Store new POA for Area */
+			searchMan->UpdatePOA(currentAssignment->getAreaNum(), POA);
+		}
+	}
+}

@@ -53,186 +53,94 @@
  *----------------------------------------------------------------------------
  */
 
-
-
 #ifndef _global_h_
-
 #define _global_h_
 
-
-
 /* Precision for floating-point number comparisons in program */
-
 #define PRECISION 0.0001
 
-
-
 /* Limits for floating point input to program */
-
 #define FLOATMAXCHARS 15 // maximum number of characters that may be used to represent a float at input
-
 #define FLOATMAXVAL 999999999999999.0	// maximum possible value for float at input (can be represented with 15 characters)
-
 #define FLOATMINVAL -99999999999999.0	// minimum possible value for float at input (can be represented with 15 characters)
 
-
-
 #include <iostream>
-
 #include <string>
-
 #include <vector>
 #include <valarray>
-
 #include <climits>
-
 #include <sstream> // ASO 12/1/03 Updated for G++ 3.1.1 compatability was #include <strstream>
-
-
 
 using namespace std;
 
-
-
 class Assignment;
-
 class SearchManager;
-
-
-
-
 
 
 
 extern bool testmode; /* Is program running in verbose test mode? */
 
-
-
 string GetInputString(istream& in);
-
 bool GetInputInteger(istream& in, int& i);
-
 int GetValidInputInteger(string prompt, string errorMsg, int min = INT_MIN, int max = INT_MAX);
-
 bool GetInputFloat(istream& in, double& d);
-
 double GetValidInputFloat(string prompt, string errorMsg, double min = FLOATMINVAL, double max = FLOATMAXVAL);
-
 vector<string> Tokenise(string str, char c);
 
-
-
 string StripWhite(string str);
-
 vector<string> StripWhite(vector<string> data);
 
-
-
 string TruncateString(string str, int max);
-
 string ExpandString(string str, int min);
-
 string ResizeString(string str, int min, int max);
 
-
-
 bool FloatEqual(double num1, double num2);
-
 bool FloatLess(double num1, double num2);
 
-
-
 void CalcOptimalAssignment(SearchManager* searchMan);
-
 vector<int> DescendingPdenList(SearchManager* searchMan);
-
 void Swap(vector<int>::iterator a, vector<int>::iterator b);
-
 double AreaEffectivelySweptRemaining(SearchManager* searchMan);
-
 bool AssignSRUs(SearchManager* searchMan, int areaNum, double coverage);
-
-
 
 void UpdateAllPOAs(SearchManager* searchMan);
 
-
-
 char delaykey(string prompts);
 
-
-
 void PrintAssignmentVector(vector<Assignment>& theVector);
-
 void PrintIntVector(vector<int>& theVector);
-
 void PrintDoubleVector(vector<double>& theVector);
-
 void PrintDoubleValArray(valarray<double>& theValArray);
-
 void PrintStringVector(vector<string>& theVector);
 
-
-
 bool IsInt(string str);
-
 bool IsFloat(string str);
-
-
 
 bool GetResponce(string input);
 
-
-
 /* Specialisation for converting doubles to strings */
-
 string ConvertToStr(double d);
 
-
-
 /******************************************************************************
-
  * ConvertToStr()
-
  *
-
  * Takes a variable of class T and returns the representation of
-
  * T produced using the output operator, <<, as a string.
-
  *
-
  * PRECONDITION: Output operator must be defined for class T.
-
  *
-
  * Author : Gareth Thompson
-
  */
 
-
-
 template <class T> string ConvertToStr(T t)
-
 {
-
 	if (testmode) cout << "entering ConvertToStr(" << t << ")\n";
 
-
-
 	std::ostringstream ostr;// ASO 12/1/03 Updated for G++ 3.1.1 compatability was: ostrstream ostr;
-
 	ostr << t << '\0';
 
-
-
 	string str = ostr.str();
-
 	return str;
-
 }
 
-
-
 #endif
-

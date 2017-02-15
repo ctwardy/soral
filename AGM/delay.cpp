@@ -39,36 +39,31 @@
  * Who |   When   | Ver | What
  *-----+----------+-----+-----------------------------------------------------
  * AO  | 07/04/00 |  1  | Created.
- *---------------------------------------------------------------------------- * AO  | 07/03/08 | 1.1 | Gareth altered copyright notice etc for release,
+ *---------------------------------------------------------------------------- * AO  | 07/03/08 | 1.1 | Gareth altered copyright notice etc for release,
  *     |          |     | Andre updated version info and (c) date
  *----------------------------------------------------------------------------
- */
-
-#include <iostream>
-#include <string>
-//#include <conio.h>
-#include "Srchman.h"
-
-using namespace std;
-
-char delaykey(string prompts)
-{
-	char response='~';
-	cout << "\n";
-	cout << prompts;
-	cout << "\n";
-
-	while (response == '~')
-	{
-
-		response=getchar();
-		/* Under Windows this take letters till user presses enter,
-		   but will only return the first one.
-		   The documentation suggests this should only take 1 char
-		   hopefully under linux it does this.
-		   Either way it will compile and work after a fasion.
-		*/
-	}
-	fflush(stdin);
-	return response;
-}
+ */
+#include <iostream>
+#include <string>
+//#include <conio.h>
+#include "Srchman.h"
+using namespace std;
+char delaykey(string prompts)
+{
+	char response='~';
+	cout << "\n";
+	cout << prompts;
+	cout << "\n";
+	while (response == '~')
+	{
+		response=getchar();
+		/* Under Windows this take letters till user presses enter,
+		   but will only return the first one.
+		   The documentation suggests this should only take 1 char
+		   hopefully under linux it does this.
+		   Either way it will compile and work after a fasion.
+		*/
+	}
+	fflush(stdin);
+	return response;
+}

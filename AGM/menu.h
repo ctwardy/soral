@@ -28,7 +28,7 @@
  * necessary.  Our contact details are in readme.txt.
  * --------------------------------------------------------------------
  * --------------------------------------------------------------------
- * menu.h *
+ * menu.h *
  * Controls the menu system used for the interactive mode
  *
  *-----+----------+-----+-----------------------------------------------------
@@ -39,164 +39,136 @@
  * AO  | 07/03/08 | 1.1 | Gareth altered copyright notice etc for release,
  *     |          |     | Andre updated version info and (c) date
  *----------------------------------------------------------------------------
- */
-
-#include <iostream>
-#include <string>
-
-using namespace std;
-
-typedef enum
-{
-	MAIN,
-	AREA,
-	RESOURCE,
-	ASSIGNMENT,
-	SAVE,
-	CORRECTION
-}
-MenuType;
-
-/******************************************************************************
- * Menu
- *
- * Michael Eldridge
- *
- * The main menu class which controls the menu options
- */
-
-class Menu
-{
-	public:
-		Menu(string p_title, int p_size) : title(p_title), size(p_size) {}
-		virtual ~Menu(void) {}
-		virtual void PrintOptions(void) = 0;
-		int ExecuteOption(void);
-
-		void PrintTitle(void);
-		MenuType GetMenuType(void) { return menu_type; }
-
-	protected:
-
-		MenuType menu_type;
-		string title;
-		int size;
-	private:
-};
-
-/******************************************************************************
- * AreaMenu
- *
- * Michael Eldridge
- *
- * Controls the display and functionallity of the area's menu
- */
-
-class AreaMenu : public Menu
-{
-	public:
-		AreaMenu(int p_size);
-		~AreaMenu(void) {}
-		void PrintOptions(void);
-
-	private:
-		string menu_options[8];
-
-};
-
-/******************************************************************************
- * ResourceMenu
- *
- * Michael Eldridge
- *
- * Controls the display and functionallity of the resource's menu
- */
-
-class ResourceMenu : public Menu
-{
-	public:
-		ResourceMenu(int p_size);
-		~ResourceMenu(void) {}
-		void PrintOptions(void);
-
-	private:
-		string menu_options[9];
-
-};
-
-/******************************************************************************
- * MainMenu
- *
- * Michael Eldridge
- *
- * Controls the display and functionallity of the main menu
- */
-
-class MainMenu : public Menu
-{
-	public:
-		MainMenu(int p_size);
-		~MainMenu(void) {}
-		void PrintOptions(void);
-
-	private:
-		string menu_options[10];
-};
-
-
-/******************************************************************************
- * AssignmentMenu
- *
- * Michael Eldridge
- *
- * Controls the display and functionallity of the assignment menu
- */
-
-class AssignmentMenu : public Menu
-{
-	public:
-		AssignmentMenu(int p_size);
-		~AssignmentMenu(void) {}
-		void PrintOptions(void);
-
-	private:
-		string menu_options[4];
-};
-
-/******************************************************************************
- * SaveMenu
- *
- * Michael Eldridge
- *
- * Controls the display and functionallity of the save menu
- */
-
-class SaveMenu : public Menu
-{
-	public:
-		SaveMenu(int p_size);
-		~SaveMenu(void) {}
-		void PrintOptions(void);
-
-	private:
-		string menu_options[5];
-};
-
-/******************************************************************************
- * CorrectionMenu
- *
- * Michael Eldridge
- *
- * Controls the display and functionallity of the correction menu
- */
-
-class CorrectionMenu : public Menu
-{
-	public:
-		CorrectionMenu(int p_size);
-		~CorrectionMenu(void) {}
-		void PrintOptions(void);
-
-	private:
-		string menu_options[5];
-};
+ */
+#include <iostream>
+#include <string>
+using namespace std;
+typedef enum
+{
+	MAIN,
+	AREA,
+	RESOURCE,
+	ASSIGNMENT,
+	SAVE,
+	CORRECTION
+}
+MenuType;
+/******************************************************************************
+ * Menu
+ *
+ * Michael Eldridge
+ *
+ * The main menu class which controls the menu options
+ */
+class Menu
+{
+	public:
+		Menu(string p_title, int p_size) : title(p_title), size(p_size) {}
+		virtual ~Menu(void) {}
+		virtual void PrintOptions(void) = 0;
+		int ExecuteOption(void);
+		void PrintTitle(void);
+		MenuType GetMenuType(void) { return menu_type; }
+	protected:
+		MenuType menu_type;
+		string title;
+		int size;
+	private:
+};
+/******************************************************************************
+ * AreaMenu
+ *
+ * Michael Eldridge
+ *
+ * Controls the display and functionallity of the area's menu
+ */
+class AreaMenu : public Menu
+{
+	public:
+		AreaMenu(int p_size);
+		~AreaMenu(void) {}
+		void PrintOptions(void);
+	private:
+		string menu_options[8];
+};
+/******************************************************************************
+ * ResourceMenu
+ *
+ * Michael Eldridge
+ *
+ * Controls the display and functionallity of the resource's menu
+ */
+class ResourceMenu : public Menu
+{
+	public:
+		ResourceMenu(int p_size);
+		~ResourceMenu(void) {}
+		void PrintOptions(void);
+	private:
+		string menu_options[9];
+};
+/******************************************************************************
+ * MainMenu
+ *
+ * Michael Eldridge
+ *
+ * Controls the display and functionallity of the main menu
+ */
+class MainMenu : public Menu
+{
+	public:
+		MainMenu(int p_size);
+		~MainMenu(void) {}
+		void PrintOptions(void);
+	private:
+		string menu_options[10];
+};
+
+/******************************************************************************
+ * AssignmentMenu
+ *
+ * Michael Eldridge
+ *
+ * Controls the display and functionallity of the assignment menu
+ */
+class AssignmentMenu : public Menu
+{
+	public:
+		AssignmentMenu(int p_size);
+		~AssignmentMenu(void) {}
+		void PrintOptions(void);
+	private:
+		string menu_options[4];
+};
+/******************************************************************************
+ * SaveMenu
+ *
+ * Michael Eldridge
+ *
+ * Controls the display and functionallity of the save menu
+ */
+class SaveMenu : public Menu
+{
+	public:
+		SaveMenu(int p_size);
+		~SaveMenu(void) {}
+		void PrintOptions(void);
+	private:
+		string menu_options[5];
+};
+/******************************************************************************
+ * CorrectionMenu
+ *
+ * Michael Eldridge
+ *
+ * Controls the display and functionallity of the correction menu
+ */
+class CorrectionMenu : public Menu
+{
+	public:
+		CorrectionMenu(int p_size);
+		~CorrectionMenu(void) {}
+		void PrintOptions(void);
+	private:
+		string menu_options[5];
+};

@@ -41,7 +41,6 @@
  *     |          |     | Andre updated version info and (c) date
  *----------------------------------------------------------------------------
  */
-
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -51,9 +50,7 @@
 #include "InputFil.h"
 #include "math.h"
 #include "Areas.h"
-
 using namespace std;
-
 /******************************************************************************
  * setNumber()
  *
@@ -62,13 +59,11 @@ using namespace std;
  * Author : Andre Oboler
  *
  */
-
 bool BigArea::Area::setNumber(int newnumber)
 {
 	number=newnumber;
 	return true;
 }
-
 /******************************************************************************
  * setLocation()
  *
@@ -76,13 +71,11 @@ bool BigArea::Area::setNumber(int newnumber)
  *
  * Author : Andre Oboler
  */
-
 bool BigArea::Area::setLocation(UTM newlocation)
 {
 	location=newlocation;
 	return true;
 }
-
 /******************************************************************************
  * DumpArea()
  *
@@ -94,7 +87,6 @@ bool BigArea::Area::setLocation(UTM newlocation)
 string BigArea::Area::DumpArea(void)
 {
 	string temp;
-
 	int in;
 	// ASO 12/1/03 lines below changed from being "ostrstream ostrN;" to "std::ostringstream ostrN;" to be GCC 3.1.1 compliant
 	std::ostringstream ostr1; // Change back to one ostream object soon as I work out how to clear this buffer !
@@ -103,10 +95,8 @@ string BigArea::Area::DumpArea(void)
 	std::ostringstream ostr4;
 	std::ostringstream ostr5;
 	std::ostringstream ostr6;
-
 	ostr1 << number << '\0';
 	temp += ostr1.str();
-
 	temp+=", (";
 	temp+= location.x;
 	temp+= "/";
@@ -120,7 +110,6 @@ string BigArea::Area::DumpArea(void)
 		temp+= boundaries[in].y;
 		temp+= ")";
 	}
-
 	temp +="), ";
 	ostr2 << traveltime << '\0';
 	temp += ostr2.str();
@@ -137,21 +126,16 @@ string BigArea::Area::DumpArea(void)
 	ostr6 << POA << '\0';
 	temp += ostr6.str();
 	temp +="\n";
-
 	// Null-terminate temp
 	temp << '\0';
-
 	return ostr.str();
-
 	return temp;
 }
 */
-
 // New go 21/1/03
 string BigArea::Area::DumpArea(void)
 {
 	string temp;
-
 	int in;
 	// ASO 12/1/03 lines below changed from being "ostrstream ostrN;" to "std::ostringstream ostrN;" to be GCC 3.1.1 compliant
 	std::ostringstream ostr; // Change back to one ostream object soon as I work out how to clear this buffer !
@@ -160,22 +144,17 @@ string BigArea::Area::DumpArea(void)
 	std::ostringstream ostr4;
 	std::ostringstream ostr5;
 	std::ostringstream ostr6;
-
 	ostr << number << ", (" << location.x << "/" << location.y << "), (";
 	for (in=0; in< boundaries.size(); in++)
 	{
 		ostr << "(" << boundaries[in].x << "/" << boundaries[in].y << ")";
 	}
-
 	ostr << "), " << traveltime << ", " << altitude << ", " << terrain;
 	ostr << ", " << vegetation << ", " << POA << "\n";
-
 	/* Null-terminate ostr */
 	ostr << '\0';
-
 	return ostr.str();
 }
-
 /******************************************************************************
  * setTravelTime()
  *
@@ -183,7 +162,6 @@ string BigArea::Area::DumpArea(void)
  *
  * Author : Andre Oboler
  */
-
 bool BigArea::Area::setTraveltime(int newTravelTime)
 {
 	if (newTravelTime >= 0)
@@ -193,7 +171,6 @@ bool BigArea::Area::setTraveltime(int newTravelTime)
 	}
 	return false; // can not travel back in time !
 }
-
 /******************************************************************************
  * setBoundaries
  *
@@ -204,17 +181,14 @@ bool BigArea::Area::setTraveltime(int newTravelTime)
  *
  * Author : Andre Oboler
  */
-
 bool BigArea::Area::setBoundaries(string boundariesString)
 {
 /*   The following code should run at O(2N+3) where N is an x or y co-ordinate.*/
-
 	int pos=0; // possition of start of word in temp string
 	int k=0; // possition in boundariesString
 	int i=0; // UTM number in list
 	int bracket=0; // count of open brackets
 	UTMtype temp;
-
 	boundaries.clear();
 	while(k < boundariesString.size())
 			{
@@ -233,13 +207,11 @@ bool BigArea::Area::setBoundaries(string boundariesString)
 					{
 						temp.y = boundariesString.substr(pos, 4);
 						boundaries.push_back(temp);
-
 					}
 					i++; // incement to next UTM location index
 				}
 				else if (boundariesString[k] == '/')
 				{
-
 					temp.x=boundariesString.substr(pos, 4);
 					pos=k+1;
 				}
@@ -261,7 +233,6 @@ bool BigArea::Area::setBoundaries(string boundariesString)
 			}
 			return true;
 }
-
 /******************************************************************************
  * setAltitude()
  *
@@ -269,13 +240,11 @@ bool BigArea::Area::setBoundaries(string boundariesString)
  *
  * Author : Andre Oboler
  */
-
 bool BigArea::Area::setAltitude(int newaltitude)
 {
 	altitude=newaltitude;
 	return true;
 }
-
 /******************************************************************************
  * setSize()
  *
@@ -283,13 +252,11 @@ bool BigArea::Area::setAltitude(int newaltitude)
  *
  * Author : Andre Oboler
  */
-
 bool BigArea::Area::setSize(float newSize)
 {
 	size=newSize;
 	return true;
 }
-
 /******************************************************************************
  * setTerrain()
  *
@@ -297,13 +264,11 @@ bool BigArea::Area::setSize(float newSize)
  *
  * Author : Andre Oboler
  */
-
 bool BigArea::Area::setTerrain(int newterrain)
 {
 	terrain=newterrain;
 	return true;
 }
-
 /******************************************************************************
  * setVegetation()
  *
@@ -311,13 +276,11 @@ bool BigArea::Area::setTerrain(int newterrain)
  *
  * Author : Andre Oboler
  */
-
 bool BigArea::Area::setVegetation(int newvegetation)
 {
 	vegetation=newvegetation;
 	return true;
 }
-
 /******************************************************************************
  * setPOA()
  *
@@ -325,7 +288,6 @@ bool BigArea::Area::setVegetation(int newvegetation)
  *
  * Author : Andre Oboler
  */
-
 bool BigArea::Area::setPOA(float newPOA)
 {
 	POA=newPOA;

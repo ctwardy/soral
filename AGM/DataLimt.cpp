@@ -44,23 +44,15 @@
  *     |          |     | Andre updated version info and (c) date
  *----------------------------------------------------------------------------
  */
-
-#include "DataLimt.h"
-
-using namespace std;
-
-const double DataLimits::POA_min = 0.0;
-const double DataLimits::POA_max = 100.0;
-
-const double DataLimits::POD_min = 0;
-const double DataLimits::POD_max = 100;
-
-const double DataLimits::ESW_min = 0;
-const double DataLimits::ESW_max = FLOATMAXVAL;
-
-const double DataLimits::speed_min = 0;
-const double DataLimits::speed_max = FLOATMAXVAL;
-
-const double DataLimits::correctionFactor_min = 0;
-const double DataLimits::correctionFactor_max = 10;
-
+#include "DataLimt.h"
+using namespace std;
+const double DataLimits::POA_min = 0.0;
+const double DataLimits::POA_max = 100.0;
+const double DataLimits::POD_min = 0;
+const double DataLimits::POD_max = 100;
+const double DataLimits::ESW_min = 0;
+const double DataLimits::ESW_max = FLOATMAXVAL;
+const double DataLimits::speed_min = 0;
+const double DataLimits::speed_max = FLOATMAXVAL;
+const double DataLimits::correctionFactor_min = 0;
+const double DataLimits::correctionFactor_max = 10;

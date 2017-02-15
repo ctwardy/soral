@@ -36,38 +36,29 @@
  * Who |   When   | Ver | What
  *-----+----------+-----+-----------------------------------------------------
  * ME  | 09/04/01 |  1  | Created.
- *---------------------------------------------------------------------------- * AO  | 07/03/08 | 1.1 | Gareth altered copyright notice etc for release,
+ *---------------------------------------------------------------------------- * AO  | 07/03/08 | 1.1 | Gareth altered copyright notice etc for release,
  *     |          |     | Andre updated version info and (c) date
  *----------------------------------------------------------------------------
- */
-
-#ifndef _err_mngr_h_
-#define _err_mngr_h_
-
-#include <iostream>
-#include <string>
-
-using namespace std;
-
-typedef enum			// program modes
-{
-	WARNING,
-	WARNING_OPTION,
-	HALT,
-	COMMAND_LINE_ERROR
-} Error_level;
-
-class ErrorManager
-{
-	public:
-		ErrorManager(void);
-		~ErrorManager(void) {}
-		bool PostError(Error_level level, string text_msg, string error_pos);
-
-	private:
-};
-
-static ErrorManager* error_manager;
-
-#endif
-
+ */
+#ifndef _err_mngr_h_
+#define _err_mngr_h_
+#include <iostream>
+#include <string>
+using namespace std;
+typedef enum			// program modes
+{
+	WARNING,
+	WARNING_OPTION,
+	HALT,
+	COMMAND_LINE_ERROR
+} Error_level;
+class ErrorManager
+{
+	public:
+		ErrorManager(void);
+		~ErrorManager(void) {}
+		bool PostError(Error_level level, string text_msg, string error_pos);
+	private:
+};
+static ErrorManager* error_manager;
+#endif

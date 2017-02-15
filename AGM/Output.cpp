@@ -43,121 +43,52 @@
  *     |          |     | Andre updated version info and (c) date
  *----------------------------------------------------------------------------
  */
-
-
-
 #include <iostream>
-
 #include <vector>
-
 #include <stdio.h>
-
 #include "Assignmt.h"
-
 #include "global.h"
-
-
-
 using namespace std;
 
-
-
-
-
 /******************************************************************************
-
  * PrintAssignmentVector()
-
  *
-
  * Prints the contents of a vector<Assignment> to standard output.
-
  * Each Assignment (Area Number and Resource Hours) is printed on
-
  * a separate line.
-
  *
-
  * Author : Gareth Thompson
-
  */
-
-
-
 void PrintAssignmentVector(vector<Assignment>& theVector)
-
 {
-
 	if (testmode) cout << "entering PrintAssignmentVector()\n";
 
-
-
-
-
 	vector<Assignment>::iterator current;
-
-
-
 	for (current = theVector.begin(); current != theVector.end(); current++)
-
 	{
-
 		printf("AREA NUMBER: %4d      ", current->getAreaNum());
-
 		printf("RESOURCE HOURS: %9.2f\n", current->getResourceHours());
-
 	}
-
 }
-
-
-
-
 
 /******************************************************************************
-
  * PrintIntVector()
-
  *
-
  * Prints a list of the values in a vector<int> to standard output,
-
  * with pairs of integers separated by '*'.
-
  * ('*' will also be printed after the last integer.)
-
  *
-
  * Author : Gareth Thompson
-
  */
-
-
-
 void PrintIntVector(vector<int>& theVector)
-
 {
-
 	if (testmode) cout << "entering PrintIntVector()\n";
-
-
-
 	vector<int>::iterator current;
-
-
-
 	for (current = theVector.begin(); current != theVector.end(); current++)
-
 	{
-
 		cout << *current << "*";
-
 	}
-
 }
-
-
-
 /******************************************************************************
  * PrintDoubleVector()
  *
@@ -168,19 +99,15 @@ void PrintIntVector(vector<int>& theVector)
  * Author : Andre Oboler
  * Adapted from Gareth's PrintIntVector()
  */
-
 void PrintDoubleVector(vector<double>& theVector)
 {
 	if (testmode) cout << "entering PrintIntVector()\n";
-
 	vector<double>::iterator current;
-
 	for (current = theVector.begin(); current != theVector.end(); current++)
 	{
 		cout << *current << "*";
 	}
 }
-
 /******************************************************************************
  * PrintDoubleValArray()
  *
@@ -191,65 +118,31 @@ void PrintDoubleVector(vector<double>& theVector)
  * Author : Andre Oboler
  * Adapted from Gareth's PrintIntVector()
  */
-
 void PrintDoubleValArray(valarray<double>& theValArray)
 {
 	if (testmode) cout << "entering PrintIntVector()\n";
-
     size_t i;
-
 	for (i = 0; i < theValArray.size(); i++)
 	{
 		cout << theValArray[i] << "*";
 	}
 }
 
-
-
-
 /******************************************************************************
-
  * PrintStringVector()
-
  *
-
  * Prints a list of the values in a vector<string> to standard output,
-
  * with pairs of strings separated by '*'.
-
  * ('*' will also be printed after the last string.)
-
  *
-
  * Author : Gareth Thompson
-
  */
-
-
-
 void PrintStringVector(vector<string>& theVector)
-
 {
-
-
-
 	if (testmode) cout << "entering PrintStringVector()\n";
-
-
-
 	vector<string>::iterator current;
-
-
-
 	for (current = theVector.begin(); current != theVector.end(); current++)
-
 	{
-
 		cout << *current << "*";
-
 	}
-
 }
-
-
-
