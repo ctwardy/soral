@@ -51,7 +51,7 @@ using namespace std;
  * Rewritten: Andre Oboler (ASO)
  */
 
-ActiveAreasIterator::ActiveAreasIterator(Allocation& p_allocation) 
+ActiveAreasIterator::ActiveAreasIterator(const Allocation& p_allocation) 
 //ActiveAreasIterator::ActiveAreasIterator(CharnesCooper *p_allocation) 
 :	myAllocation(p_allocation)
 {
@@ -104,15 +104,18 @@ void ActiveAreasIterator::operator++(void)
 	#endif
 
 	// If at end of list, remain there
-	if (current == -1)
+	if (current == NULL || current->getActiveAreaNum() == -1)
 	{
 		return;
 	}
 
 	// Other wise move to next item or end of list
 		
-	current=myAllocation.nextArea(current);
-	
+    int areaNumber = current->getActiveAreaNum();
+	ActiveArea* nextArea = myAllocation.nextArea(areaNumber);
+	delete current;
+	current=nextArea;
+
 	
 
 	#ifdef _ALLOCATION_TESTMODE
@@ -136,14 +139,14 @@ void ActiveAreasIterator::operator++(void)
 
 
 // Or perhaps it should be: ActiveArea *ActiveAreasIterator::get(void)
-int ActiveAreasIterator::get(void)
+/*ActiveArea* ActiveAreasIterator::get(void)
 {
 	#ifdef _ALLOCATION_TESTMODE
 		cout << "Returning the assigned area pointed to by the iterator (ActiveAreasIterator::operator())" << endl;
 	#endif
 	
 	return current;
-}
+}*/
 
 /// Checks to see whether the iterator is at the end of the list.
 /************************************************************************************/
@@ -156,13 +159,13 @@ int ActiveAreasIterator::get(void)
  * Rewritten: Andre Oboler (ASO)
  * 
  */
-bool ActiveAreasIterator::atEnd(void)
+bool ActiveAreasIterator::atEnd(void) const
 {
 	#ifdef _ALLOCATION_TESTMODE
 		cout << "Checking to see if the iterator is at the end (Iterator::atEnd)" << endl;
 	#endif
 
-	if (current==-1)
+	if (current==NULL || current->getActiveAreaNum() == -1)
 	{
 		return true;
 	}
@@ -180,7 +183,12 @@ bool ActiveAreasIterator::atEnd(void)
  *
  */
 
-int ActiveAreasIterator::operator*(void)
+ActiveArea ActiveAreasIterator::operator*(void) const
 {
-	return get();
+	#ifdef _ALLOCATION_TESTMODE
+		cout << "Returning the assigned area pointed to by the iterator (ActiveAreasIterator::operator())" << endl;
+	#endif
+	
+	return *current;
+	// return get();
 }

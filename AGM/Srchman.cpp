@@ -1439,7 +1439,7 @@ bool SearchManager::useSORAL(void)
 			areaSize=big_area->getSize(areaNumber);
 			tempEffectiveness= (tempESR) /areaSize;
 
-			effectiveness->value[i][j]=tempEffectiveness;
+			effectiveness[i][j]=tempEffectiveness;
 		}
 	}
 	if(testmode==true)
