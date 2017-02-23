@@ -439,6 +439,7 @@ void Washburn::calcAllocation()
 	  updateAssignment();
 	  
 	  #ifdef _ALLOCATION_TESTMODE
+	    int i;
 	    cout << endl << "Updated Assignments " << endl;
 
 	    for (int i = 0; i < myNumAreas+myNumResources+2; ++i)
