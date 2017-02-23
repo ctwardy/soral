@@ -1,0 +1,103 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% formulation.tex
+% Formulation to allocation tech report in master.tex
+% This section: David Albrecht
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Formulation}
+\label{sec:form}
+
+In this section we show how our allocation problem can be formulated
+as a Convex Programming problem. To do this we will need to make the
+following assumptions:
+\begin{enumerate}
+\item The object we are searching for is stationary during the time of
+the search.
+\item The probability of detecting the object in a given area is
+proportional to the time searching, $\delta t$, when $\delta t$ is
+small.
+\item The probability of detecting the object in a given region for a
+given resource is independent of the probability of detecting the
+object in that region with any other resource.
+\item The probability of detecting the object at time $t=0$ is zero.
+\end{enumerate}
+
+Let $D_{a,r}(t)$ be the probability of detecting the object in an area
+$a$ using a resource $r$ by time $t$. Then, by (2), for small $\delta
+t$ we have:
+$$D_{a,r}(t + \delta t) = D_{a,r}(t) + w_{a,r}\delta t(1-D_{a,r}(t)),$$
+where $w_{a,r}$ is a measure of the effectiveness of resource $r$ in
+area $a$. Letting $\delta t\to 0$, we obtain
+$$D_{a,r}^\prime(t) = w_{a,r}(1-D_{a,r}(t)),\quad\mbox{ and by (4) }\quad 
+D_{a,r}(0) = 0.$$ 
+Solving this equation we find:
+$$D_{a,r}(t) = 1-\exp(-w_{a,r}t), \quad t\ge 0.$$
+
+Now, let $\bar{D}$ be the probability of \emph{not} detecting the
+object, $p_a$ the probability the object is in area $a$, $T_r$ the
+total amount of time available for searching with resource $r$, and
+$t_{a,r}$ the time spent searching in area $a$ with resource $r$. Then
+by (3),
+\begin{eqnarray*}
+\bar{D} &=& \sum_{a = 1}^A p_a\prod_{r = 1}^R \bar{D}_{a,r}(t_{a,r})\\
+&=& \sum_{a = 1}^A p_a \exp\left(-\sum_{r = 1}^R w_{a,r}t_{a,r}\right), 
+\end{eqnarray*}
+where 
+$$
+\sum_{a = 1}^A t_{a,r} \le T_r, \qquad r = 1,\ldots,R.
+$$
+\newpage
+
+Therefore, since the problem of maximize the probability of detection
+is the same as the problem of minimizing the probability of \emph{not}
+detecting we obtain the following Convex Programming {\bf (CP)} problem
+
+$$
+\min_{t_{a,r}\ge 0}\quad \sum_{a = 1}^A p_a \exp\left(-\sum_{r = 1}^R
+w_{a,r}t_{a,r}\right),
+$$
+such that
+$$
+\sum_{a = 1}^A t_{a,r} \le T_r, \qquad r = 1,\ldots,R.
+$$
+
+The following theorem from Nonlinear Programming gives conditions for 
+solving this problem.
+
+\begin{theorem} Suppose $f$, $g_1\ldots,g_m$ are differentiable convex
+functions on ${\cal R}^n$, and there exists $x^*$ and $\lambda^{*}$
+which satisfy:
+\begin{eqnarray}
+\frac{\partial f}{\partial x_i}(x^{*}) + \sum_{j=1}^m \lambda^*_j\frac{\partial
+g_j}{\partial x_i}(x^{*}) &=& 0, \\
+\lambda^{*}_j g_j(x^{*}) &=& 0, \\
+g_j(x^{*}) &\le& 0, \\
+\lambda^{*}_j &\ge& 0, 
+\end{eqnarray}
+where $i = 1,\ldots, n$ and $j = 1,\ldots, m$. Then $x^{*}$ is a solution of
+$$
+\min_{x} f(x)\qquad\mbox{s.t.}\qquad g_j(x)\le 0,\quad j=1,\ldots,m.
+$$
+
+\end{theorem}
+
+The conditions (1) - (4) in the above theorem are known as the Karush
+Kuhn Tucker (KKT) conditions and for the {\bf CP} problem these conditions
+are as follows:
+\begin{eqnarray}
+-p_aw_{a,r}\exp(-\sum_{r=1}^R w_{a,r}t_{a,r}) + \beta_r - \alpha_{a,r} &=& 0\\
+\beta_r(\sum_{a = 1}^A t_{a,r} - T_r) &=& 0\\
+\sum_{a = 1}^A t_{a,r} &\le& T_r\\
+\alpha_{a,r}t_{a,r} &=& 0, \\
+\alpha_{a,r} \ge 0, \qquad t_{a,r} \ge 0, \qquad \beta_r &\ge& 0,
+\end{eqnarray}
+where $a = 1,\ldots,A$ and $r =1,\ldots,R$.
+
+Therefore, $\{t_{a,r}\}$ is a solution of the problem {\bf CP} if
+there exists $\{t_{a,r}, \beta_r, \alpha_{a,r}\}$ which satisfy
+conditions (5) - (9).
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "master"
+%%% End: 

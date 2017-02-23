@@ -1,0 +1,377 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% app1_terms.tex
+% Appendix 1: Derivation of SAR notation.
+% This section: Charles Twardy
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\section{Derivation of SAR notation}
+\label{sec:terms}
+
+If your background is Search \& Rescue, you may be wondering how these
+formulas relate to familiar concepts like POA, POS, and POD.  In the
+first part of this appendix, we will derive the function to optimize
+from the basic concepts taught in SAR courses. The setup is easy, but
+the final steps are messy to write.  In the second part, we will
+derive the from basic concepts in conditional probability. That
+derivation is nicer, but not nearly as clean as the very abstract
+treatment given in Section \ref{sec:form}, which is why these are in
+the Appendix. First we define our variables.
+
+\subsection{Background}
+\label{sec:Background}
+
+The basic equation governing search probability theory\footnote{There
+  is no new material in this section. We are merely laying out search
+  theory, as can be found in standard SAR references like
+  \cite{frost99:_principles, syrotuck75:_introduction,
+    cooper00_adjpoa, cooper00_defs}. However, we
+do so in a manner convenient for subsequent derivations.} states that the
+probability of success $(POS)$ of any search assignment is equal to
+the product of two other probabilities: the probability that the
+subject is in the area $(POA)$ and the probability of detecting the
+subject if they are in that area $(POD)$.
+\begin{equation}
+  \label{eq:POS}
+  POS = POA \times POD
+\end{equation}
+For now we shall just accept this. It can be derived from a few simple
+considerations about search and Bayes' theorem, but we leave that to
+the section on conditional probabilities.
+
+Once an area is searched (without
+success), the subject is less likely to be there, in proportion to how 
+well the area was searched. In other words, after a search, the $POA$ of 
+the region searched decreases. It can also be shown that the usual
+formula is correct:
+\begin{equation}
+  \label{eq:POA_new}
+  POA_{new} = POA_{old} - POS
+\end{equation}
+
+It is easy to understand $POA$. Each region has a known area (in
+square meters, for example), and a probability of area $POA$, the
+probability that the subject is in that area.\footnote{Sometimes
+  called the probability of containment, $POC$ since it is the
+  probability that the area in question contains the subject.} The
+$POA$ is usually determined by a Mattson consensus\footnote{Probably
+  from Mattson's 1979 presentation to a NATO conference,
+  \cite{mattson80:_estab}.}  (a fancy name for ``average'') from case
+histories, known facts, and probable scenarios.  Here we will just
+assume that it is given and correct. Often we combine these two items
+to define the \emph{probability density}:
+\begin{equation}
+  \label{eq:2}
+  Pden = \frac{POA}{area}
+\end{equation}
+Sometimes $Pden$ is written as greek letter $\rho$, since it looks
+like a funny `p'.
+
+It is a little more involved to get the $POD$ of a resource in an
+area. Although search managers usually use various crude estimation
+techniques (``If there were 100 milk jugs in the area, how many do you 
+think you would have found?''), search theory provides a better way to 
+measure $POD$ based on how much effort was applied, among other things..
+
+First, every resource can move with a certain speed $v$ in a certain
+region and at that speed (in those conditions, looking for that kind
+of object) have a certain
+\emph{effective sweep-width}, usually denoted capital $W$.  $W$ is a
+measure of how far that resource can expect to see and detect objects.
+There are tables of sweep widths for many resources in many
+conditions. We shall presume we have them available.\footnote{Alas,
+  there are few or none for ground searchers yet. Until as a community 
+  we can conduct some experiments, Frost has suggested in-field
+  estimation using ``critical separation,'' being the distance
+  a  searcher estimates he can see effectively enough to almost always
+  spot targets if he were looking that way.}
+
+Together $W$ and $v$ measure how quickly the resource can sweep
+areas.\footnote{Indeed, sometimes people define \emph{effective
+    sweep-rate}, $ESR = W v$. But we don't need an extra variable.}
+We let $t$ be our measure of how much effort (resource-hours) has been
+put in the region.
+
+To get $POD$ we need to know how well the region has been
+\emph{covered}. \emph{Coverage} is a measure of how thoroughly a given
+amount of effort was able to search an area of a certain size. Higher
+coverage means higher $POD$. For a given amount of a particular
+resource's effort, a bigger area means less coverage. Likewise, for a
+given amount of effort in a given area, a resource with a bigger $ESR$
+will have more coverage. And finally, the longer we leave the resource
+in a region (or the more of it we put there), the more area it sweeps,
+and the higher the coverage. So, if we let $x$ be a measure of how
+much of the resource's effort we put in an area, we may define a
+resource's \emph{coverage}:
+\begin{equation}
+  \label{eq:C}
+  C = \frac{Wvt}{\mathrm{area}}
+\end{equation}
+
+And $POD$ must be a function of coverage. It must be such that $POD$
+starts at zero when we have zero coverage, and $POD$ can 
+never exceed 1 no matter how much we cover the area. One function
+which can do this is a negative exponential function. But we're not
+just picking functions out of the air. It turns out that this is the
+proper function for what is called \emph{random search}, and that
+almost any real ground search is best modeled by the random-search
+curve. \cite{stone89:_optimal} Therefore,
+\begin{equation}
+  \label{eq:3}
+  POD = 1 - e^{-C}
+\end{equation}
+which can also be written
+\begin{equation}
+  \label{eq:9}
+  POD = 1 - \exp(-C)
+\end{equation}
+(Since later on we will have many things in the exponent, it will be
+easier to read if we use the `exp' form.)
+
+\subsection{SAR notation}
+\label{sec:SARnotation}
+
+We have $R$ resources available for searching. Together, they give us
+the total amount of available effort, $T$. The effort due to any
+resource $r$ is $t_r$. It follows that 
+\begin{equation}
+  \label{eq:10}
+  T = \sum_{r=1}^N t_r
+\end{equation}
+
+We also have $A$ areas to search. Each area $a$ has a certain
+probability of area $POA_a$. Usually all probabilities initially sum
+to 1, but since they do not really have to be normalized, the only
+constraint is that: $(0 < \sum_{a=1}^A POA_a \leq 1)$.
+
+Our problem is to figure out the best way to allocate all available
+effort among the many areas. The effort  $t_r$ from any resource
+may be split among any number of areas, but $r$ will always be used
+completely, so $\sum_{a=1}^A t_{r,a} = t_r$. 
+
+Conversely, several resources may combine their efforts in any one
+area. But while there may be many areas left unsearched, we will never
+fail to use a resource fully.
+
+Coverage is defined in terms of resources and areas. If $W_{r,a}$ is
+the sweep width for resource $r$ in area $a$, and the other variables
+likewise, then the coverage in area $a$ by resource $r$ is:
+
+\begin{equation}
+  \label{eq:C_ra}
+  C_{r,a} = \frac{W_{r,a} v_{r,a}}{A_a} t_{r,a}
+\end{equation}
+
+However, because the area sizes and the $W_{r,a}$ and $v_{r,a}$ remain fixed,
+rather than continuing to write that entire fraction, we will
+just define a new variable lowercase $w_{r,a} = \frac{W_{r,a} v_{r,a}}{A_a}$ and write:
+\begin{equation}
+  \label{eq:C_ra2}
+  C_{r,a} = w_{r,a} t_{r,a}
+\end{equation}
+
+Once we know the coverage, we can find the $POD$ from equation \ref{eq:9}. 
+\begin{equation}
+  \label{eq:POD_ra}
+  POD_{r,a} = 1 - \exp(-C_{r,a}) = 1 - \exp(-w_{r,a} t_{r,a})
+\end{equation}
+
+Now in the background section, we wrote the governing equation of
+search theory $POS = POA \times POD$, and the associated equation for
+updating the $POA$ of a region after an unsuccessful search:
+$POA_{new} = POA_{old} - POS$. 
+
+Since the second equation is just subtraction, we can apply the
+formula repeatedly, and define the $POA$ for any sortie in terms of
+the original $POA$ and the sum of all the $POS$ from all previous
+searches. If we number our searches with an index, then the POA for
+a search with resource $r$ is:
+\begin{equation}
+  \label{eq:POA2'}
+  POA_{r} = POA_0 - \sum_{i=1}^{r-1} POS_i
+\end{equation}
+
+
+This generalizes quite easily to our notation. Imagine If the initial $POA$
+for area $a$ is just $POA_a$, then to compute the current $POA$ facing
+our next resource $r$ in area $a$, we sum over the
+previously-allocated resources (up to resource $r-1$)\footnote{
+  The order in which we consider resources for assignment is
+  immaterial: all we want in the end is the right global allocation.
+  So we might as well pick the resources straight off the list in
+  order $1 \ldots r$. Which is how we have done it here.}:
+\begin{equation}
+  \label{eq:POA_ra}
+  POA_{r,a} = POA_a - \sum_{i=1}^{r-1}POS_{i,a}
+\end{equation}
+
+Using the basic identity from Equation \ref{eq:POS} ($POS =
+POA \times POD$), we can
+rewrite Equation \ref{eq:POA_ra} in terms of products. Skipping the algebra:
+\begin{eqnarray}
+  \label{eq:15}
+  \nonumber POA_{r,a} &=& POA_a \left[(1-POD_{1,a})\cdots(1-POD_{r-1,a})\right]\\
+                   & & \\
+  \nonumber &=& POA_a \left[\exp(w_{1,a}t_{1,a}) \cdots \exp(w_{r-1,a}t_{r-1,a})\right]\\
+  \nonumber &=& POA_a \left[\exp\left(\sum_{i=1}^{r-1}w_{i,a}t_{i,a}\right)\right]
+\end{eqnarray}
+The second step is just substitution, and the final step is is just
+replacing a product of exponents with an exponent of sums. At this point we are almost done.
+
+Putting the $POS_{r,a}$ and the $POA_{r,a}$ together:
+\begin{equation}
+  \label{eq:POS2_ra}
+  POS_{r,a} = POA_{r,a} \cdot POD_{r,a}
+\end{equation}
+which again comes from equation \ref{eq:POS}. 
+
+And, in the end, we want to \emph{maximize} the \emph{total}
+$POS$. The total $POS$ is just the sum over both $r$ and $a$. Writing
+this out and substituting for $POA_{r,a}$ we find:
+\begin{eqnarray}
+  \label{eq:POS_tot}
+  POS &=& \sum_{a=1}^A \sum_{r=1}^R POS_{r,a}\\
+  \nonumber &=& \sum_{a=1}^A POS_{1,a} + POS_{2,a} + \cdots + POS_{R,a}\\
+  \nonumber &=& \sum_{a=1}^A \left[
+    POA_a POD_{1,a} +
+    POA_a \exp(-w_{1,a}t_{1,a}) POD_{2,a} + \cdots + 
+    POA_a \exp\left(-\sum_{i=1}^{R-1}w_{r,a}t_{r,a}\right) POD_{R,a} 
+    \right]\\
+   &=& \sum_{a=1}^A POA_a \left[
+     POD_{1,a} +
+     \exp(-w_{1,a}t_{1,a}) POD_{2,a}+ \cdots + 
+     \exp\left(-\sum_{i=1}^{R-1}w_{r,a}t_{r,a}\right) POD_{R,a}
+     \right]
+\end{eqnarray}
+
+Finally, if we expand the $POD_{r,a}$ terms we find that many of the
+exponents cancel, leaving us with a much simpler form.
+
+\fbox{
+  \parbox{6in}{
+  \begin{eqnarray}
+    \label{eq:pos-final}
+    \nonumber POS &=& \sum_{a=1}^A POA_a \left[
+      (1-\exp(-w_{1,a}t_{1,a})) +
+      \exp(-w_{1,a}t_{1,a}) (1-\exp(-w_{2,a}t_{2,a}))+ \cdots +\right. \\
+    & & \left. \exp\left(-\sum_{r=1}^{R-1}w_{r,a}t_{r,a}\right)
+      \left(1-\exp(-w_{R,a}t_{r,a})\right)
+    \right]\\
+    &=& \sum_{a=1}^APOA_a \left[
+      1 - \exp\left(-\sum_{r=1}^R w_{r,a}t_{r,a}\right)
+    \right]    
+  \end{eqnarray}
+  }
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Conditional Probability Notation}
+\label{sec:Cond-Prob-Notat}
+
+The initial probability (before we get new evidence) for anything is
+called its \emph{prior probability}. For example, we know from the
+start that we will use all of our resources. Therefore the prior
+probability for any resource is 1:
+\begin{equation}
+  \label{eq:p(r)}
+  \Pr(R) = 1
+\end{equation}
+
+Each area has an initial (prior) probability of containing the
+subject, which is usually called the $POA$ in search terms. We will
+call is $\Pr(A)$.
+\begin{equation}
+  \label{eq:p(a)}
+  \Pr(A) = POA
+\end{equation}
+
+The probability of something given that we know something else is
+called the \emph{conditional probability}. For example, we might wish
+to know the conditional probability of an area $A$, given that we have
+chosen a particular resource $R$. This one is easy: the probability of
+an area does not depend upon which resource we use
+to search it, so it equals its initial probability:
+\begin{equation}
+  \label{eq:p(a|r)}
+  \Pr(A|R) = P(A)
+\end{equation}
+
+For a resource searching in the area containing the subject, the
+probability of detecting the subject is given by search
+theory\footnote{This is the correct formula for the ``random'' or
+  ``exponential'' detection profile, which is shown in \cite{} to be
+  the most appropriate model for ground search.}
+as $1 - e^{-C}$. Keeping with our notation in the previous section, we
+use $t_{r,a}$ to denote the amount of effort from resource $r$ used in
+area $a$, and $w_{r,a}$ to denote the effectiveness of the resource in
+that area. So:
+\begin{equation}
+  \label{eq:4}
+  \Pr(D|R,A) = 1 - e^{-w_{r,a} t_{r,a}} = 1 - \exp(-w_{r,a} t_{r,a})
+\end{equation}
+
+So what is the \emph{posterior} probability of an area? It is the
+probability that the subject is in the area given that we have
+searched but \emph{not detected} ($\no{D})$ the subject. If we have
+$N$ resources, then by Bayes'
+theorem (without renormalization):
+\begin{eqnarray}
+  \label{eq:a|-d}
+  \Pr(A|\no{D}) &\propto& \Pr(A) \cdot \Pr(\no{D}|A)\\
+  \nonumber     &=& \Pr(A) \cdot \left[\Pr(\no{D}|R_1,A) \ldots 
+                   P(\no{D}|R_R,A)\right] \\
+  \nonumber     &=& \Pr(A) \left[\Pr(\no{D}|R_1,A) \ldots
+                   P(\no{D}|R_R,A)\right] \\
+  \nonumber     &=& \Pr(A) \left[\exp(-w_{1,a} t_{1,a}) \ldots
+                   e^{-w_{R,a} t_{R,a}} \right]\\
+  \nonumber     &=& \Pr(A) \exp\left(-\sum_{r=1}^R w_{r,a} t_{r,a}\right)
+\end{eqnarray} 
+
+That gives us the updated probability for one area. And to get the
+total probability that we have \emph{not} detected the subject up
+until now, we just sum over the areas. By definition, this is just the
+sum over areas of the \emph{joint probability} of being in each area
+and being not-detected:
+\begin{equation}
+  \label{eq:6}
+  \Pr(\no{D}) = \sum_A \Pr(\no{D},A)
+\end{equation}
+But the joint probability of $\no{D}$ and $A$ is by definition: 
+\begin{equation}
+  \label{eq:8}
+  \Pr(\no{D},A) =  \Pr(A) \Pr(\no{D}|A)
+\end{equation}
+which is just the right-hand-side of Equation \ref{eq:a|-d}. We
+infer that:
+\begin{equation}
+  \label{eq:-d|a}
+  \Pr(\no{D}|A) = \exp\left(-\sum_{r=1}^R w_{r,a} t_{r,a}\right)
+\end{equation}
+
+Of course, in the end we want to maximize our chances of \emph{actually
+  detecting} the subject, for the \emph{whole set of
+  assignments}. Usually called the ``probability of success,'' this is
+really just the overall $\Pr(D)$.
+
+\fbox{
+  \parbox{5in}{
+    \begin{eqnarray}
+      \label{eq:p(d)}
+      \nonumber \Pr(D) &=& \sum_A \Pr(A) \Pr(D|A)\\
+      \nonumber  &=& \sum_A \Pr(A) \left[ 1 - \Pr(\no{D}|A) \right]\\
+      & & \\
+      \nonumber  &=& \sum_A \Pr(A) \left[ 1 - \exp\left(-\sum_{r=1}^R w_{r,a}
+          t_{r,a}\right) \right]
+    \end{eqnarray}
+    }
+  }
+
+Note that this agrees with Equation \ref{eq:pos-final}, the overall
+$POS$ derived using conventional notation.
+
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "master"
+%%% End: 

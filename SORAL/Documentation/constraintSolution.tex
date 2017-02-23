@@ -1,0 +1,532 @@
+\documentclass[10pt]{article}
+\input{crtdefs}
+\afourSetup{}
+\title{Optimal Resource Allocation for Search \& Rescue}
+\author{dwa, crt, AGM}
+
+\begin{document}
+%\abstract{\textsc{draft} An optimal solution to the problem of
+%  allocating multiple search resources to multiple areas, where each
+%  resource may have a different effectiveness in each area. We assume
+%  all resources use the random (exponential) detection function, as 
+%  is appropriate for ground searchers.}
+\maketitle
+
+In searching for a lost person, we usually have far fewer resources
+than needed to search the whole possibility area thoroughly. And it is
+important that we find the person as quickly as possible. In order to
+do this, we need not to waste any effort. We need to find an
+\emph{optimal} allocation of various resources at hand to the area at
+hand. A crucial first step is to divide the whole possibility area
+into a number of smaller areas or regions of known size, and assign to
+each region a probability of containing the subject. Ideally we have
+divided the possibility area finely enough so that each region denotes
+one particular type of terrain and vegetation, and all parts of that
+region have the same probability density. The solution presented here
+assumes this has been done.
+
+Once the area has been divided into regions, we need to look at our
+resources. For each type of resource we need the amount of effort
+available (in resource-hours, for example). We also need to know how
+effective each type of resource is in each region. To this end, most
+likely what we will have is a set of travel speeds and sweep widths
+for each resource in standard conditions, and some modifying factors
+which can be applied given the terrain, vegetation, weather, etc.
+
+Given this information a computer may quickly find an optimal
+allocation of resources to areas. Because we have represented our
+effort abstractly in terms of resource-hours, and because we are doing
+our allocation as a block, our optimal solution is what has been
+called ``T-optimal'' \cite{}: no other allocation of \emph{all
+  available} effort will yield a greater total probability of success.
+
+
+\section{Previous solutions}
+\label{sec:Previous-solutions}
+
+Two restricted problems have been solved. The \emph{Charnes-Cooper
+  algorithm} (\cite{}) solves the case of
+allocating the effort of one single kind of resource across many
+areas, where the effectiveness of the resource varies by area. The
+solution is to sort the areas by a quantity known as the probable
+success rate $(PSR)$.
+
+Alternatively, if we ignore the fact that resource effectiveness
+changes with region, then we can solve the problem for any number of
+resources using a slight simplification of the Charnes-Cooper
+algorithm: we sort the areas by probability-density. 
+
+Both such solutions are very efficient. They run in O$(A^2)$ time,
+meaning that the time to compute the solution goes up as the square of
+the number of areas. Since we probably never have more than 1000 areas and 
+1000 resources, any computer can solve the problem quite quickly.
+
+In the general problem, however, we have multiple resources, all of
+which may vary in effectiveness across regions. One way to approach
+the problem is to divide all of our resources into teams ahead of
+time, and then to find that assignment of teams to areas which
+maximizes our probability of success. In essence we just try all
+combinations. This is the approach taken by CASIE III (\cite{}). 
+
+However, even if we add the restriction that we may have precisely one
+resource to one area, the problem has a complexity of O$(A^R)$: the
+time goes up as the exponential of the number of resources. Even a
+moderate search of say 10 areas and 10 resources requires
+10,000,000,000 steps. Even if solved, this solution is not an optimum
+allocation of effort! It is merely an optimum given how we divided
+up the available resource pool. Faced with that kind of combinatorial
+explosion, the general problem of optimum resource allocation for
+search has resisted solution.
+
+However, if we allow the idealization that the available effort can be
+divided arbitrarily finely, then we can use some optimization
+techniques from linear algebra and linear programming to solve the
+problem. It appears that a solution can be found with a complexity of
+O$R(A+1)$ which is basically the number of resources times the number
+of areas, or 100 in the previous example.
+
+The key is to find the proper global function to optimize, and
+conceptually to perform the optimization all at once, rather than
+combinatorially.
+
+\section{Deriving the Function}
+\label{sec:Deriving-Function}
+
+In order to derive the function we need to optimize, we have to
+transform the problem from the language of search-and-rescue to a more 
+convenient notation. In this section we do this twice. First, using
+the traditional phrasing and notation of the search community. Second,
+using the same ideas but with the cleaner notation of conditional
+probability, which is really what the search problem is about. First
+we define our variables.
+
+
+\subsection{Background}
+\label{sec:Background}
+
+The basic equation governing search probability theory\footnote{There
+  is no new material in this section. We are merely laying out search
+  theory, as can be found in \cite{}, in a convenient manner for
+  subsequent derivations.} states that the probability of success
+$(POS)$ of any search assignment is equal to the product of two other
+probabilities: the probability that the subject is in the area $(POA)$
+and the probability of detecting the subject if they are in that area
+$(POD)$.
+\begin{equation}
+  \label{eq:POS}
+  POS = POA \times POD
+\end{equation}
+For now we shall just accept this. It can be derived from a few simple
+considerations about search and Bayes' theorem, but we leave that to
+the section on conditional probabilities.
+
+Once an area is searched (without
+success), the subject is less likely to be there, in proportion to how 
+well the area was search. In other words, after a search, the $POA$ of 
+the region searched decreases. It can also be shown that the usual
+formula is correct:
+\begin{equation}
+  \label{eq:POA_new}
+  POA_{new} = POA_{old} - POS
+\end{equation}
+
+It is easy to understand $POA$. Each region has a known area (in
+square meters, for example), and a probability of area $POA$, the
+probability that the subject is in that area.\footnote{Sometimes
+  called the probability of containment, $POC$ since it is the
+  probability that the area in question contains the subject.} The
+$POA$ is usually determined by a Mattson consensus (a fancy name for
+``average'') from case histories, known facts, and probable scenarios.
+Here we will just assume that it is given and correct. Often we
+combine these two items to define the \emph{probability density}:
+\begin{equation}
+  \label{eq:2}
+  Pden = \frac{POA}{area}
+\end{equation}
+Sometimes $Pden$ is written as greek letter $\rho$, since it looks
+like a funny `p'.
+
+It is a little more involved to get the $POD$ of a resource in an
+area. Although search managers usually use various crude estimation
+techniques (``If there were 100 milk jugs in the area, how many do you 
+think you would have found?''), search theory provides a better way to 
+measure $POD$ based on how much effort was applied.
+
+First, every resource can move with a certain speed $v$ in a certain
+region and at that speed (in those conditions) have a certain
+\emph{effective sweep-width}, usually denoted capital $W$.  $W$ is a
+measure of how far that resource can expect to see and detect objects.
+There are tables of sweep widths for many resources in many
+conditions. We shall presume we have them available.\footnote{Alas,
+  there are few or none for ground searchers yet. Until as a community 
+  we can conduct some experiments, one of the authors will attempt to
+  make reasonable estimates available perhaps using the testing data
+  from SARTECH exams.}
+
+Together $W$ and $v$ make up the \emph{effective sweep-rate}, $ESR = W
+v$. $ESR$ measures how quickly the resource can sweep areas. We let
+$x$ be our measure of how much effort (resource-hours) has been put in 
+the region.
+
+To get $POD$ we need to know how well the region has been
+\emph{covered}. \emph{Coverage} is a measure of how thoroughly a given
+amount of effort was able to search an area of a certain size. Higher
+coverage means higher $POD$. For a given amount of a particular
+resource's effort, a bigger area means less coverage. Likewise, for a
+given amount of effort in a given area, a resource with a bigger $ESR$
+will have more coverage. And finally, the longer we leave the resource
+in a region (or the more of it we put there), the more area it sweeps,
+and the higher the coverage. So, if we let $x$ be a measure of how
+much of the resource's effort we put in an area, we may define a
+resource's \emph{coverage}:
+\begin{equation}
+  \label{eq:C}
+  C = \frac{ESR x}{area}
+\end{equation}
+
+And $POD$ must be a function of coverage. It must be such that $POD$
+starts at zero when we have zero coverage, and $POD$ can 
+never exceed 1 no matter how much we cover the area. One function
+which can do this is a negative exponential function. But we're not
+just picking functions out of the air. It turns out that this is the
+proper function for what is called \emph{random search}, and that
+almost any real ground search is best modeled by the random-search
+curve. \cite{} Therefore,
+\begin{equation}
+  \label{eq:3}
+  POD = 1 - e^{-C}
+\end{equation}
+which can also be written
+\begin{equation}
+  \label{eq:9}
+  POD = 1 - exp(-C)
+\end{equation}
+(Since later on we will have many things in the exponent, it will be
+easier to read if we use the `$exp$' form.)
+
+\subsection{Derivation 1: SAR notation}
+\label{sec:SAR-notation}
+
+We have $R$ resources available for searching. Together, they give us
+the total amount of available effort, $X$. The effort due to any
+resource $r$ is $x_r$. It follows that 
+\begin{equation}
+  \label{eq:10}
+  X = \sum_{r=1}^N x_r
+\end{equation}
+
+We also have $A$ areas to search. Each area $a$ has a certain
+probability of area $POA_a$. Usually all probabilities initially sum
+to 1, but since they do not really have to be normalized, the only
+constraint is that: $(0 < \sum_{a=1}^A POA_a \leq 1)$.
+
+Our problem is to figure out the best way to allocate all available
+effort among the many areas. The effort  $x_r$ from any resource
+may be split among any number of areas, but $r$ will always be used
+completely, so $\sum_{a=1}^A x_{r,a} = x_r$. 
+
+Conversely, several resources may combine their efforts in any one
+area. But while there may be many areas left unsearched, we will never
+fail to use a resource fully.
+
+Coverage is defined in terms of resources and areas. If $ESR_{r,a}$ is the 
+ESR for resource $r$ in area $a$, then the coverage in area $a$ by
+resource $r$ is:
+
+\begin{equation}
+  \label{eq:C_ra}
+  C_{r,a} = \frac{ESR_{r,a}}{A_a} x_{r,a}
+\end{equation}
+
+However, because the area sizes and the $ESR_{r,a}$ remain fixed,
+rather than continuing to write $\frac{ESR_{r,a}}{A_a}$, we will
+just define a new variable $w_{r,a} = \frac{w_{r,a}}{A_a}$ and write:
+\begin{equation}
+  \label{eq:C_ra}
+  C_{r,a} = w_{r,a} x_{r,a}
+\end{equation}
+
+Once we know the coverage, we can find the $POD$. 
+\begin{equation}
+  \label{eq:POD_ra}
+  POD_{r,a} = 1 - exp(-C_{r,a}) = 1 - exp(-w_{r,a} x_{r,a})
+\end{equation}
+
+Now in the background section, we wrote the governing equation of
+search theory $POS = POA \times POD$, and the associated equation for
+updating the $POA$ of a region after an unsuccessful search:
+$POA_{new} = POA_{old} - POS$. 
+
+Since the second equation is just subtraction, we can apply the
+formula repeatedly, and define the $POA$ for any sortie in terms of
+the original $POA$ and the sum of all the $POS$ from all previous
+searches. If we number our searches with an index $i$:
+\begin{equation}
+  \label{eq:POA2'}
+  POA_{i+1} = POA_0 - \sum_1^i POS_i
+\end{equation}
+
+
+This generalizes quite easily to our notation. If the initial $POA$
+for area $a$ is just $POA_a$, then to compute the current $POA$ facing
+our next resource $r$ in area $a$, we sum over the
+previously-allocated resources (up to resource $r-1$)\footnote{
+  The order in which we consider resources for assignment is
+  immaterial: all we want in the end is the right global allocation.
+  So we might as well pick the resources straight off the list in
+  order $1 \ldots r$. Which is how we have done it here.}
+:
+\begin{equation}
+  \label{eq:POA_ra}
+  POA_{r,a} = POA_a - \sum_{i=1}^{r-1}POS_{i,a}
+\end{equation}
+
+Using the basic identity from equation \ref{eq:POS} ($POS =
+POA \times POD$), we can
+rewrite \ref{eq:POA_ra} in terms of products (see the appendix for derivation):
+\begin{eqnarray}
+  \label{eq:15}
+  \nonumber POA_{r,a} &=& POA_a \left[(1-POD_{1,a})\cdots(1-POD_{r-1,a})\right]\\
+                   & & \\
+  \nonumber &=& POA_a \left[exp(w_{1,a}x_{1,a}) \cdots exp(w_{r-1,a}x_{r-1,a})\right]\\
+  \nonumber &=& POA_a \left[exp\left(\sum_{i=1}^{r-1}w_{i,a}x_{i,a}\right)\right]
+\end{eqnarray}
+At this point we are almost done.
+
+Putting the $POS_{r,a}$ and the $POA_{r,a}$ together:
+\begin{equation}
+  \label{eq:POS2_ra}
+  POS_{r,a} = POA_{r,a} \cdot POD_{r,a}
+\end{equation}
+which again comes from equation \ref{eq:POS}. 
+
+And, in the end, we want to \emph{maximize} the \emph{total}
+$POS$. The total $POS$ is just the sum over both $r$ and $a$. Writing
+this out and substituting for $POA_{r,a}$ we find:
+\begin{eqnarray}
+  \label{eq:POS_tot}
+  POS &=& \sum_{a=1}^A \sum_{r=1}^R POS_{r,a}\\
+  \nonumber &=& \sum_{a=1}^A POS_{1,a} + POS_{2,a} + \cdots + POS_{R,a}\\
+  \nonumber &=& \sum_{a=1}^A \left[
+    POA_a POD_{1,a} +
+    POA_a exp(-w_{1,a}x{1,a}) POD_{2,a} + \cdots + 
+    POA_a exp\left(-\sum_{i=1}^{R-1}w_{i,a}x_{i,a}\right) POD_{R,a} 
+    \right]\\
+   &=& \sum_{a=1}^A POA_a \left[
+     POD_{1,a} +
+     exp(-w_{1,a}x{1,a}) POD_{2,a}+ \cdots + 
+     exp\left(-\sum_{i=1}^{R-1}w_{i,a}x_{i,a}\right) POD_{R,a}
+     \right]
+\end{eqnarray}
+
+Finally, if we expand the $POD_{r,a}$ terms we find that many of the
+exponents cancel, leaving us with a much simpler form.
+
+\fbox{
+  \parbox{6in}{
+  \begin{eqnarray}
+    \label{eq:pos-final}
+    \nonumber POS &=& \sum_{a=1}^A POA_a \left[
+      (1-exp(-w_{1,a}x_{1,a})) +
+      exp(-w_{1,a}x{1,a}) (1-exp(-w_{2,a}x_{2,a}))+ \cdots +\right. \\
+    & & \left. exp\left(-\sum_{i=1}^{R-1}w_{i,a}x_{i,a}\right)
+      \left(1-exp(-w_{R,a}x_{R,a})\right)
+    \right]\\
+    &=& \sum_{a=1}^APOA_a \left[
+      1 - exp\left(-\sum_{i=1}^Rw_{i,a}x_{i,a}\right)
+    \right]    
+  \end{eqnarray}
+  }
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Conditional Probability Notation}
+\label{sec:Cond-Prob-Notat}
+
+The initial probability (before we get new evidence) for anything is
+called its \emph{prior probability}. For example, we know from the
+start that we will use all of our resources. Therefore the prior
+probability for any resource is 1:
+\begin{equation}
+  \label{eq:p(r)}
+  \Pr(R) = 1
+\end{equation}
+
+Each area has an initial (prior) probability of containing the
+subject, which is usually called the $POA$ in search terms. We will
+call is $\Pr(A)$.
+\begin{equation}
+  \label{eq:p(a)}
+  \Pr(A) = POA
+\end{equation}
+
+The probability of something given that we know something else is
+called the \emph{conditional probability}. For example, we might wish
+to know the conditional probability of an area $A$, given that we have
+chosen a particular resource $R$. This one is easy: the probability of
+an area does not depend upon which resource we use
+to search it, so it equals its initial probability:
+\begin{equation}
+  \label{eq:p(a|r)}
+  \Pr(A|R) = P(A)
+\end{equation}
+
+For a resource searching in the area containing the subject, the
+probability of detecting the subject is given by search
+theory\footnote{This is the correct formula for the ``random'' or
+  ``exponential'' detection profile, which is shown in \cite{} to be
+  the most appropriate model for ground search.}
+as $1 - e^{-C}$. Keeping with our notation in the previous section, we
+use $x_{r,a}$ to denote the amount of effort from resource $r$ used in
+area $a$, and $w_{r,a}$ to denote the effectiveness of the resource in
+that area. So:
+\begin{equation}
+  \label{eq:4}
+  \Pr(D|R,A) = 1 - e^{-w_{r,a} x_{r,a}}
+\end{equation}
+
+So what is the \emph{posterior} probability of an area? It is the
+probability that the subject is in the area given that we have
+searched but \emph{not detected} ($\no{D})$ the subject. If we have
+$N$ resources, then by Bayes'
+theorem (without renormalization):
+\begin{eqnarray}
+  \label{eq:a|-d}
+  \Pr(A|\no{D}) &\propto& \Pr(A) \cdot \Pr(\no{D}|A)\\
+  \nonumber     &=& \Pr(A) \cdot \left[\Pr(\no{D}|R_1,A) \ldots 
+                   P(\no{D}|R_N,A)\right] \\
+  \nonumber     &=& \Pr(A) \left[\Pr(\no{D}|R_1,A) \ldots
+                   P(\no{D}|R_N,A)\right] \\
+  \nonumber     &=& \Pr(A) \left[e^{-w_{1,a} x_{1,a}} \ldots
+                   e^{-w_{N,a} x_{N,a}} \right]\\
+  \nonumber     &=& \Pr(A) exp\left(-\sum_{k=1}^N w_{k,a} x_{k,a}\right)
+\end{eqnarray} 
+
+That gives us the updated probability for one area. And to get the
+total probability that we have \emph{not} detected the subject up
+until now, we just sum over the areas. By definition, this is just the
+sum over areas of the \emph{joint probability} of being in each area
+and being not-detected:
+\begin{equation}
+  \label{eq:6}
+  \Pr(\no{D}) = \sum_A \Pr(\no{D},A)
+\end{equation}
+But the joint probability of $\no{D}$ and $A$ is by definition: 
+\begin{equation}
+  \label{eq:8}
+  \Pr(\no{D},A) =  \Pr(A) \Pr(\no{D}|A)
+\end{equation}
+which is just the right-hand-side of Equation \ref{eq:a|-d}. We
+infer that:
+\begin{equation}
+  \label{eq:-d|a}
+  \Pr(\no{D}|A) = exp\left(-\sum_{k=1}^N w_{k,a} x_{k,a}\right)
+\end{equation}
+
+Of course, in the end we want to maximize our chances of \emph{actually
+  detecting} the subject, for the \emph{whole set of
+  assignments}. Usually called the ``probability of success,'' this is
+really just the overall $\Pr(D)$.
+
+\fbox{
+  \parbox{6in}{
+    \begin{eqnarray}
+      \label{eq:p(d)}
+      \nonumber \Pr(D) &=& \sum_A \Pr(A) \Pr(D|A)\\
+      \nonumber  &=& \sum_A \Pr(A) \left[ 1 - \Pr(\no{D}|A) \right]\\
+      & & \\
+      \nonumber  &=& \sum_A \Pr(A) \left[ 1 - exp\left(-\sum_{i=1}^N w_{i,a}
+          x_{i,a}\right) \right]
+    \end{eqnarray}
+    }
+  }
+
+Note that this agrees with Equation \ref{eq:pos-final}, the overall
+$POS$ derived using conventional notation, except that we have
+replaced the letter $R$ with the letter $N$. In the rest of the paper
+we will go back to using $R$.
+
+\fbox{actually it wd be better to replace `R' with `r' and `N' with `R'}
+
+
+\section{Optimizing the Allocation}
+\label{sec:Optim-Alloc}
+
+\fbox{ Need to update this section.}
+
+But since $\Pr(D) = 1 - \Pr(\no{D})$, it follows that we
+should \emph{minimize} our overall chance of missing the subject:
+$\Pr(\no{D})$.
+
+    \begin{eqnarray}
+      \label{eq:7}
+      \Pr(\no{D}) &=& \sum_A P(\no{D},A)\\
+      \nonumber &=& \sum_A \Pr(A) e^{-\sum_{k=1}^N S_{k,a} x_{k,a}}
+    \end{eqnarray}
+
+Another way to get the same answer is to maximize the cumulative
+$POS_A = P(A) - P(A|\no{D})$. It comes out to the same thing, and is
+more familiar to search managers.
+
+Fine, now we know what function we need to optimize. How do we do it?
+
+I have some very good news. To find the solution to your problem only
+requires solving $R + RA = R(A+1)$ linear equations, where $R$ is the
+number of resources and $A$ is the number of areas.
+
+I will give you details on Friday, if you are interested (I will not be in
+tomorrow). However, an outline goes as follows.
+
+Your problem can be stated as find $x_{i,j} >= 0$ which minimize
+
+\begin{equation}
+f = \sum_{i=1}^A p_i*g_i
+\end{equation}
+where
+
+\begin{equation}
+  g_i = exp(-\sum_{k=1}^R w_{i,k}*x_{i,k}), \;\; i=1,\ldots,A
+\end{equation}
+
+and we also know that:
+
+\begin{equation}
+  \sum_{i=1}^A x_{i,j} = T_j, \;\; j=1,\ldots,R   
+\end{equation}
+
+Now, let
+
+\begin{equation}
+   L = \sum_{i=1}^A p_i*g_i + \sum_{j=1}^R L_j*(\sum_{i=1}^A x_{i,j}-T_j)
+\end{equation}
+
+Then the problem can be reformulated as find the critical points of $L$ (ie
+those values of $x_{i,j}$ and $L_j$ where the partial derivatives of $L$ are
+zero), where $x_{i,j}$ are positive.
+
+However, the partial derivative of $L$ with respect to $x_{i,j}$ is zero when
+\begin{equation}
+         p_i*g_i*w_{i,j} = L_j
+\end{equation}
+
+Taking logs, and letting $c_j = log(L_j), j = 1,\ldots,R$, we get
+\begin{equation}
+         c_j + \sum_{k=1}^R w_{i,k}*x_{i,k} = log(p_i) + log(w_{i,j})
+\end{equation}
+
+for $i = 1,\ldots,A$ and $j = 1,\ldots,R$. Also, we have the equations
+\begin{equation}
+         \sum_{i=1}^A x_{i,j} = T_j, j=1,\ldots,R
+\end{equation}
+
+So, all we need to do is solve these $R(A+1)$ linear equations for $c_j$ and
+$x_{i,j}$.
+
+Which of course we are now working on.
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

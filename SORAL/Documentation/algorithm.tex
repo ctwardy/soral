@@ -1,0 +1,86 @@
+\section{Washburn's Algorithm}
+
+We have attempted to break down Washburn's algorithm and explain it in
+somewhat more detail than he does in his paper. Readers should be
+warned that we use different notation and our $i,j$ indices are
+transposed from his.
+
+Washburn notes that the problem can be conceived as that of finding
+the appropriate links to draw between the two parts of a bipartite
+graph with Area nodes on one side and Resource nodes on the other. For
+example, in Figure \ref{Fig:wbnodes} there are 4 areas (index $i$) and
+3 resources (index $j$).
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics{wbnodes.eps}
+    \caption{Illustration of the nodes in a Washburn graph. Any link between A and R is an allocation of resource $j$ to area $i$.}
+    \label{fig:wbnodes}
+  \end{center}
+\end{figure}
+In his paper, Washburn proves that an optimal allocation will involve
+no cycles in the graph. That proof is what makes his algorithm
+possible.
+
+
+\subsection{Initialization Step}
+\label{sec:init}
+To start the algorithm, choose an initial set of links and initialize
+some variables. Let $G$ be the corresponding graph.
+\begin{enumerate}
+\item Choose an initial set of links (corresponding to combinations
+  which would have $t_{ij} > 0)$ if we used this as our allocation) such that:
+  \begin{enumerate}
+  \item Each resource is assigned. $\forall T_j > 0, \exists i :
+    t_{ij} > 0$
+  \item If $t_{ij} > 0$, $w_{ij} > 0$. Otherwise the algorithm breaks.
+  \item $G$ is a forest. (It contains no cycles.)
+  \end{enumerate}
+\item Let $\Delta_1 = 0$  \fbox{Necessary?}
+\item Let $p = 1$. \fbox{Necessary?}
+\end{enumerate}
+
+We have made an arbitrary resource allocation. A fine choice is to
+allocate all resources to area 1. Washburn initially allocates all
+resources to some highly improbable fake area. It does not seem to be
+important. 
+
+The overview is that with each iteration we update our choices by
+deleting some links and adding others. In Washburn's paper, he
+calculates the resulting $t_ij$ at every step. However, that appears
+to be unnecessary. Note that we do not calculate or specify them for
+this initialization step.
+
+
+\subsection{Step 1}
+\label{sec:step1}
+
+
+\subsection{Step 2: Construct $\lambda$ and $\mu$}
+\label{sec:step2}
+Construct vectors $\lambda$ and $\mu$ such that:
+\begin{enumerate}
+\item $\lambda_j = w_{ij}\mu_i$ for every edge $(ij)$ in $G$
+\item $\lambda_j > 0, j = 1..R$
+\item $\mu_i > 0, i = 1..A$
+\end{enumerate}
+You are free to set your initial $\mu$ to 1. The $\mu$s correspond to
+areas, and the $\lambda$s correspond to resources. If there are any
+joins in the graph (several resources assigned to the same area, or
+several areas served by the same resource), there will be some
+constraints on your choice of $\mu$. However, because there will be no
+cycles, you can just walk the tree of nearest neighbors from your
+first node setting things as you go. We have sample MATLAB code that
+does this.
+
+
+\subsection{Section 3: Find the $\alpha$s}
+\label{sec:alpha}
+
+The graph $G$ may not be connected.
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: master
+%%% End: 
+
+

@@ -1,0 +1,601 @@
+/********************************************************************* 
+ *  SAR<em>Bayes</em> OPTIMAL RESOURCE ALLOCATION LIBRARY 2001-03    *         
+ *                                                                   *
+ *********************************************************************/
+/** \file  manual-user.dox
+ *  \brief manual-user.dox contains the SORAL User's Manual in dOxygen format
+ *  
+ *
+ * <b>Version History</b>
+ *
+ * \verbatim
+ *-----+---------+-----+--------------------------------------------
+ * Who |   When  | Ver | What                                       
+ *-----+---------+-----+--------------------------------------------
+ * ASO | 06jan03 |  1  | Created.        
+ * crt |  5may03 | 1.4 | Revised after code review 2. For release.
+ *-------------------------------------------------------------------
+ * \endverbatim
+ */
+
+
+/** \mainpage SORAL API User's Guide
+ * <h2>Andre Oboler & Charles Twardy</h2>
+ * <h3>Version 1.4</h3>
+ * \date 8 May 2003<br>
+ * Still under revision, but what is here should be correct.
+ * 
+ * \section tableCont Table of Contents
+ * 
+ * -# \ref intro
+ * -# \ref overview
+ * -# \ref how
+ * -# \ref parameters
+ * -# \ref algorithms
+ * -# \ref other
+ * 
+ *************************************************
+ * <hr>
+ * \section intro Introduction
+ * This manual is aimed at programmers who wish to use the SORAL
+ * library in their own applications. If you wish to develop code for
+ * SORAL itself you should also read the SORAL 
+ * <a href="../../Developer/html/Main.html">Developer's Guide</a>.
+ *
+ * SORAL is the SAR<em>Bayes</em> Optimal
+ * Resource Allocation Library, a programmer's API of optimization
+ * algorithms tailored to Search And Rescue (SAR). From an end-user's
+ * perspective, SORAL provides functions to best allocate a given
+ * set of SAR resources to most effectively find a lost person.
+ * The SORAL API is a simple, clean, modular collection of algorithms,
+ * each of which is optimal in its own domain. By virtue of plugging
+ * in to SORAL, each also provides important values for the end-user,
+ * such as probability of detection, coverage, and others.
+ *
+ * SORAL is free (<em>libre</em>) software available under the GNU
+ * General Public License (GPL). Unless you secure a separate
+ * license, this requires any software which uses SORAL to 
+ * also be GPL. In order to ensure that
+ * using SORAL will not adversely affect the licensing status of your
+ * own software, please see the the file COPYING for the full
+ * text of the GPL.
+ * 
+ * If there is possibility of a conflict please
+ * contact the SAR<em>Bayes</em> group or Monash University 
+ * to negotiate a separate license. We have reasonable terms,
+ * because we want SORAL to be used.
+ * 
+ * The SAR<em>Bayes</em> project is based at Monash University
+ * (Australia), the web site is at: http://sarbayes.org/
+ * SORAL was officially released mid-May, 2003. 
+ * The most recent documentation and information is available at the
+ * web site.
+ * 
+ ************************************************
+ * <hr>
+ * \section overview Overview
+ *
+ * If you are reading a printed version, the source-code documentation
+ * follows. If you are reading online, there are links to the
+ * source-code documentation in the header and footer bars. Because
+ * this is the User's Guide, these links include only the public
+ * interface to the classes, not all their internals. That should
+ * make your life easier.
+ * 
+ * 
+ * \subsection what What SORAL does for you
+ * 
+
+ * SAR<em>Bayes</em> Optimal Resource Allocation Library (SORAL) is a
+ * software library that uses search theory to suggest a theoretically
+ * optimal allocation of resources (i.e. search and rescue teams) to
+ * areas on a map.
+
+ * Each area on the map has a probability of containing the missing
+ * person or object (the subject), normally called the Probability
+ * of Area (POA) or Probability of Containment (POC). 
+ * After searching an area (and not finding anything) the
+ * probability of the subject being in that area is reduced: 
+ * we are more confident they are not there. As we can
+ * never be completely certain we didn't miss subject during the
+ * search, these probabilities will approach, but never actually reach
+ * zero. A theoretically optimal allocation is one that tries to
+ * minimize the search time, that is to assign resources to areas
+ * where they will be most effective in lowering the total probability
+ * that the subject is in one of the search areas.
+ *
+ * Both the resource and area data must be provided to SORAL (see
+ * \ref passing). SORAL uses this data and one of a number of
+ * allocation algorithms (you choose which) to create a set of
+ * allocations. An allocation tells you an area to be searched, a
+ * resource to search it, and the amount of time (effort) that
+ * resource should spend there. Each set of allocations is for a given
+ * operational period (batch of sorties) and SORAL will 
+ * normally assign <em>all</em> the resource hours you give it.
+ * Normally in a search you will call SORAL repeatedly, at least
+ * once per operational period.
+ *
+ * \subsection why Why use SORAL?
+ * 
+ * SORAL includes the latest in land-based search theory, brought
+ * in from the Operations Research literature. It is
+ * developed at Monash University, but theory from
+ * around the world. The project has the co-operation of leading
+ * experts from academia, industry and both professional and
+ * volunteer search and rescue.
+ *
+ * For details of those people and organisations assisting the project
+ * please see http://www.sarbayes.org/credit.shtml
+ *
+ * SORAL is an ongoing project, but with a stable interface. This
+ * means if you build your system to work with SORAL now, you should
+ * (with very little work on your part) get improved resource
+ * allocation algorithms as SORAL develops in the future. Perhaps best
+ * of all, you can build resource allocation into your software without
+ * having to worry about the actual search theory. SORAL
+ * encapsulates the theory so all you need to handle are
+ * the inputs and resulting allocations.
+ *
+ * <b>Note:</b> While SORAL is in Beta, the interface may change
+ * slightly. But it is largely stable.
+ * 
+ **********************************************
+ * <hr>
+ * \section how How to use SORAL
+ * 
+ * Before using SORAL, you must create the parameters for an 
+ * allocation. Then you use SORAL to make an Allocation 
+ * object. Finally, you extract the allocation details using the
+ * SORAL iterators. Read on for more details!
+ * 
+ * \subsection params Parameters
+ * You will need to create the following parameters to pass
+ * to SORAL:
+ * - <code>numRes</code>: An int. This is the total number of
+     resources.
+ * - <code>numAreas</code>: An int. This is the total number of areas.
+ * - <code>effectiveness</code>: An Array2D. This is the effectiveness
+ *   matrix, see below.
+ * - <code>availHours</code>: A valarray of doubles. 
+ *   The <em>i</em>th member of the array corresponds to the 
+ *   number of hours available for the <em>i</em>th resource. 
+ *   (In SORAL you may use any consistent set of units, so this
+ *   does not have to be in hours.)
+ * - <code>POA</code>: A valarray of doubles. The <em>i</em>th member 
+ *   of the array corresponds to the POA for the <em>i</em>th area.
+ * 
+ * You may name them whatever you want, but they must have these
+ * types.
+ *
+ * \subsection containers Containers in SORAL
+ * The following sections will be easier if you realize that
+ * SORAL has 3 abstract containers:
+ * - <code>ActiveArea</code> wraps an area number. It provides:
+ *   - <code>int getActiveAreaNum() const</code>
+ * - <code>AreaAssignment</code> wraps an area number and a time. 
+ *   It provides:
+ *   - <code>int getAreaNum() const</code>
+ *   - <code>double getTime() const</code>
+ * - ResourceAssignment</code> wraps a resource number and a time.
+ *   It provides:
+ *   - <code>int getResourceNum() const</code>
+ *   - <code>double getTime() const</code>
+ *
+ *
+ * \subsection calling Calling SORAL
+ *
+ * To use SORAL, you must create an allocation object. The actual 
+ * allocation of resources to areas is carried out during the 
+ * creation of the allocation object -- it wouldn't be an
+ * allocation otherwise, would it?
+ * There are 
+ * various types of allocation objects and each implements a different
+ * algorithm. They all share a common interface. 
+ * We initially provided 3 algorithms, but SORAL is designed 
+ * to make it easy to plug in a new algorithm, so we expect the 
+ * number of choices to increase. 
+ * 
+ * To make a Washburn allocation object called 
+ * <code>theAllocation</code>, you would call: \verbatim
+Washburn theAllocation (numRes,
+						numAreas,
+						effectiveness,
+						availHours,
+						POA); \endverbatim
+ * 
+ * You then access the result allocations through iterators.
+ * The standard iterator paradigm is:
+ * -# Set up the ActiveAreas iterator
+ * -# For each area in the ActiveAreas iterator:
+ *    -# Set up a ResourceIterator
+ *    -# Extract the allocation details from that ResourceIterator 
+ * 
+ * Let's explain this in some detail, and then see a simple example
+ * that puts it all together in a simple print routine.
+ *
+ * - Set up the Active Areas Iterator<br>
+ * A detailed search map may have thousands of areas, only a
+ * few of which are searched during any period. The ActiveAreasIterator
+ * skips those areas which have no assignments. You can move it to
+ * the next area with the <code>++</code> operator. You can extract
+ * the current ActiveArea with the <code>*</code> operator.
+ * (An ActiveArea contains an area number as an integer,
+ * accessed with <code>getActiveAreaNum()</code>.
+ *   - <code>ActiveAreasIterator activeItr(theAllocation);</code>
+ *
+ * - Set up some Resource Iterators<br>
+ * A resource iterator walks over the resources in a particular
+ * fixed area. You must tell it what area you have in mind with
+ * an integer we shall call <code>areaIndex</code>.
+ * You can move the iterator to
+ * the next resource (in this area) with the <code>++</code>
+ * operator. You can extract the current ResourceAssignment with the 
+ * <code>*</code> operator. 
+ * (A ResourceAssignment contains a resource number and a time, 
+ * accessed with <code>getResourceNum()</code> and 
+ * <code>getTime()</code>.)
+ *    - <code>ResourceIterator resItr(theAllocation, areaIndex);</code>
+ * 
+ * - (Alternatively, set up some Area Iterators)<br>
+ * This is the complementary iterator to the ResourceIterator. It takes
+ * a resource number (fixed at creation time) and iterates over all
+ * the areas that resource has been assigned to. It returns an 
+ * AreaAssignment. Which you use is a matter of preference or task.
+ *
+ * - Extract an allocation
+ * Before moving on to the next resource (or area), you
+ * need to get the ResourceAssignment (or AreaAssignment), and 
+ * either store it or extract the details. Here is how to extract
+ * the details from a ResourceIterator (the AreaIterator is
+ * entirely parallel):
+ *\verbatim
+		  ResourceAssignment resAssign(*resItr);      // get current object
+		  int resIndex (resAssign.getResourceNum());  // extract resource num
+		  double time  (resAssign.getTime());         // extract time
+		  ++resItr;									  // move on to next
+\endverbatim
+ * Now you can put that data into whatever structure you are using.
+ * 
+ * - Move on
+ * Use the <code>++</code> operators on your ResourceIterator and
+ * your ActiveAreasIterator as appropriate. 
+ * <b>Remember:</b> <em>always</em> check whether the iterator
+ * is <code>atEnd()</code> before trying to read from it!
+ *
+ *
+ * \subsection itrexample Iterators Example 
+ *
+ * Here is an example that puts the iterators together
+ * in the standard iterator paradigm to print out all and only
+ * the assignments in this allocation object. The example
+ * is taken from the program <code>sample.cpp</code> \verbatim
+void printAssignments(const Allocation& theAllocation)
+{
+
+	ActiveAreasIterator activeItr(theAllocation);
+
+	// While there are still areas with assignments
+	while(!(activeItr.atEnd()))
+	{
+	    ActiveArea area(*activeItr); 
+	    int        areaIndex(area.getActiveAreaNum());
+
+		ResourceIterator resItr(theAllocation, areaIndex);
+		
+		// While there are still resources in this area
+		while (!(resItr.atEnd()))
+		{
+		  ResourceAssignment resAssign(*resItr);
+		  int resIndex (resAssign.getResourceNum());
+		  double time  (resAssign.getTime());
+
+		  cout << "  Area: " << areaIndex 
+			   << "  Resource: " << resIndex 
+			   << "  Time: " << time << endl;		  
+
+		  ++resItr;
+		}
+
+		++activeItr;
+	}
+
+}
+\endverbatim
+ * 
+ * That's all there is to it. As an exercise, rewrite the 
+ * loop using an AreaIterator.
+ *
+ * <b>Remember:</b> 
+ * The resource numbers and area
+ * numbers you get out of SORAL will <em>not</em> necessarily 
+ * correspond to the numbers the user, or your program, use!
+ * SORAL's indices are relative to the area / resource position in the
+ * valarray and effectiveness matrix, so the first probability in the
+ * POA vector will be POA for the area with index 0. 
+ * SORAL knows only how many areas and how
+ * many resources, and numbers them 0..n-1.  You are responsible
+ * for translating them back to your own numbers! In particular,
+ * we have no way of knowing which resources you gave us, especially
+ * as your resource list will be changing over time.
+ *
+ * 
+ *************************************************
+ * <hr>
+ * \section parameters Input parameters in more detail
+ *
+ * \subsection valarrays The valarrays
+ *
+ * <code>POA</code> and <code>availHours</code> are valarrays of 
+ * doubles. Valarrays are built-in C++ types which act like
+ * vectors but are not resizeable and are very fast. 
+ *
+ * The ordering of areas and resources is not important, 
+ * but it must be consistent between these valarrays and the
+ * effectiveness matrix. The position in
+ * the valarray will also be the index used by the SORAL iterators so
+ * you will need to convert this back to your own indices or names
+ * when copying the data back.
+ *
+ * <b>Remember:</b> SORAL does not care what your areas or resources
+ * are called, or which ones you gave it. SORAL cares only that
+ * there are <em>n</em> areas and <em>m</em> resources, and numbers
+ * them <em>0..n-1</em> and <em>0..m-1</em>. Do not mistake the 
+ * iterator's area or resource number as your own internal number 
+ * (unless your areas and resources happen to be numbered from 0,
+ * and happen to have been passed into SORAL in the correct order).
+ * 
+ * \subsection matrix The effectiveness matrix
+ * The data structure
+
+ * The effectiveness matrix is of type Array2D. This is a custom data
+ * type to SORAL and allows matrix-style data access to a dynamically
+ * created data structure. The values in the structure are stored as
+ * doubles. To create an Array2D you pass in the number of areas and
+ * the number of resources.
+ * 
+ * <em>Example:</em>
+ *
+ * <code>Array2D effectiveness = Array2D(numAreas, numRes);</code>
+ * 
+ * You can access a member of the array as shown below.
+ * 
+ * <em>Example:</em>
+ *
+ * <code>effectiveness[i][j]=3.14127;</code>
+ * 
+ * \subsubsection effVals The data values
+ *
+ * The effectiveness matrix stores effectiveness values for every
+ * possible combination of resource and area. An effectiveness value
+ * is defined as:
+ * 
+ * - Effectiveness = Effective Sweep Rate / area size
+ * 
+ * where:
+ *
+ * - Effective Sweep Rate = (Effective Sweep Width) * speed
+ *
+ * where both (Effective Sweep Width) and speed are for that 
+ * resource in that area. 
+ *
+ * It is convenient to denote these values more briefly as:
+ * - Eff: effectiveness
+ * - ESR: Effective Sweep Rate
+ * - ESW: Effective Sweep Width (also sometimes just W)
+ * 
+ * \subsubsection sweepwidths Determining sweep widths
+ *
+ * Ideally, you would look up sweep widths for each resource
+ * in a table of terrains, vegetations, and environmental 
+ * conditions. Unfortunately, in 2003, the necessary experiments
+ * are just beginning to be done, so exact sweep widths and 
+ * speeds will usually not be available.
+ *
+ * How you approximate is up to you, but as the accuracy of the
+ * algorithms crucially depend on these values, please look for
+ * recent publications or reports in the area. We hope to 
+ * make some tables and functions available ourselves. In the
+ * meantime, here is a suggestion:
+ * 
+ * For each resource, attempt to measure a sweep width in some
+ * kind of standard conditions, perhaps a flat open field. Then
+ * fill in other values via <em>correction factors</em>.
+ * 
+ * - A joint correction factor, <em>c</em>: 
+ * ESR = ESW * speed * <em>c</em>
+ *
+ * - Two separate correction factors, <em>c1</em> and <em>c2</em>:
+ * ESR  = (ESW * <em>c1</em>) * (speed * <em>c2</em>)
+ * 
+ * The creation of useful effectiveness values is an ongoing research
+ * task. SAR<em>Bayes</em> will hopefully develop methods and tools 
+ * for dealing with this problem in the future.
+ * Please ask us what we know about the most recent research.
+ * 
+ * 
+ * \subsection creatingEx An example for creating your parameters
+ * The following example (from <code>sample.cpp</code> shows how
+ * to include the necessary headers, create values, and 
+ * call SORAL.
+ *
+ * \verbatim
+#include <iostream>
+#include <vector>
+#include "containr.h"
+#include "Allocatn.h"
+#include "Array2D.h"
+#include "Alloc-W.h"
+#include "Alloc-CC.h"
+#include "UserDef.h"
+
+using namespace std;
+
+// function definitions
+void printAssignments(const Allocation& theAllocation);
+
+int main()
+{
+	int num_areas     = 2;
+	int num_resources = 2;
+	Array2D effectiveness(num_areas, num_resources);
+	valarray<double> availableHours(num_resources);
+	valarray<double> POA(num_areas);
+	
+	// Fill in the effectiveness matrix
+	effectiveness[0][0] = 1.0;
+	effectiveness[0][1] = 5.0;
+	effectiveness[1][0] = 0.2;
+	effectiveness[1][1] = 0.05;
+
+	// Add each resource's avail. time to the availableHours valarray
+	availableHours[0] = 161;
+	availableHours[1] = 139;
+
+	// Add each area's initial probability to the POA valarray
+	// Values don't have to be normalized.
+	POA[0] = 0.5;  
+	POA[1] = 0.5;  
+
+	// Run the allocation. This one has 2 resources and
+	// a non-trivial effectiveness table, so it requires
+	// the Washburn algorithm to get the right answer.
+	Washburn theAllocation (num_resources, 
+	                        num_areas, 
+	                        effectiveness, 
+	                        availableHours, 
+	                        POA);
+
+	// Now display results
+	cout << "The calculated allocation\n";
+	printAssignments(theAllocation);
+
+	return 1;
+}
+\endverbatim
+ *
+ * The <code>printAssignments</code> routine was shown in \ref 
+ * itrexample.
+ * 
+ * \subsection using How to use the information you get back
+ *
+ * Using the iterators as suggested in the calling SORAL section will
+ * allow you to extract all allocations from SORAL. You might also
+ * like to use the iterators to:
+ * - Build a list of all resources that a particular area has assigned
+ *   to it (for example to display in a GUI object)
+ * - Build a list of all areas a particular resource visits (for example
+ *   to display in a GUI object)
+ * - Build a list of areas being search in this round
+ * - Build a list of areas not being search in this round
+ * - Create more than one allocation objects so you can compare
+ *   different algorithms suggestions
+ * - Use the same allocation type but vary the resources to see how it
+ *   might effect the search (or to gauge how effective a particular
+ *   search and rescue unit would be for searches in your region)
+ * - Keep a list of allocation objects so you can view where resources
+ *   were assigned over time.
+ * - Keep a list of allocation objects so you can view all resources
+ *   that entered a given area (useful for search history, or if
+ *   you discover a contamination hazard in the area, or ...)
+ *
+ *************************************************
+ * <hr>
+ * \section algorithms Allocation Algorithm Details
+ * 
+ * Each of the algorithms is built to cope with specific
+ * limitations. More algorithms are currently being built and will be
+ * released with the next version of the SORAL library. The three
+ * currently implemented algorithms are: Charnes Cooper, Washburn and
+ * UserDef. The purpose of each of these is described below.
+
+ * 
+ * \subsection Charnes-Cooper
+
+ * This algorithm assumes only one resource. You can achieve this by
+ * lumping all your ground searchers together. For example if you had
+ * 60 searchers for 6 hours each, you would list your available hours
+ * as 360 hours for a single "ground searcher" resource. The algorithm
+ * assumes it can infinitely split resources.
+ * 
+ * For this to work your ground searchers should have similar
+ * effectiveness.
+ * 
+ * \subsection Washburn
+ *
+ * This algorithm accepts many resources. Where only one resource is
+ * given it will give the same answers as Charnes Cooper. 
+ * Resources should still be grouped into similar types with similar
+ * effectiveness values. The algorithm assumes it can infinitely 
+ * split resources.
+ *
+ * Once we're done with the basic documentation and bug fixes,
+ * we'll implement a heuristic search based on Washburn that
+ * assumes it <em>cannot</em> split the resources. That is 
+ * the more usual situation for search managers.
+ * 
+ * \subsection UserDef
+ *
+ * This is not an automated allocation class, but rather one that
+ * allows you to edit and create allocations manually. Any other type
+ * of allocation class can be converted to a UserDef class.
+ * 
+ * Like any other allocation, you can get the Coverage, POD, POS,
+ * and other statistics for UserDef. Thus, you can tweak a
+ * Washburn allocation to fit your constraints, and see how close
+ * you are to optimal.
+ *
+ * <em>Example</em>
+ *
+ * If you already have an allocation (from the previous example),
+ * you can change it to UserDef and then modify it as shown here.
+ * This code is taken from <code>sample.cpp</code>, where you
+ * may see it in context.
+ *\verbatim
+
+	// Here's how to convert to a UserDef allocation
+	UserDef changedAllocation(theAllocation);
+
+	// Perform the tweak. Remove 5 hours from resource 0
+	// in area 0.
+	changedAllocation.remove(1,0,5);
+
+\endverbatim
+ *
+ * UserDef allows entire assignments to be deleted and created,
+ * as well as altered. UserDef does some bookkeeping for you,
+ * keeping a pool of unallocated resources, which you can
+ * re-add to an area with the "add" function.
+ * Note that this lets you create an allocation that does not
+ * use all your resources. Usually, you don't want to do that,
+ * so we have provided the calls:
+ * - <code>bool haveUnallocatedResources()</code>.
+ * - <code>valarray<double> getUnallocatedResources()</code>.
+ *
+ * Until we write more here, see the source code documentation
+ * for the various operations provided by UserDef.
+ *
+ **********************************************
+ * <hr>
+ * \section other Other Stuff
+ *
+ * We're still writing this guide.
+ * 
+ * We maybe should tell you more about resource allocation in
+ * general, or about the particular algorithms. Or perhaps leave
+ * that for a theory paper rather than an API User's Guide.
+ *
+ * And we should tell you about all the neat functions in Allocation:
+ * - getPOD (areaNum)
+ * - getPOS (areaNum)
+ * - getTotalPOS ()
+ * - getNewPOC (areaNum)
+ * - getCoverage (areaNum)
+ * - getEndurance (resourceNum)
+ *
+ * But in the meantime, you should find that the source-code
+ * documentation tells you quite a bit about them and
+ * how to use them. 
+ *
+ * Use the source, Luke!
+ *
+ */

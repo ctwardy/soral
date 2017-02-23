@@ -1,0 +1,92 @@
+;; RefTeX parse info file
+;; File: /home/ctwardy/SAR/constraintSolution.tex
+;; Date: 06/18/01 22:42:39
+;; User: ctwardy (Charles Twardy)
+
+(set reftex-docstruct-symbol '(
+
+
+(xr nil "\\\\\\\\\\\\")
+
+(is-multi t)
+
+(master-dir . "/home/ctwardy/SAR/")
+
+(label-numbers)
+
+(bof "/home/ctwardy/SAR/constraintSolution.tex")
+
+(bof "/home/ctwardy/SAR/crtdefs.tex")
+
+(bof "/home/ctwardy/SAR/mydefs.tex")
+
+(toc "toc" "    * Module \\arabic{modulenum}:~{#2}" "/home/ctwardy/SAR/mydefs.tex" nil 2 "*" "\\section*{Module \\arabic{modulenum}:~{#2}}" 1867)
+
+(eof "/home/ctwardy/SAR/mydefs.tex")
+
+(eof "/home/ctwardy/SAR/crtdefs.tex")
+
+(toc "toc" "    1 Previous solutions" "/home/ctwardy/SAR/constraintSolution.tex" nil 2 "1" "\\section{Previous solutions}" 2154)
+
+("sec:Previous-solutions" "s" "Two restricted problems have been solved. The \\emph{Charnes-Cooper algorithm} (\\cite{}) solves the c" "/home/ctwardy/SAR/constraintSolution.tex")
+
+(toc "toc" "    2 Deriving the Function" "/home/ctwardy/SAR/constraintSolution.tex" nil 2 "2" "\\section{Deriving the Function}" 4572)
+
+("sec:Deriving-Function" "s" "In order to derive the function we need to optimize, we have to transform the problem from the langu" "/home/ctwardy/SAR/constraintSolution.tex")
+
+(toc "toc" "      2.1 Background" "/home/ctwardy/SAR/constraintSolution.tex" nil 3 "2.1" "\\subsection{Background}" 5072)
+
+("sec:Background" "s" "The basic equation governing search probability theory states that the probability of success $(POS)" "/home/ctwardy/SAR/constraintSolution.tex")
+
+("eq:1" "e" "POS = POA \\times POD " "/home/ctwardy/SAR/constraintSolution.tex")
+
+("eq:C" "e" "C = \\frac{ESR x}{A} " "/home/ctwardy/SAR/constraintSolution.tex")
+
+("eq:3" "e" "POD = 1 - e^{-C} " "/home/ctwardy/SAR/constraintSolution.tex")
+
+("eq:9" "e" "POD = 1 - exp(-C) " "/home/ctwardy/SAR/constraintSolution.tex")
+
+(toc "toc" "      2.2 Derivation 1: SAR notation" "/home/ctwardy/SAR/constraintSolution.tex" nil 3 "2.2" "\\subsection{Derivation 1: SAR notation}" 8968)
+
+("sec:SAR-notation" "s" "We have $N$ resources available for searching. Together, they give us the total amount of available " "/home/ctwardy/SAR/constraintSolution.tex")
+
+("eq:10" "e" " " "/home/ctwardy/SAR/constraintSolution.tex")
+
+("eq:C_ra" "e" "C_{r,a} = \\frac{w_{r,a}}{A_a} x_{r,a} " "/home/ctwardy/SAR/constraintSolution.tex")
+
+("eq:C_ra" "e" "C_{r,a} = S_{r,a} x_{r,a} " "/home/ctwardy/SAR/constraintSolution.tex")
+
+("eq:POD_ra" "e" "POD_{r,a} = 1 - e^{-C_{r,a}} = 1 - e^{-S_{r,a} x_{r,a}} " "/home/ctwardy/SAR/constraintSolution.tex")
+
+("eq:POA'" "e" "POA_{new} = POA_{old} - POS " "/home/ctwardy/SAR/constraintSolution.tex")
+
+("eq:POA2'" "e" "POA_{i+1} = POA_0 - \\sum_1^i POS_i " "/home/ctwardy/SAR/constraintSolution.tex")
+
+("eq:POS_ra" "e" "POS_{r,a} = POD_{r,a} \\cdot POA_{r,a} " "/home/ctwardy/SAR/constraintSolution.tex")
+
+("eq:POA_ra" "e" "POA_{r,a} = POA_a - \\sum_{i=1}^{r-1}POS_{i,a} " "/home/ctwardy/SAR/constraintSolution.tex")
+
+("eq:POS2_ra" "e" "POS_{r,a} &=& POD_{r,a} \\cdot POA_{r,a} " "/home/ctwardy/SAR/constraintSolution.tex")
+
+("eq:POS_tot" "e" "POS &=& \\sum_{r=1}^N \\sum_{a=1}^M POS_{r,a}" "/home/ctwardy/SAR/constraintSolution.tex")
+
+(toc "toc" "      2.3 Conditional Probability Notation" "/home/ctwardy/SAR/constraintSolution.tex" nil 3 "2.3" "\\subsection{Conditional Probability Notation}" 13487)
+
+("sec:Cond-Prob-Notat" "s" "We will use all resources. The prior is 1: $\\Pr(R) = 1$" "/home/ctwardy/SAR/constraintSolution.tex")
+
+("eq:4" "e" "\\Pr(D|R,A) = 1 - e^{-S_{r,a} x_{r,a}} " "/home/ctwardy/SAR/constraintSolution.tex")
+
+("eq:5" "e" "\\Pr(A|\\no{D}) &\\propto& \\Pr(\\no{D}|A) \\cdot \\Pr(A)" "/home/ctwardy/SAR/constraintSolution.tex")
+
+("eq:6" "e" "\\Pr(\\no{D}) = \\sum_A \\Pr(\\no{D},A) " "/home/ctwardy/SAR/constraintSolution.tex")
+
+("eq:8" "e" "\\Pr(\\no{D},A) = \\Pr(\\no{D}|A) \\cdot \\Pr(A) " "/home/ctwardy/SAR/constraintSolution.tex")
+
+("eq:7" "e" "\\Pr(\\no{D}) &=& \\sum_A P(\\no{D},A)" "/home/ctwardy/SAR/constraintSolution.tex")
+
+(toc "toc" "    3 Optimizing the Allocation" "/home/ctwardy/SAR/constraintSolution.tex" nil 2 "3" "\\section{Optimizing the Allocation}" 16008)
+
+("sec:Optim-Alloc" "s" "I have some very good news. To find the solution to your problem only requires solving $2R + A$ line" "/home/ctwardy/SAR/constraintSolution.tex")
+
+(eof "/home/ctwardy/SAR/constraintSolution.tex")
+))

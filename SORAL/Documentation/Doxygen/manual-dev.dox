@@ -1,0 +1,1153 @@
+/********************************************************************* 
+ *  SAR<em>Bayes</em> OPTIMAL RESOURCE ALLOCATION LIBRARY 2001-03    *         
+ *                                                                   *
+ *********************************************************************/
+/** \file  manual-dev.dox
+ *  \brief manual-dev.dox contains the SORAL Developer's Manual in dOxygen format
+ *  
+ *
+ * <b>Version History</b>
+ *
+ * \verbatim
+ *-----+---------+-----+--------------------------------------------
+ * Who |   When  | Ver | What                                       
+ *-----+---------+-----+--------------------------------------------
+ * ASO | 06jan03 |  1  | Created.        
+ * crt | 09jan03 | 1.1 | Revised for terms, flow, consistency.
+ * crt | 13jan03 | 1.2 | Fixed warnings. Added \todo. Revised.
+ * crt |  8apr03 | 1.5 | Quick revision for code review 2
+ * crt |  5may03 |  2  | Revised after code review 2. For release.
+ *     |         |     | Collapsed pages into sections so they
+ *     |         |     | appear before the source code, in 1 place.
+ *-------------------------------------------------------------------
+ * \endverbatim
+ */
+
+
+/** \mainpage SORAL Developer's Guide
+ * <h2>Charles Twardy & Andre Oboler</h2>
+ * <h3>Version 2.0</h3>
+ * \date 8 May 2003
+ *
+ * SORAL is the SAR<em>Bayes</em> Optimal
+ * Resource Allocation Library, a programmer's API of optimization
+ * algorithms tailored to Search And Rescue (SAR). From an end-user's
+ * perspective, SORAL provides functions to best allocate a given
+ * set of SAR resources to most effectively find a lost person.
+ * The SORAL API is a simple, clean, modular collection of algorithms,
+ * each of which is optimal in its own domain. By virtue of plugging
+ * in to SORAL, each also provides important values for the end-user,
+ * such as probability of detection, coverage, and others.
+ *
+ * The SAR<em>Bayes</em> project is based at Monash University (Australia).
+ * SORAL is free (<em>libre</em>) software available under the Gnu GPL.
+ * It was officially released mid-May, 2003. 
+ * The most recent documentation and information is available at the
+ * web site: http://sarbayes.org
+ *
+ * We have taken inspiration for this Guide from the Data Conditioning
+ * API Developers Guide by Philip Charlton. Indeed, much of 
+ * \ref codingStandard comes straight from his guide.
+ * 
+ * <hr>
+ * \section overview Overview
+ * This document is intended to provide a set of guidelines for developers
+ * when writing new components for the SORAL library. If you are reading
+ * a printed version, the source-code documentation follows. If you are
+ * reading online, there are links to the source-code documentation in
+ * the header and footer bars. Because this is the Developer's Guide,
+ * these will include all the private class members, not just the 
+ * interface.
+ * 
+ * If you are an application programmer who wants to <em>use</em>
+ * SORAL, or if you want to know more about resource allocation 
+ * and what to do with it, you should look at the 
+ * <a href="../User/html/Main.html">User's Manual</a>.
+ * 
+ * The Developer's Guide describes SORAL's structure more generally and 
+ * gives
+ * coding standards, instructions for getting the code from CVS,
+ * examples, and so forth. Here is the outline:
+ * -# \ref overview
+ * -# \ref licensing
+ * -# \ref review
+ * -# \ref libStruct
+ * -# \ref getcode
+ * -# \ref policy
+ * -# \ref codingStandard
+ * -# \ref docStandard
+ * -# \ref allocation
+ * -# \ref final
+ * -# \ref references
+ * 
+ *
+ * \subsection getting Getting this document
+ * Versions of this document in HTML, RTF, and PDF can be found linked
+ * from the SORAL section of this page:
+ *       <center>http://www.sarbayes.org/projects.shtml</center>
+ *
+ ************************************************
+ * <hr>
+ * \section licensing Licensing for SORAL
+ * 
+ * SORAL is free (<em>libre</em>) software released under the Gnu GPL,
+ * and copyright (some of) the authors and Monash University (the 
+ * SAR<em>Bayes</em> project). A copy of the GPL should be included
+ * in your copy of SORAL. In short, you are basically free to do 
+ * what you want with the software so long as anything you create with
+ * it is also GPL. If you want to use it in proprietary software,
+ * you must negotiate a separate agreement with us.
+ * 
+ * The SORAL Documentation is free documentation, copyright the authors
+ * and the SAR<em>Bayes</em> project at Monash University. 
+ * You may copy, distribute, transform, and alter it, so long as you do 
+ * not restrict the right of others to do the same to your derivative
+ * version. Of course, we would prefer that you submit your changes to us.
+ * 
+ * If you would like your algorithms included in the official SAR<em>Bayes</em>
+ * distribution, you will need to share copyright with Monash, or, 
+ * equivalently, grant Monash unlimited license to reproduce. The reason
+ * for this is so that we can offer SORAL to proprietary (non-GPL) users
+ * without having to contact everyone who ever contributed.
+ * 
+ * Sharing copyright means you keep all your rights. Specifically, you
+ * can also make non-GPL versions of your stuff, include it in proprietary
+ * code, etc. But you also give us those rights.
+ * 
+ * If you want your code in the official SAR<em>Bayes</em> distribution,
+ * please insert the following text in your file headers:
+ *
+ * \verbatim
+//===========================================================================//
+// Written by ****AUTHORS HERE*****                                          //
+//                                                       http://sarbayes.org //
+//---------------------------------------------------------------------------//
+// The SORAL implementation is free software, but it is Copyright (C)        //
+// 2001-2003 the authors and Monash University (the SARBayes project).       //
+// It is distributed under the terms of the GNU General Public License.      //
+// See the file COPYING for copying permission.                              //
+//                                                                           //
+// If those licensing arrangements are not satisfactory, please contact us!  //
+// We are willing to offer alternative arrangements if the need should arise.//
+//                                                                           //
+// THIS MATERIAL IS PROVIDED AS IS, WITH ABSOLUTELY NO WARRANTY EXPRESSED OR //
+// IMPLIED.  ANY USE IS AT YOUR OWN RISK.                                    //
+//                                                                           //
+// Permission is hereby granted to use or copy this program for any purpose, //
+// provided the above notices are retained on all copies.  Permission to     //
+// modify the code and to distribute modified code is granted, provided the  //
+// above notices are retained, in accordance with the GNU GPL.               //
+//===========================================================================//
+ * \endverbatim
+ * 
+ * If you want to develop but aren't sure you don't want to share copyright,
+ * send us a note or give a call. At worst, you can develop for it GPL, 
+ * and we'll link to your stuff, but won't include it in the official 
+ * SAR<em>Bayes</em> distribution. But we can probably allay any worries.
+ * We're not in this to make money.
+ *
+ ************************************************
+ * <hr>
+ * \section review Review of what SORAL does
+ *
+ * SORAL is a library of algorithms for Search And Rescue and related
+ * problems. It's primary goal is to find the lost person faster,
+ * by finding the most efficient way to use your resources.
+ * 
+ * SORAL takes some basic (but theoretical) information about your
+ * resources, areas, and initial probabilities, and creates optimal 
+ * allocations, given the constraints of the algorithm chosen. 
+ * It also computes for any allocation (including arbitrary ones)
+ * important information like Coverage, Probability of Detection (POD), 
+ * Probability of Success (POS), and new Probability of Containment (POC)
+ * [POC is also known as Probability of Area (POA)].
+ * 
+ * (If this does not make sense to you, you should read either the
+ * User's Manual, or some of the background Search Theory material 
+ * available from the SAR<em>Bayes</em> website.)
+ * 
+ * In particular, SORAL methods ask for:
+ * - An initial probability map (vector of probabilities for each cell)
+ * - A list of resource availabilities (vector of times, one per resource)
+ * - A table of Effectiveness values (matrix of size numAreas X numResources):
+ *   - giving in each cell an Effectiveness for that resource in that area 
+ *   - Effectiveness = (Sweep Width) X (Speed) / (Area)
+ * - (Possibly other things depending upon the algorithm.)
+ * SORAL does not care what units you use, so long as you are consistent.
+ * But one common choice would be:
+ * - Sweep Width: [meters]
+ * - Speed: [meters/second]
+ * - Area:  [meters^2]
+ * 
+ ******************************************************
+ * <hr>
+ * \section libStruct SORAL Library Structure
+ * 
+ * SORAL has many different algorithms, because different algorithms 
+ * are better suited to different problems. For example, is it reasonable
+ * to assume you can split your resources as finely as you wish, or do they
+ * come in predetermined chunks? Indeed, one of the main goals for SORAL
+ * was a modular structure encouraging plug-in algorithms. There are many
+ * algorithms available in the Operations Research literature.
+ * 
+ * However, the calling program (a search management GUI perhaps) wants
+ * to know as little about those algorithms as possible. After all, the
+ * primary goal of SORAL is to provide a library that does all the hard math 
+ * reliably so programmers can get on with <em>using</em> the algorithms.
+ * So insofar as possible, the calling program interacts only with the
+ * base methods. Everything is an <strong>Allocation</strong>, meaning
+ * that any new algorithm you develop will be a descendant of Allocation.
+ *
+ * Different algorithms will make their allocation in different ways, 
+ * or use different internal data structures, but this is all hidden
+ * from the user. Once the user has created an allocation object, he
+ * interacts with it using the base methods.
+ * 
+ * One way to do this would be to require developers to re-implement a lot of
+ * virtual methods. We didn't do that.
+ * 
+ * You have to implement about 6 virtual methods. These methods provide
+ * handles for the base-level iterators to use to walk your data structure.
+ * All the calculations and reporting can be done by the base Allocation
+ * from there.
+ *
+ * So SORAL provides a fast way to implement a new algorithm with minimal
+ * fuss. At least we think so. And we've put a lot of design work into
+ * making it so.
+ *
+ * The current structure is captured in the automatically-generated
+ * source-code documentation. The HTML version should provide 
+ * clickable class diagrams and interaction diagrams. 
+ * <strong>Note:</strong> what Doxygen calls a ``collaboration diagram''
+ * is <em>not</em> a UML collaboration diagram. But it's useful anyway.
+ *
+ * The current <em>design</em> (desired structure) as a UML diagram 
+ * is in the soral.dia file in the SORAL/Docs directory. This is
+ * not automatically generated, but created by hand in Dia. 
+ * Ideally, it is accurate and slightly ahead of the code, but it is easy 
+ * to get out of sync. It is available in viewable format on the
+ * website as either.
+ * <ul>
+ * <li><a href="http://sarbayes.org/SORAL/soral.svg">soral.svg</a></li>
+ * <li><a href="http://sarbayes.org/SORAL/soral.pdf">soral.pdf</a></li>
+ * </ul>
+ *
+ * The core of SORAL is the Allocation class and its 3 iterators. 
+ * The current structure allows for these very same iterators to 
+ * work on any kind of allocation, so users have a single, standard
+ * interface, no matter how fancy the underlying footwork.
+ *
+ * In an early version of SORAL, every new algorithm inherited the allocation
+ * from Allocation, and each kind of iterator from the basic iterators.
+ * That made for a very complicated parallel inheritance hierarchy, with 
+ * each algorithm defining 3 new iterators, declaring them as Friends, and 
+ * having them inherit from the base iterators while it inherited from 
+ * Allocation. It was unwieldy and easy to make mistakes. It created a high 
+ * burden on an algorithm developer. It broke encapsulation. And 
+ * it also seemed to require general classes like "Iterator" and "Container",
+ * which were really useless since we never had a container (or iterator)
+ * without knowing its type. That was SORAL 1.0. Effectively no one 
+ * outside our  group saw it.
+ *
+ * For SORAL 2.0, we made two key structural changes, the second 
+ * giving us the new iterator design.
+ * First, we put all the common calcuations into the base class. Therefore
+ * new algorithms don't have to bother writing routines for calculating
+ * Coverage, POS, POD, etc. 
+ *
+ * Second, the base Allocation class does not store an allocation. 
+ * Each algorithm may have developed a very clever, very fast data structure
+ * which it can uses. There is no reason to convert to some ``generic'' 
+ * allocation, possibly duplicating storage, slowing access, or reducing 
+ * flexibility. All we need to do is provide a common way to get at 
+ * <em>any</em> data structure natively.
+ *
+ * In order to do that, each data structure needs to provide a few basic
+ * functions. It has to show us which areas have allocations (often many
+ * or most will not), and it has to let us read those allocations, whether
+ * we are interested mostly in what's been assigned to a given area, or 
+ * whether we are interested mostly in the areas that Team Alpha has been
+ * assigned to. So we define the following 6 virtual functions:
+ * - <code>firstArea</code>: returns the first area with an allocation
+ * - <code>nextArea</code>: goes to the next area with an alloation
+ * - <code>firstArea(resource)</code>: the first area that <em>resource</em> is assigned to
+ * - <code>nextArea(resource)</code>:  the next area that <em>resource</em> is assigned to
+ * - <code>firstRes(area)</code>: the first resource assigned to <em>area</em>
+ * - <code>nextRes(area)</code>: the next resource assigned to <em>area</em>
+ * Once those are defined, the data structures are irrelevant. The
+ * 3 base iterators can use those 6 functions to get whatever is needed.
+ * 
+ * Third, we have at least one matrix parameter: Effectiveness. We need
+ * some sort of matrix class. Right now we don't need much matrix 
+ * performance, but later we might. So we created a simple abstract
+ * matrix class, Array2D, which has all the important operations defined. 
+ * So we can leave it simple for now, or later use a very clever matrix
+ * class inside Array2D.
+ *
+ * \subsection newIdeas Future Plans and Ideas
+ *
+ * SORAL takes theoretical values for its Effectiveness. It takes a lot of
+ * work to determine a Sweep Width, and for land SAR, we usually don't
+ * know them, though there is progress on that front.
+ * It might be nice to have a library which assisted
+ * the user in calculating Effectiveness. Right now it has to be calculated
+ * or guessed manually. This may also be a database issue: there are some
+ * land-search sweep-width experiments now, so it may be more appropriate
+ * to just import a database than to approximate by quick field estimates
+ * such as one-half average-maximum-detection-range.
+ *
+ * The search methods now instantiated all assume the subject has stopped
+ * moving. There are algorithms to handle a moving person. These
+ * require not just an initial probability map, but a probability map that
+ * evolves with time, independent of search effort. That may be something
+ * we can add to SORAL or we may want a separate library or bit of code.
+ * 
+ * Please let us know of any further libraries or library functions that could 
+ * be useful for search and rescue software. (We prefer to concentrate on
+ * search theory since we have some expertise there, and not many land 
+ * searchers do.) If you build any additional libraries or programs,
+ * please let the us know. 
+ *
+ * Current contact details can be found on the SAR<em>Bayes</em> website at: 
+ *               http://sarbayes.org
+ *
+ **************************************************************
+ * <hr>
+ * \section getcode Getting the Code
+ *
+ * Before beginning development on SORAL, you must get the source code.
+ * We maintain SORAL code in a CVS archive and strive to have the 
+ * checked-in code in good running condition, so you should be able
+ * to check it out and compile it most any time. In this section
+ * we tell you how to get the code, how to compile and test it,
+ * how to update it, how to get an account so you can check in, and 
+ * how to use your new super powers.
+ *
+ * \subsection cvstrac Getting Code online via CvsTrac
+ * The SAR<em>Bayes</em> website has a web interface to our CVS system.
+ * It provides for source browsing and checkout, bug tracking, and
+ * a Wiki server, which is a set of web pages modifiable white-board style 
+ * by most users. To see the CvsTrac for SORAL, browse to
+ * http://sarbayes.org/cgi-bin/run-cvstrac.cgi/SORAL/index
+ * Then you can do several things:
+ * - Click "Browse" to browse the source tree, including version histories 
+ *   of files. You probably want to click "SORAL" and then "C++".
+ * - Click "Reports" and then "Important tickets" to see outstanding
+ *   bugs and to-dos.
+ * - Click "Wiki" to see the collection of white-board pages, which may
+ *   include some how-tos, FAQs, or whatever people put up there.
+ * - Click "Login" if you have a cvstrac account with SAR<em>Bayes</em>.
+ * The main reason for CvsTrac is bug tracking and planning. While it
+ * can be used for CVS access, it is not efficient: you have to get
+ * files one at a time. If you're a developer, or even a user who
+ * wants recent stuff, you deserve more. 
+ *
+ * \subsection beyond Going beyond the web interface
+ * 
+ * This section covers how to use CVS either anonymously or with an
+ * account. You'll need an account to commit changes back to the 
+ * repository, otherwise everything else here applies. The anonymous
+ * account is, "anonymous" with password "anonymous". Tricky, eh?
+ * 
+ * If you want to develop for SORAL, you should ask for
+ * a CVS account before you get too far. Say hi, tell us about yourself
+ * and what you want to do.  
+ * If you want to write a new algorithm, or basically do anything
+ * but modify existing code, no problem: we can give you
+ * access to your own subdirectory or files. If you want to modify the 
+ * base classes or existing algorithms, we're going to ask you to
+ * submit patches for review until we're really sure you know what
+ * you're doing.
+ *
+ * So you've written to us, and we've given you an account. We'll
+ * probably ask you to log in via CvsTrac and change your password.
+ * Then you can begin using CVS as below.
+ * 
+ * \subsection cvsFirst The first login / check out:
+ *
+ * The first thing you do is log in to CVS and "check out" a module,
+ * SORAL in this case. <strong>You only need to do this once</strong>, 
+ * unless you wish to wipe the slate and start over.
+ * 
+ * Here's how to log in and check out SORAL from a Unix environment
+ * with the 'sh' or 'bash' shell or relatives.
+ * Please use your username (or "anonymous") for <username>. Type
+ * your password (or "anonymous") when prompted.<br>
+ * First, change to the directory where you want to have SORAL
+ * (mine is in ~/Projects/SARBayes/). Then:
+ * \verbatim
+ export CVSROOT=:pserver:anonymous@sarbayes.org:/home/sarbayes/cvs/SARBayes
+ cvs login
+ cvs -z3 co SORAL
+ \endverbatim
+ * You now have the code! You can change to the SORAL directory and begin 
+ * to explore. (See \ref build )
+ * <strong>Note:</strong> don't use the "co" (checkout) command any more
+ * unless you want to remove the SORAL directory and start again.
+ *
+ * \subsection cvsbrief The life of CVS in two commands
+ * Before we go into details, here's the basic picture. 
+ * Pretend you're a developer. Your CVS life is 
+ * pretty simple and routine. 
+ * - "cvs update" when you start working. This gets the latest and greatest
+ *   from the repository. ("cvs -z3 -q up" is better).
+ * - "cvs commit" after you've tested your changes. This puts your
+ *   changes back into the repository.
+ * That's it.
+ *
+ * \subsection cvsUpdate Updating your local source (from the repository):
+ *
+ * You come back on Monday and are about to get to work. WAIT!
+ * First make sure you've got the most recent code: someone else may
+ * have made changes over the weekend. Go to the directory with your
+ * local copy of the code and type:
+ * \verbatim
+cvs -z3 update
+\endverbatim
+ * 
+ * Your local copy will be updated with newer version of files in the repository
+ * If you want a quieter update, type \verbatim cvs -z3 -q update \endverbatim
+ * instead. And "up" is equivalent to "update". The "-z3" means, "compress
+ * in transit". 
+ *
+ * CVS remembers all that :pserver: stuff in the CVS subdirectory, and
+ * it remembers you password in ~/.cvspass. That's why you don't need
+ * to type it anymore.
+ *
+ * \subsection cvsUpdating Posting to the repository:
+ *
+ * So you've made some changes, checked that the code is in a clean state
+ * (see \ref policy), and want to share the joy. 
+ * Go to the directory where your local copy
+ * of the code lurks (you should be there if you've just been editing
+ * and testing). Then type:
+ * \verbatim
+cvs commit
+\endverbatim
+ *
+ * You will enter a vi session (or your default editor). Add a comment 
+ * about this update, save and exit.  (Or if you have only a brief comment,
+ * type \verbatim cvs commit -m "My brief comment...."\endverbatim and
+ * you can skip the vi session. (Much rejoicing.)
+ *
+ * You will see the files being updated
+ * Repository is now updated: you have contributed to the accumulated
+ * wisdom of humanity.
+ * 
+ * 
+ * \subsection build Compiling and Testing the Code
+ * So you just got SORAL. Now what? Where do you start? The code
+ * is in SORAL/C++ (unless you're interested in the Matlab stuff).
+ * Therein you will find a Makefile. You have come to the right place.
+ * (If you are on Windows, there are also Visual C++ project files, so 
+ * you can do this from the GUI.)
+ *
+ * Here are the options. You would normally only need to use the first 
+ * couple.
+ * - "make exec" will build the library and also SORALtestBed. You may then
+ *   run SORALtestBed and it should pass all the tests (9 right now).
+ * - "make sample" will build the simple program "sample" which will
+ *   create a tiny allocation print it out, convert it to a user-defined
+ *   allocation, make a slight modification, and print it out again.
+ *   This is a good small program to see how to use the SORAL API.
+ * - "make clean" removes all the build files
+ * - "make" builds only libsoral.a, a binary library that you can link
+ *   to dynamically.
+ *   \todo Right now, only on unix systems, so you may have to link
+ *   statically.
+ * - "make libinstall" will eventually put libsoral.a and the header
+ *   files in convenient places.
+ * - "make test" is the same as "make exec" except that it sets the 
+ *   TESTMODE flag, generating lots of debug info.
+ * If any of those don't work, please contact us immediately.
+ * Chances are, you caught us during some active patching.
+ * 
+ * \subsection cvsOther CVS GUIs and other CVS info
+ *
+ * If you are unfamiliar with CVS, you may wish to read the man pages,
+ * or browse one of:
+ * - <em>Version Management with CVS</em>, http://www.cvshome.org/docs/manual/<br>
+ *   The "official" manual. No-nonsense fast intro, great reference.
+ * - <em>Open Source Development with CVS</em>, http://cvsbook.red-bean.com/<br>
+ *   Walks you through everything. And probably has lots of stuff I should read too.
+ * 
+ * Generally, you only need two commands (plus the first login), so
+ * a GUI is overkill. But CVS is often intimidating at 
+ * first. If you wish to use a GUI front-end to CVS, Go for it! 
+ * Suggestions:
+ * - CvsGui, http://www.wincvs.org<br>
+ *   aka WinCvs, MacCvs, gCvs. By far the best CVS GUI I've seen. 
+ * - PCL-CVS, a CVS mode for Emacs. Not quite GUI, but if you're using
+ *   Emacs you'll appreciate it. Allows transparent check-in/check-out
+ *   file-by file with <C-x v v>, and also PCL-CVS directory navigation
+ *   mode with context menus. That mode is sightly flaky about updating 
+ *   the display, so I use command-line for batch operations.
+ * - There are others. What I've seen is not impressive. (gnome-cvs, tkcvs,...)
+ * 
+ * 
+ * <hr>
+ * \section policy Policy: 
+ * 
+ * We strive to keep the repository <strong>clean</strong>. Clean code
+ * compiles without warnings or errors on both Windows and Unix, and
+ * passes the tests.
+ * Right now the compile standards are:
+ *   - Windows: Visual C++, version 6
+ *   - Unix: g++, gcc version 3.1.1 (runs on bruce, for those at Monash).
+ * We also try Linux (x86 and powerpc) and MacOSX (10.2), all running
+ * g++ 3.2 and above.
+ * 
+ * Don't check in dirty code. At least not if it affects the main build.
+ * If you're working on a new algorithm that is not yet in the main
+ * build, don't worry about it. But if you're working on a module in the 
+ * main build, try to make and test
+ * localized changes so that you can check in clean code either:
+ *    - Each day (when much work is happening)
+ *    - Each week (when less work is happening)
+ * If you cannot test it on other platforms, let the other developers
+ * know that you have committed a change and request further testing.
+ *
+ * For the main build especially, manually-generated class diagrams 
+ * should be updated and checked in before coding where possible. 
+ * They provide the best and maybe only way to check the implementation 
+ * against the design. 
+ *
+ * If you have added no functionality, then make sure that you do:
+ * - make clean
+ * - make exec
+ * - make sample
+ * - ./SORALtestBed
+ * - ./sample
+ * and that you have no errors or warnings, and that both SORALtestBed
+ * and sample run properly.
+ *
+ * If you have added functionality, you should also define test
+ * cases and include those in your own test package, or in the
+ * two existing test programs (sample.cpp and TestBed.cpp).
+ *
+ *
+ *********************************************
+ * <hr>
+ * \section codingStandard The Coding Standard
+ *
+ * The library code is designed to be readable.  Here are some basic commandments:
+ * 
+ * - Always use meaningful names (except for loop indexes etc.)
+ * 
+ * - Start class attribute names with the word ``my''. For example, myEffectiveness.
+ *
+ * - Start constructor parameter names with ``p_''. For example, \verbatim
+Array2D(const int p_rows, const int p_columns);   \endverbatim
+ * 
+ * - Start compound property and method names with a lowercase letter, 
+ *   and each word thereafter should start with a capital letter.
+ *   For example: <code>myReallyLongVariableName</code>, 
+ *   <code>p_array2D</code>, <code>aReallyLongFunctionName()</code><br>
+ *   Exception: Constructors and Destructors are capitalized.
+ *
+ * - Do not make attributes public. (If you think you <em>need</em> to, ask.)
+ * 
+ * - If an attribute may be needed externally, provide a ``get'' method.
+ *   The name of the get method does not include the ``my'' prefix.
+ * 
+ * - Don't use ``friend'' unless there is no other way. We've tried to
+ *   make all the friendships you need. :-) 
+ *
+ * - Inherit protected methods as protected. Someone else may want to
+ *   inherit from your method.
+ * 
+ * - Set braces like this (Good God, why? This is not the Emacs way, grasshopper.):
+ *
+ * \verbatim
+        int aFunction(void)
+        {
+		  // some code
+        }
+ \endverbatim
+ *
+ * - Maintain code free of both errors warnings under both windows and unix.
+ *   See \ref policy.
+ *
+ * A class in SORAL is an implementation of a particular algorithm. For example,
+ * the Charnes-Cooper algorithm which generates theoretically optimal allocations
+ * for a single resource pool, without heuristic search. All algorithms
+ * create an allocation, for which the base Allocation class provides a
+ * number of standard operations that you don't have to write.
+ *
+ * \subsection fileOrg File organization
+ * 
+ * Despite the fact that the original classes may not (yet) 
+ * obey this convention, please <em>declare</em> new classes in a 
+ * single header file named ClassName.h.
+ *
+ * Please put the class <em>definition</em> in ClassName.cpp
+ *
+ * Lay out your header (.h) files this way:
+ * -# Descriptive header as described in \ref docStandard
+ * -# File guard of the form: \verbatim
+#ifndef CLASSNAME_H
+#define CLASSNAME_H
+\endverbatim
+ * -# System includes, <code>#include <></code>
+ * -# Application includes, <code>#include ""</code><br>
+ *  Only include required files. Remember that any types which are
+ *  referred to via pointers or references <em>only</em> need not
+ *  be defined, just forward-declared.
+ * -# (Pre-processor directives such as <code>#define</code>, if required.)<br>
+ *  Use const variables in preference to <code>#define</code>.
+ * -# Forward declarations
+ * -# External functions declarations
+ * -# External variables declarations
+ * -# External constant declarations <br>
+ *    Where possible, constants will be <em>declared</em> in a header
+ *    but <em>defined</em> in a source file so that changing the value
+ *    of a constant doesn't trigger recompilation of a large number of
+ *    files.
+ * -# Struct declarations
+ * -# Class declaration. Declare sections of the class explicitly in
+ * the following order (ideally we will set up a template).
+ *    -# Public
+ *    -# Protected
+ *    -# Private<br>
+ * -# Close for the file guard, of the form:<br>
+ * <code>#endif // CLASSNAME_H</code>
+ * 
+ * Lay out your source (.cpp) files to follow the header files.
+ * Don't include things that are already included in the header.
+ *
+ * Create new classes with the following template:\verbatim
+    class MyClass 
+	{
+        public:
+        private:
+            MyClass();                                  // default constructor
+            MyClass(const MyClass&);                    // copy constructor
+            ~MyClass();                                 // destructor
+            const MyClass& operator=(const MyClass&);   // copy assignment
+    };
+\endverbatim
+ * If left undefined, these functions are implicitly defined by the
+ * compiler. Putting them in <em>private:</em> prevents them from
+ * being called inadvertently. As you define each function, you
+ * can move it to the public section, or <em>perhaps</em> remove it entirely
+ * if the implicit definition is appropriate.
+ *
+ * \todo Consider a soral namespace. See dcAPI page 7.
+ * 
+ * That's enough for now. We might choose to add more later,
+ * referring to the dcAPI or other examples. But I'd rather not 
+ * get TOO picky here. Often it's easier to just use previous
+ * code as an example, or have a template file to start with.
+ *
+ *******************************************************
+ * <hr>
+ * \section docStandard Documentation Standard
+ * 
+ * We strive to use dOxygen for as much of our documentation as possible,
+ * including this manual. We also maintain our main UML design diagram 
+ * (soral.dia) separately with the package Dia. 
+ * In the future, we may use LaTeX directly for theory papers or general
+ * introductions to search theory that are not so closely linked to the code.
+ *
+ * Whether we write in LaTeX or dOxygen, we can generate HTML and PDF
+ * from the same source, and make the documents available online.
+ *
+ * \subsection Tools
+ *
+ * <ul>
+ * <li>
+ *     Dia: http://www.lysator.liu.se/~alla/dia/ <br>
+ *     ``Dia is a gtk+ based diagram creation program released under the GPL license.'' 
+ *
+ *     We use Dia primarily for design work in UML. The controlling design for
+ *     SORAL itself is in soral.dia. We strive to make design changes first to that
+ *     file and then to work on source code. After 2.0 we hope there will be
+ *     very few changes to the base structure, and only the addition of new
+ *     algorithms. It probably makes more sense to design and create the new
+ *     algorithm separately, and add it to soral.dia only after it is working.
+ *     (Right now, we're not sure how much algorithm detail we want in soral.dia
+ *     anyway.) Dia does not export directly to PDF, but it exports to Xfig,
+ *     which exports nicely to PDF.
+ * </li>
+ *
+ * <li>dOxygen http://www.stack.nl/~dimitri/doxygen/ <br>
+ *     ``Doxygen is a documentation system for C++, C, Java, IDL (Corba, 
+ *     Microsoft, and KDE-DCOP flavours) and to some extent PHP and C#.''
+ *     It is also GPL.
+ *
+ *     Like JavaDoc, dOxygen creates file- and 
+ *     class-based documentation from the source code. Output from dOxygen is 
+ *     in the following formats: HTML, LaTeX, Man pages, PDF, RTF and others. 
+ *     In addition, dOxygen allows you to write additional documentation
+ *     (like this manual) in LaTeX-like markup, and so we strive to put
+ *     as much as possible into dOxygen.
+ *
+ *     <strong>Note on settings: </strong>
+ *     To work correctly with the style used for this project JAVADOC_AUTOBRIEF 
+ *     should be set to no (the default). Please pay attention to the following
+ *     sections on how to comment your source code. 
+ * </li>
+ * </ul>
+ *
+ * \subsection sourceCommenting Source Code Commenting
+ *
+ * The source code is commented in four ways:
+ * - file headers
+ * - class headers
+ * - function and data members
+ * - maintenance comments (doesn't use dOxygen)
+ *
+ * Although there are many ways of using dOxygen, 
+ * the style outlined below is closest to the original (pre dOxygen) commenting 
+ * style of this project. 
+ *
+ * More information on dOxygen commenting styles can be found at: 
+ * http://www.stack.nl/~dimitri/doxygen/docblocks.html
+ *
+ * \subsection fileHeaders File Header Block
+ * 
+ * Each file contains a head block with the project name, the file name, 
+ * a description of the functionality in the file, a brief history of 
+ * significant changes, and a license.
+ * - Description: a source code may have more than one class, but don't
+ *   lump classes together randomly
+ * - History: let CVS handle the details, but it's nice to have a quick
+ *   orientation. Horizontal separators are optional.
+ * - License: SORAL is GPL and its files should say so. Furthermore, 
+ *   if you want your algorithms in the official SAR<em>Bayes</em> distribution, 
+ *   you need to share copyright with Monash University. See the 
+ *   \ref licensing section for details.
+ *
+ * Format (excluding the license): \verbatim
+/********************************************************************* 
+ *      SARBayes OPTIMAL RESOURCE ALLOCATION LIBRARY 2001-03         *         
+ *                                                                   *
+ *********************************************************************/
+/** \file containr.h
+ *  \brief containr.h contains AreaAssignment and ResourceAssignment
+ *  
+ * These objects are used to return area and resource information to 
+ * the user. The information is wrappered in this class so that the   
+ * user can not do  harmful operations on the allocation list.
+ *
+ * <b>Version History</b>
+ *
+ * \verbatim
+ *-----+----------+-----+--------------------------------------------
+ * Who |   When   | Ver | What                                       
+ *-----+----------+-----+--------------------------------------------
+ * ME  | 05/12/01 |  1  | Created.                                   
+ *-------------------------------------------------------------------
+ * GT  | 25/02/02 |  2  | Modifications.  AreaAssignment now         
+ *     |          |     | encapsulates a resource number rather than  
+ *     |          |     | an area number, whilst ResourceAssignment  
+ *     |          |     | now encapsulates an area number rather than 
+ *     |          |     | a resource number.                         
+ *-------------------------------------------------------------------
+ * ASO | 10/12/02 |  3  | Modified. Removed base class "container"   
+ *     |          |     | and updated "child" classes as needed.     
+ *-------------------------------------------------------------------
+ * \ endverbatim
+ */
+\endverbatim
+ * (Note: put no space between "\" and "endverbatim".)
+ * 
+ * \subsection classHeader Class Header Block
+ *
+ * Each class is preceded with a header block briefly describing it and
+ * its purpose. The description should contain enough information
+ * to decide if new functionality falls
+ * within the class' purpose (and should be part of the class) or 
+ * outside of it. Following the description
+ * is the <em>original</em> author's name. Except when a class has been
+ * completely redone (i.e. nothing but the name remains) no further
+ * version history is contained at the class level.
+ *
+ * Format: \verbatim
+   /**** Magic **************************************************************/
+   ///  A brief (1 line) description of class magic
+   /**
+    *  A more elaborate class description.
+    *  This description may span multiple lines.
+    *
+    *  Author: The white Rabbit
+    */
+    
+    class magic
+    {
+     
+\endverbatim
+ *
+ * NB: note that row of asterisks is not for dOxygen but for visual separation.
+ * Put the class name in the row of asterisks. It makes it easier to find
+ * things when reading the code.
+ *
+ * \subsection property Property (data member) description
+ * All public properties, and most private ones, should have a brief
+ * one-line description of what they are, even if it is obvious.
+ * The description <em>does not</em> contain its type or name, 
+ * just what it is for. 
+ *
+ * Format 1:\verbatim
+     /// Brief (1 line) description of magic beans
+     int magicBeans; /**< Longer additional description */
+\endverbatim
+ *
+ * Or Format 2:\verbatim
+     /// Brief (1 line) description of magic beans
+     /**
+      * Extended description of
+      * of magic beans
+      */
+     int magicBeans;
+\endverbatim
+ * 
+ * \subsubsection function Method and Function description
+ * Almost all methods and functions should contain at least one-line 
+ * descriptions of what the method or function does, even if obvious. 
+ * The non-obvious ones will need more. If appropriate, explain why the
+ * function is there.
+ *
+ * <strong>Put these descriptions at the definition -- where the code lives --
+ * rather than the declaration!</strong> In other words, don't comment the
+ * declaration (stuff in the .h file) unless that's where the code is
+ * (or there is no code). Otherwise it is too easy to get comments out-of-
+ * sync with the code, especially since C++ ignores the variable names 
+ * given at declaration.
+ *
+ * The description <em>should not</em> contain its return type, name or 
+ * parameters unless these need explaining. 
+ *
+ *Format: \verbatim
+
+/**** grow() ***********************************/
+/// Brief (1 line) description of grow()
+/**
+ * Extended description of the grow() method:
+ * Note: <em>amount</em> is in meters.
+ */
+void grow(int amount);
+
+\endverbatim
+ *
+ *
+ * \subsection maintenance Maintenance comments
+ * Use regular (non-dOxygen) comments for maintenance commenting such as:
+ *
+ * <ul>
+ * <li>
+ *   <b>Commented-out code</b>
+ *   If you have to temporarily disable code, or suspect that someone
+ *   might want this code in the future, comment it out rather than deleting.
+ *   Testing code should always be commented out unless it is in use
+ *   (and should be removed from finished code). 
+ *\verbatim
+// Programmers-Initials Date Reason  - code
+// [code]
+//  .
+//  .
+//  .
+\endverbatim
+ * 	Please try not to use C-style \verbatim
+/*  ... */  \endverbatim
+ *   comment blocks in committed code, as they can interact badly if nested.
+ * </li>
+ *
+ * <li>
+ *   <b>Added code</b>:
+ *   If you add something that wasn't there before, people may want to 
+ *   know why. If you haven't explained it elsewhere (the file, class, or
+ *   method header), you should probably insert a short note. For example:
+\verbatim
+// crt 01may03: Trap for the case where from == to
+code
+\endverbatim
+ * </li>
+ * 
+ * <li>
+ *   A note on flow-on changes:
+ *
+ *   Do not document small maintenance changes that result from larger documented
+ *   changes. For example, if you change the type of a variable, comment at the
+ *   declaration, and not in all the formal parameter lists where it is used.
+ * </li>
+ * </ul>
+ *
+ * \subsection otherdOxygen Other useful dOxygen Commands:
+ *
+ * \subsubsection todo Todo
+ *
+ * The "\\todo" command inserts a "Todo" tag into the documentation, 
+ * and also includes that item 
+ * in the ``To Do'' page under ``<a href="pages.html">Related Pages</a>''.
+ * Applies to the whole paragraph. For example:
+ *
+ * \todo This is just an example of a ``To-Do'' item.
+ *
+ * \subsubsection lists Lists
+ *
+ * Bullets are created using - for unnumbered lists or -# for numbered lists. 
+ * The - symbol must in either case be in the same column (character position)
+ * for it to be regarded as the same list level. (Alternatively, you can use
+ * HTML-style lists, and then have column freedom. HTML-style may be better
+ * for longer lists.)
+ *
+ * Example: \verbatim
+  /** 
+   *  A list:
+   *    - Bullet Item 1
+   *         -# Numbered Item 1
+   *         -# Numbered Item 2 \n
+   *            More info about Numbered Item 2
+   *         -# Numbered Item 3
+   *    - Bullet Item 2
+   *         -# Numbered Item 1
+   *         -# Numbered Item 2
+   *
+   *  Some other text.
+   */
+\endverbatim
+ *
+ *  A list:
+ *    - Bullet Item 1
+ *         -# Numbered Item 1
+ *         -# Numbered Item 2 \n
+ *            More info about Numbered Item 2
+ *         -# Numbered Item 3
+ *    - Bullet Item 2
+ *         -# Numbered Item 1
+ *         -# Numbered Item 2
+ *
+ *  Some other text.
+ *
+ * \subsubsection bold Bold
+ * \verbatim
+<b> This in bold </b>
+\endverbatim
+ * <b> This in bold </b>
+ *
+ * \subsubsection emphasis Emphasis 
+ * \verbatim
+<em> This in emphasis </em>
+\endverbatim
+ * <em>This in emphasis </em>
+ *
+ * \subsubsection moredox More at: http://www.stack.nl/~dimitri/doxygen/commands.html
+ *
+ *************************************************************
+ * <hr>
+ * \section allocation Writing New Allocation Algorithms
+ *
+ * \subsection whyAllocation Why you may want to create a new allocation object
+ *
+ * The allocation objects are the core of SORAL. ``Charnes-Cooper'', 
+ * ``Washburn'', and ``UserDef'' are all allocation objects. Each implements
+ * a different algorithm and serves different situations. 
+ * If you have a new algorithm, or an extension to an existing one, 
+ * then you need to write a new allocation object. The whole library
+ * has been designed to make it as easy as possible to do this. If you
+ * already have the internals for some fancy algorithm, there are very 
+ * few things you need to add to make it a SORAL object.
+ *
+ * \subsection howAllocation How to create a new Allocation object.
+ * A new allocation object must inherit from Allocation and implement
+ * the following general functions:
+ *  - Constructor --- The constructor must actually <em>perform</em>
+ *      the allocation! But don't code the allocation directly
+ *      into the constructor: put that in <code>calcAllocation</code>
+ *      and call Make sure to call <code>calcAllocation</code> from the 
+ *      constructor. (Mostly this is for the ease of other programmers,
+ *		but also possibly for future built-in error-checking of new 
+ *		objects.)
+ *
+ *  - Destructor --- Make sure to empty out any data structures you have 
+ *    created and to which you have dynamically assigned memory.
+ *
+ *  - <code>calcAllocation</code> --- The function that does the 
+ *    allocation. It may call other private functions.
+ *
+ * It must also implement the following movement functions
+ * (the iterators use these for moving through your data structure,
+ * about which they know nothing):
+ *
+ * - <code>ActiveArea * firstArea(void) const</code> --- 
+ *   Returns the area number of the first area with something assigned
+ *   to it (as an <code>ActiveArea*</code>).
+ *
+ * - <code> ActiveArea * nextArea(const int currentArea) const</code> ---
+ *   Given an area number, returns the <em>next</em> area that has 
+ *   something assigned to it (as an <code>ActiveArea*</code>).
+ *
+ * - <code>AreaAssignment * firstArea(const int resource) const</code> ---
+ *  Returns the area number of the first area to which the passed 
+ *  resource has been assigned (as an <code>AreaAssignment*</code>).
+ *
+ * - <code>AreaAssignment * nextArea(const int resource, const int currentArea) const</code> ---
+ *   Given a resource number and an area number, returns the next area
+ *   to which this resource was assigned to (as an <code>AreaAssignment*</code>). 
+ * 
+ * - <code>ResourceAssignment * firstRes(const int area) const</code> ---
+ *   Returns the first resource assigned to the passed area 
+ *   (as a <code>ResourceAssignment*</code>).
+ * 
+ * - <code>ResourceAssignment * nextRes(const int Area, int currentResource) const</code> ---
+ *   Given a resource number and an area number, returns the next 
+ *   resource assigned to that area (as a <code>ResourceAssignment*</code>).
+ *
+ * Finally store your allocations in an attribute called 
+ * <code>myAssignments</code>. This can have any structure
+ * whatsoever. But it's nice to other programmers 
+ * if they know where that structure is.
+ *
+ * \subsection friends Friend Functions
+ *
+ * You need to declare the following classes <code>friends</code> of 
+ * your allocation class 
+ * (copy and paste this at the end of your class description):
+ * \verbatim
+	// External methods
+	public:
+		/// So that the AreaIterator can access the first & next functions
+		friend class AreaIterator;
+		/// So that the ResourceIterator can access the first & next functions
+		friend class ResourceIterator;
+		/// So that the ActiveAreasIterator can access the first & next functions
+		friend class ActiveAreasIterator;
+\endverbatim
+ * 
+ *
+ * \subsection usingContainers Using the containers
+ *
+ * There are three types of containers:
+ * - ActiveArea
+ * - AreaAssignment
+ * - ResourceAssignment
+ *
+ * \subsubsection activArea Creating an ActiveArea
+ * For example, to create the <code>ActiveArea*</code> for the movement
+ * function <code>ActiveArea * firstArea(void) const</code>, 
+ * you must return something like this:
+ * - <code>return new ActiveArea(areaNum);</code>
+ * where <code>areaNum</code> is an integer representing one of
+ * the areas in this allocation.
+ * 
+ * \subsubsection areaAssign Creating an AreaAssignment
+ *
+ * For example, for the function 
+ * <code>AreaAssignment * firstArea (const int resource)</code>,
+ * you must  return something like this:
+ * - <code>return new AreaAssignment(tempArea, timeAllocated);</code>
+ * where <code>tempArea</code> is an int referring to an area number and 
+ * <code>timeAllocated</code> is 
+ * a double indicating how long the passed-in resource was assigned
+ * to this area.
+ *
+ * <em> Example:</em>
+ *
+ * If your allocation storage object is an Array2D called myAssignments
+ * (as in Charnes Cooper and UserDef), you could use the following 
+ * complete code (taken from CharnesCooper):
+ * \verbatim
+AreaAssignment* CharnesCooper::firstArea(const int resource) const
+{
+  // Find index of first non zero area for this resource
+  for(int i=0; i<myNumAreas; i++)
+  {
+    if (myAssignments[i][resource]!=0)
+    {
+      return new AreaAssignment(i, myAssignments[i][resource]);
+    }
+  }
+
+  //Check in case this resource not assigned to any areas
+  return NULL;
+}
+\endverbatim
+ *
+ * \subsubsection resAssign Creating a ResourceAssignment 
+ * For example, to create the <code>ResourceAssignment*</code> for the function:
+ * <code>ResourceAssignment * nextRes(const int Area, int currentResource) const</code>,
+ * you must return something like this:
+ * - <code>return new ResourceAssignment(tempResource, timeAllocated);</code>
+ * where <code>tempResources</code> is an int referring to a resource number and 
+ * <code>timeAllocated</code>
+ * is a double referring to the time for which this resource has
+ * been assigned to this area.
+ *
+ * <em>Example:</em>
+ *
+ * If your allocation storage object is an Array2D called
+ * myAssignments, (as in CharnesCooper and UserDef)
+ * you could use the following code fragment:
+ * \verbatim
+    if (myAssignments[area][tempResource] > 0)
+    {
+      return new ResourceAssignment(tempResource,
+				                    myAssignments[area][tempResource]);
+    }
+ \endverbatim
+ *
+ *
+ * <b><em>Note:</em></b>
+ * A word of caution: read carefully the descriptions of the functions you must
+ * implement. The iterators rely on these movement functions and will not 
+ * work if your functions do not meet the specification. 
+ * <em>(Variables won't. Constants aren't. Functions don't.)</em>
+ *
+ *
+ ********************************************
+ * <hr>
+ * \section final Final Notes
+ * We may add more examples here. Tell us what you need.
+ * Feel free to browse the User's Guide as well.
+ *
+ ************************************
+ * <hr>
+ * \section references References
+ * tbd
+ *
+ */
+ 
+		///////////////////////////////////////////////////
+
+
+/* Old table of contents. Out of date now.
+ * [crt removed this 5may03 -- didn't want to maintain this level of detail]
+ * [    To re-add, just update and put an extra asterisk on the first line.]
+ * \page toc Table of Contents
+ *
+ * -# \ref mainpage
+ * -# \ref libStruct
+ *   - \ref review
+ *   - \ref structure
+ *   - \ref newIdeas
+ * -# \ref docStandard
+ *   - \ref docTools
+ *     - \ref dia
+ *     - \ref dOxygen
+ *   - \ref sourceCommenting
+ *     - \ref fileHeaders
+ *     - \ref classHeader
+ *     - \ref propertyMethod
+ *     - \ref otherdOxygen
+ *     - \ref maintenance
+ * -# \ref codingStandard
+ * -# \ref configManagement
+ *   - \ref policy
+ *   - \ref cvssetup
+ *     - \ref cvsPassword
+ *     - \ref cvsFirst
+ *   - \ref cvsUse
+ *     - \ref cvsEditing
+ *     - \ref cvsUpdating 
+ *     - \ref cvsUpdate
+ *     - \ref cvsOther
+ * -# \ref allocation
+ *   - \ref whyAllocation
+ *   - \ref howAllocation
+ *     - \ref friends
+ *     - \ref usingContainers
+ *
+ * \todo Use an auto-date feature for the date on this page?
+ * 
+ */

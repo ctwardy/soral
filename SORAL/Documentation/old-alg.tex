@@ -1,0 +1,85 @@
+\documentstyle[times]{article}
+
+\begin{document}
+
+{\bf Problem:}
+For 
+\begin{center}
+$p_i \ge 0$, $T_j\ge 0$, $w_{i,j}\ge 0, \quad i=1,\ldots,A$, $j=1,\ldots,R$
+\end{center}
+
+Solve:
+$$
+\min_{t_{i,j}\ge 0} \sum_{i=1}^A p_i\exp(\sum_{j=1}^R -w_{i,j}t_{i,j})
+$$
+\indent such that
+$$\sum_{i=1}^A t_{i,j} = T_j, \quad j=1,\ldots,R$$
+
+
+{\bf Algorithm:}
+\begin{quote}
+  For i = 1 to A\\
+  \{\\
+  \hbox{\hspace{5mm}}$a_i = 0$\\
+  \}\\
+
+  For j = 1 to R\\
+  \{\\
+     \hbox{\hspace{5mm}}Insert j into the set S\\
+     \hbox{\hspace{5mm}}Let $r_j = 0$\\
+     \hbox{\hspace{5mm}}Sort $p_1w_{1,j},\ldots,p_Aw_{A,j}$ and let $\sigma(i,j)$ denote the permutation\\
+     \hbox{\hspace{5mm}}such that\\
+     \hbox{\hspace{1cm}}$p_{\sigma(i,j)}w_{\sigma(i,j),j}\ge p_{\sigma(i+1,j)}w_{\sigma(i+1,j), j}, \quad i = 1,\ldots, A$\\\\
+     \hbox{\hspace{5mm}}For i = 1 to A\\
+     \hbox{\hspace{5mm}}\{\\
+     \hbox{\hspace{10mm}}Let $t_{i,j} = 0$\\
+     \hbox{\hspace{5mm}}\}\\\\
+     \hbox{\hspace{5mm}}Let $r_j = r_j + 1$\\
+     \hbox{\hspace{5mm}}Let $a_{\sigma(r_j,j)} = a_{\sigma(r_j,j)}+1$\\
+  \}\\
+
+  While S is not empty\\
+  \{\\
+      \hbox{\hspace{5mm}}For each j $\in$ S\\
+      \hbox{\hspace{5mm}}\{\\
+          \hbox{\hspace{1cm}}Let sum = 0\\
+          \hbox{\hspace{1cm}}For i = 1 to $r_j$\\
+          \hbox{\hspace{1cm}}\{\\
+          \hbox{\hspace{15mm}}Let sum = sum + $1/w_{\sigma(i,j),j}$\\ 
+          \hbox{\hspace{1cm}}\}\\
+          \hbox{\hspace{1cm}}Let $c_j = T_j$/sum\\\\
+          \hbox{\hspace{1cm}}Let $i = r_j + 1$\\
+          \hbox{\hspace{1cm}}If $i \le A$ and $a_{\sigma(i,j)} < a_{\sigma(1,j)}$ then\\
+          \hbox{\hspace{1cm}}\{\\
+          \hbox{\hspace{15mm}}Let $d_j = \ln(p_{\sigma(1,j)}w_{\sigma(1,j),j}/p_{\sigma(i,j)}w_{\sigma(i,j),j})/(a_{\sigma(1,j)} - a_{\sigma(i,j)})$\\
+          \hbox{\hspace{1cm}}\}\\
+       \hbox{\hspace{5mm}}\}\\\\
+       \hbox{\hspace{5mm}}Let s = $\min\{\min_{j\in S} c_j, \min_{j\in S} d_j\}$\\\\
+       \hbox{\hspace{5mm}}For each j $\in$ S\\
+       \hbox{\hspace{5mm}}\{\\
+       \hbox{\hspace{1cm}}For i = 1 to $r_j$\\
+       \hbox{\hspace{1cm}}\{\\
+       \hbox{\hspace{15mm}}Let $t_{\sigma(i,j),j} = t_{\sigma(i,j),j} + s/w_{\sigma(i,j),j}$\\
+       \hbox{\hspace{15mm}}Let $T_j = T_j - s/w_{\sigma(i,j),j}$\\
+       \hbox{\hspace{15mm}}Let $p_{\sigma(i,j)} = p_{\sigma(i,j)}*\exp(-s)$\\
+       \hbox{\hspace{1cm}}\}\\\\
+       \hbox{\hspace{1cm}}If $c_j = s$ then\\
+       \hbox{\hspace{1cm}}\{\\
+       \hbox{\hspace{15mm}}For i = 1 to $r_j$\\
+       \hbox{\hspace{15mm}}\{\\
+       \hbox{\hspace{20mm}}Let $a_{\sigma(i,j)} = a_{\sigma(i,j)} - 1$\\
+       \hbox{\hspace{15mm}}\}\\
+       \hbox{\hspace{15mm}}Delete j from S\\
+       \hbox{\hspace{1cm}}\}\\\\
+       \hbox{\hspace{1cm}}If $d_j = s$ then\\
+       \hbox{\hspace{1cm}}\{\\
+       \hbox{\hspace{15mm}}Let $r_j = r_j + 1$\\
+       \hbox{\hspace{15mm}}Let $a_{\sigma(r_j,j)} = a_{\sigma(r_j,j)} + 1$\\
+       \hbox{\hspace{1cm}}\}\\
+       \hbox{\hspace{5mm}}\}\\
+\}
+\end{quote}
+
+\end{document}
+
+

@@ -1,0 +1,119 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% intro.tex
+% Introduction to allocation tech report in master.tex
+% This section: Charles Twardy
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In this Tech Report we present the resource allocation problem for
+Search \& Rescue, review some of the literature, and describe some of
+the algorithms. The intent of this report is to be the working
+reference document for the development of an open-source
+implementation of a resource allocation library. It is also of use to
+programmers developing programs which use the resource allocation
+library. The appendices may be of interest to those working in land Search \&
+Rescue, as we relate the mathematical formulation of the problem to
+the familiar terms used in NASAR\footnote{National Association of
+  Search And Rescue, the prominent international association for
+  ground SAR.} courses such as FUNSAR\footnote{Fundamentals of Search
+  And Rescue} and MLPI\footnote{Managing the Lost Person Incident}.
+
+
+
+\section{Introduction}
+\label{sec:intro}
+Informally, the problem at hand is to find a stationary lost object or
+person as quickly as possible. That is, we want to allocate our
+resources so that our average, or expected, time to detection is a
+minimum. So our ultimate goal is to minimize our mean time to
+detection.
+
+This goal is difficult to pursue directly, since we usually do not
+know how many resources we will have in the future. Therefore, we
+usually proceed in stages. At each stage we have a pool of resources
+available, and we seek to use them most efficiently. That is, at every
+stage we try to maximize our chances of finding the target. Often this
+strategy also results in the lowest mean time to detection.
+
+Formally, then, we have a constrained minimization problem. The good
+news is that with a little mathematics, we can write down in one
+equation the function we need to minimize. However, we already know
+the answer: the function we need has a minimum when we apply an
+infinite amount of effort to all areas. So the bad news is that we
+have constraints. First, we don't have an infinite amount of effort,
+so the total effort from any resource must add up to its total
+available resource-hours. Second, we cannot apply negative effort to
+any area! Although the second constraint is obvious in the real world,
+we have to specify it explicitly because mathematical functions are
+defined for negative numbers too.\footnote{Indeed, if the real answer
+  leaves area $a$ unsearched, we could do quite a bit better if we
+  could spend negative time in $a$, and then use some of that extra
+  time in some other area!}
+
+
+\subsection{Problem Setup}
+\label{sec:problem-setup}
+
+A crucial first step is to define a possibility area. By definition,
+the target is assumed to be somewhere in the possibility
+area.\footnote{Sometimes it is convenient to include a fake area
+  called ``Rest Of World'' in the possibility area. It is not
+  necessary to do this, and we will not. It is easy to add the ``ROW''
+  area to our algorithm if desired. And ``ROW'' is a nice simple way
+  to express confidence in the scenario itself. A better, but more
+  complicated solution, is to have alternate scenarios, each with
+  different possibility areas, and a probability distribution over the
+  alternate scenarios. ``ROW'' is a more practical alternative.
+  Usually it is enough just to realize that if you have thoroughly
+  covered your possibility area without finding your target or clues,
+  you should expand your possibility area.} Second, the possibility
+area is divided into individual regions or areas according to some
+practical considerations about where the target is likely to be. Given
+what we know about our target, the land, and the situation, each
+region will have some probability of containing the target. For any
+lost person, that probability will vary according to distance, size,
+and type of terrain or vegetation in the region. Although that initial
+probability assignment is itself quite difficult, we will presume that
+it has been done, and that it is correct.
+
+For each resource type, we need to know the amount of effort available
+(in resource-hours, for example). We also need to know how effective
+that resource is at finding targets like our on each type of area in
+our possibility area. For example, bicycles are fast and
+effective on roads and tracks, but not very good in thick
+vegetation. Airborne infrared scopes are very good over open areas,
+and very poor over forests. What we would like for each resource type
+is a table showing that resource's travel speeds and \emph{sweep
+  widths} for each combination of terrain, vegetation, conditions, and
+target. We will never have all of that, but likely we can get data for
+standard conditions, and some correction factors for nonstandard
+conditions. 
+
+Our problem then is to allocate \emph{all available effort} among all
+the areas in such a way as to maximize our probability of detecting
+the target. We will make the idealization that we can divide our
+effort as finely as we wish, and that no time is spent in transit. 
+
+\subsection{Notation}
+
+We have chosen to make the notation as minimal as possible. In
+Appendix 1 we show how our notation is related to other notation
+commonly used in ground SAR. We need only five basic concepts:
+\begin{itemize}
+\item $a: 1\ldots A$ indexes areas from 1 to $A$.
+\item $r: 1\ldots R$ indexes resources from 1 to $R$.
+\item $p_a$ is the probability of finding the lost person in area $a$
+\item $w_{ar}$ is a measure of the effectiveness of resource $r$ in
+  area $a$.
+\item $\Pr(D)$ is the total probability of detecting the subject. We
+  seek to maximize this quantity.
+\end{itemize}
+We can define a few extra concepts for convenience, such as
+$\Pr(\no{D}) = 1 - \Pr(D)$, the total probability of \emph{not}
+detecting the subject. If you have a method of \emph{minimizing} a
+function, $\Pr(\no{D})$ is what you want to minimize.
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "master"
+%%% End: 

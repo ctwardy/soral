@@ -1,0 +1,156 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% related.tex
+% Introduction to allocation tech report in master.tex
+% This section: Charles Twardy
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Related Work}
+\label{sec:related}
+
+Although the problem of optimal resource allocation is only beginning
+to be known in the land search community, it has been studied in the
+context of maritime search since World War II when the U.S. Navy
+needed to find enemy submarines. There has been quite a bit of
+mathematical and computational theory in the Operations Research
+literature. 
+
+The general problem of optimal resource allocation can be broken down
+according to whether there is a single resource or multiple resources,
+whether the target is moving, whether the target is actively evading,
+whether there are false detections, whether there is one or several
+kinds of targets being sought, and whether the sweep width is
+uncertain. Stone \cite{} provides a nice overview, as does ....
+
+In time this paper might expand to explain several algorithms, but it
+is mostly concerned with the case of a \emph{single,
+  stationary} target with \emph{multiple} resources to be allocated,
+no false detections, and no uncertainty in the sweep width. Although
+we have been working on an algorithm, that project is on hold. The
+algorithm we will detail in later sections was developed by Alan Washburn
+\cite{washburn:_jota}. 
+
+Here is a brief survey of other methods.
+
+\subsection{Literature}
+The easiest introduction to the mathematical problem is Washburn's
+short textbook, \emph{Search \& Detection} \cite{}, in particular the
+beginning of chapter 2, and chapters 4 \& 5. The section on Lagrangian
+multipliers uses Everett's theorem, which greatly simplifies
+matters. Further complications such as target motion are
+considered separately in later chapters. However, the text does not
+consider the multiple-resources case, even though the original version
+of Everett's theorem \cite{} handles multiple resources.
+
+Most ground searchers are not likely to make it past the word
+``Lagrangian''. The easiest (and really, only) introduction for
+ordinary ground searchers is the four-part series \emph{*****} by
+J.R. Frost \cite{}. Frost spends the first three sections laying out
+the foundations of sweep width so that finally in the fourth section
+he can discuss the Charnes-Cooper algorithm. Although Frost nicely
+avoids complicated mathematics, he is laboring under a handicap: his
+audience (including one of the present authors) has been using poor
+substitutes for about three decades, in ignorance of the existence of
+actual theory. Since Frost has already put in an effort for
+un-teaching, we will start with the basic elements of the problem and
+hopefully therefore have a more straightforward presentation.
+
+The most complete survey is Stone's \emph{Theory of Optimal Search}
+\cite{stone89:_optimal}. Stone is responsible for many of the major
+advances in search theory since it's original formulation by Koopman
+in the 1940s, and his book is an excellent reference and a good State
+of the Art report. However, after the initial sections it is quite
+densely mathematical. 
+
+Those particularly interested in the application of search theory
+should look at \emph{*********}, the proceedings of a NATO conference
+on search theory in 19**. In addition to presenting some developments
+following the first edition of Stone's book, the papers in that volume
+explore various applications and computer systems.
+
+
+We turn now to a closer look at some particular solutions.
+
+\subsection{Two restricted solutions: stationary target}
+\label{sec:previous}
+
+Stone \cite[81]{stone89:_optimal} surveys previous solutions to this
+problem. In summary, the problem was presented in Koopman's original
+work for the U.S. Navy in World War II. Koopman solved the problem for
+the circular normal target distribution in 1946, and for other
+distributions in 1957. Charnes and Cooper presented an algorithm for
+finding that solution in 1958. Stone unified the previous work in
+the first edition of his book, in 1975, and showed how to derive a
+more general Charnes-Cooper algorithm from the analytic solution.
+
+The Charnes-Cooper algorithm sorts the areas by a quantity known as
+the probable success rate ($PSR = w_{r,a} / POA$), and applies effort
+to level the $PSR$ field. This algorithm is one way to find the
+solutions provided by analytic optimization methods like Lagrange
+multipliers. Another such algorithm is offered in Washburn
+\cite{} based on Everett's theorem. 
+
+Another restricted problem is the case where we ignore the fact that
+resource effectiveness changes with area. That is, for each
+resource $r$, its $w_{r,a}$ is the same for all $a$. So all we have
+are $r$ different factors $w_r$. We can solve this problem for any
+number of resources using a slight simplification of Charnes-Cooper:
+we sort the areas by probability density.
+
+Both solutions are very efficient: they run in O$(A^2)$ time. However,
+neither solution can be applied to the case of multiple resources
+which vary in their effectiveness in different areas. Although we
+could just break up our map into areas and try all combinations of
+areas and resources. The software program CASIE III, widely used in
+land search, does just this. Even with the restriction that we may
+have precisely one resource to one area, the problem has a complexity
+of O$(A^R)$: even a search with 10 resources and 10 areas requires
+10,000,000,000 steps, and the resulting solution is not strictly
+optimal.
+
+
+\subsection{Multiple resources: stationary target}
+\label{sec:mult}
+
+Washburn \cite{washburn95:_jota} has presented a graph-theoretic
+algorithm which solves the multiple resource allocation
+problem in O$(R^{3/2}A^{3/2})$, according to an empirical test. This
+is quite good. Even a 100$\times$100 problem can be done in 1 million
+steps, which is to say almost immediately.
+
+We detail this algorithm in later sections. Washburn's paper requires
+close attention and several readings. We hope to save readers that
+effort. 
+
+\subsection{Moving targets}
+\label{sec:moving}
+
+Of course, in a real search, the target is likely to be moving, at
+least for awhile. We do not consider targets which are
+evading.\footnote{We should consider the case of evasive targets when
+  we are on a manhunt, or searching for psychotic or suicidal
+  subjects, for some Alzheimer's patients, and for children old enough
+  to know not to talk to strangers, but young enough not to be able to
+  tell that this might be an OK time to do so.}
+
+Scott Brown \cite{brown80:_optimal} proved in 1978 that,
+\begin{quotation}
+  a search plan maximizes overall probability of detection if and only
+  if for each time interval $i$ the search conducted at time $i$
+  maximized the probability of detecting a stationary target\ldots.
+\end{quotation}
+However, Brown's proof was for the case of a single resource.
+
+Washburn \cite{washburn83:_fab} developed  algorithm to handle the
+case with multiple resources and a moving target. Washburn's FAB
+algorithm repeatedly calls some stationary target algorithm, so our
+solution could be used if it proved faster than Washburn's.
+
+
+\subsection{Clues and false detections}
+\label{sec:false}
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "master"
+%%% End: 
