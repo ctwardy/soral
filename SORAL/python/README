@@ -2,3 +2,9 @@ These files are generated via SWIG and the C++ library.
 Do not edit them by hand: 
 * soral.py
 * soral_wrap.cpp
+
+Dependencies for python:
+
+You will need python_dev or equivalent package for your OS.
+
+

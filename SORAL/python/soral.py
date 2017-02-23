@@ -309,6 +309,45 @@ class CharnesCooper(Allocation):
 CharnesCooper_swigregister = _soral.CharnesCooper_swigregister
 CharnesCooper_swigregister(CharnesCooper)
 
+
+_soral.ROW_swigconstant(_soral)
+ROW = _soral.ROW
+
+_soral.COLUMN_swigconstant(_soral)
+COLUMN = _soral.COLUMN
+class Array2D(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, Array2D, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, Array2D, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, *args):
+        this = _soral.new_Array2D(*args)
+        try:
+            self.this.append(this)
+        except Exception:
+            self.this = this
+    __swig_destroy__ = _soral.delete_Array2D
+    __del__ = lambda self: None
+
+    def printSelf(self):
+        return _soral.Array2D_printSelf(self)
+
+    def get(self, rowIndex, colIndex):
+        return _soral.Array2D_get(self, rowIndex, colIndex)
+
+    def set(self, rowIndex, colIndex, value):
+        return _soral.Array2D_set(self, rowIndex, colIndex, value)
+
+    def getNumColumns(self):
+        return _soral.Array2D_getNumColumns(self)
+
+    def getNumRows(self):
+        return _soral.Array2D_getNumRows(self)
+Array2D_swigregister = _soral.Array2D_swigregister
+Array2D_swigregister(Array2D)
+
 # This file is compatible with both classic and new-style classes.
 
 
