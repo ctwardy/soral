@@ -37,8 +37,9 @@ else
 	ar -r libSoral.a $(OBJS)
 endif
 
-python: libsoral.a
-	swig -python libsoral.i
+python: $(OBJS)
+	mkdir -p pysoral
+	swig -python -outdir pysoral -o pysoral/soral_wrap.cpp libsoral.i
 
 # To use the library:  g++ mycode.cc -o mycode -lSoral
 # If the library isn't in the current dir (or path), you'll need to 
