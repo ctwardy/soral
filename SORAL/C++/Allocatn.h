@@ -118,6 +118,7 @@ class AreaIterator
 
    public:
 		void operator++(void);
+		inline void increment() { ++(*this); } // for python an other ports without ++ operator
 
 		AreaAssignment operator*(void) const;
 
@@ -179,7 +180,8 @@ class ResourceIterator
 	// Methods
 	public:
 
-		void operator++(void);
+		void operator++(void); 
+		inline void increment() { ++(*this); } // for python an other ports without ++ operator
 
 		//Altered by Gareth Thompson 24-2-2002, to avoid returning a reference to a local variable
 		ResourceAssignment operator*(void) const;
@@ -236,6 +238,7 @@ class ActiveAreasIterator // ASO removed inheritence prior to removing base clas
         int getCurrentActiveAreaNum(void) { return (current == NULL) ? -1 : current->getActiveAreaNum(); }
 		ActiveArea operator*(void) const; 
 		void operator++(void);
+		inline void increment() { ++(*this); }  // for python an other ports without ++ operator
 		bool atEnd(void) const;
 
 

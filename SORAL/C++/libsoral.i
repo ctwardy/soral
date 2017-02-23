@@ -8,9 +8,22 @@
  */
 
 
+/* Surpressed warnings:
+ *
+ * 383 = operator++ ignored. Python doesn't have this operator and the C++
+ *       lib uses it in its incrementor classes. I've simply wrapped the ++
+ *       calls with another function named increment()
+ */
+
 %module soral
+#pragma SWIG nowarn=383
 %{
 #include "Allocatn.h"
 #include "containr.h"
 #include "Alloc-CC.h"
 %}
+
+%include "Allocatn.h"
+%include "containr.h"
+%include "Alloc-CC.h"
+
