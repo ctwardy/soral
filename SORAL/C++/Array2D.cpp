@@ -49,6 +49,7 @@
 // above notices are retained, in accordance with the GNU GPL.               //
 //===========================================================================//
 
+#include <stdio.h> // for printf
 #include <iostream>
 #include "Array2D.h"
 #include "memory.h"

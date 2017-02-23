@@ -67,7 +67,7 @@
 // above notices are retained, in accordance with the GNU GPL.               //
 //===========================================================================//
 
-#include "userDef.h"
+#include "UserDef.h"
 #include <iostream> // ASO 29/11/02 C++ standard is not iostream.h
 
 using namespace std; // ASO 29/11/02 needed: iostream declares functions in std
