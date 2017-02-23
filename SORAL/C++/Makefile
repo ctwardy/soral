@@ -37,6 +37,9 @@ else
 	ar -r libSoral.a $(OBJS)
 endif
 
+python: libsoral.a
+	swig -python libsoral.i
+
 # To use the library:  g++ mycode.cc -o mycode -lSoral
 # If the library isn't in the current dir (or path), you'll need to 
 # use -L and -I to specify libpath and includepath for Soral.
