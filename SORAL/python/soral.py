@@ -90,6 +90,10 @@ except AttributeError:
     _newclass = 0
 
 
+
+def toValArray(size, inArray):
+    return _soral.toValArray(size, inArray)
+toValArray = _soral.toValArray
 class AreaIterator(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, AreaIterator, name, value)

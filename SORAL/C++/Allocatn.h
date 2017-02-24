@@ -78,10 +78,11 @@
 
 using namespace std;
 
+extern "C" valarray<double> toValArray(unsigned int size, const double inArray[]);
+
 
 // Forward declarations.
 class Allocation;
-
 
 // Class Definitions.
 
@@ -366,7 +367,6 @@ class Allocation
 
 	// Functions.
 	public:
-
 		double getEndurance(int resourceNum);///\todo Define here? Inline?
 		double getEffectiveness(int areaNum, int resourceNum);///\todo Define here? Inline?
 		virtual void calcAllocation() = 0;       // pure virtual

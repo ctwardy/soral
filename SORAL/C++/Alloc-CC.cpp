@@ -91,6 +91,10 @@ CharnesCooper::CharnesCooper(const int p_no_resources,
 	calcAllocation();
 }
 
+
+
+
+
 // crt 5mar03: removed do-nothing destructor so now it uses the default.
 
 /*************************************************************************/
