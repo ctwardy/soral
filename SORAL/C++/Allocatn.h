@@ -186,6 +186,7 @@ class ResourceIterator
 
 		//Altered by Gareth Thompson 24-2-2002, to avoid returning a reference to a local variable
 		ResourceAssignment operator*(void) const;
+		ResourceAssignment getAssignment() const;
 
 		bool atEnd(void) const;
 

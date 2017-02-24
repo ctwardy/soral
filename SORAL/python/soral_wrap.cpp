@@ -3838,6 +3838,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_ResourceIterator_getAssignment(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ResourceIterator *arg1 = (ResourceIterator *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  SwigValueWrapper< ResourceAssignment > result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:ResourceIterator_getAssignment",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_ResourceIterator, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResourceIterator_getAssignment" "', argument " "1"" of type '" "ResourceIterator const *""'"); 
+  }
+  arg1 = reinterpret_cast< ResourceIterator * >(argp1);
+  result = ((ResourceIterator const *)arg1)->getAssignment();
+  resultobj = SWIG_NewPointerObj((new ResourceAssignment(static_cast< const ResourceAssignment& >(result))), SWIGTYPE_p_ResourceAssignment, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_ResourceIterator_atEnd(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ResourceIterator *arg1 = (ResourceIterator *) 0 ;
@@ -5406,6 +5428,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"delete_ResourceIterator", _wrap_delete_ResourceIterator, METH_VARARGS, NULL},
 	 { (char *)"ResourceIterator_increment", _wrap_ResourceIterator_increment, METH_VARARGS, NULL},
 	 { (char *)"ResourceIterator___ref__", _wrap_ResourceIterator___ref__, METH_VARARGS, NULL},
+	 { (char *)"ResourceIterator_getAssignment", _wrap_ResourceIterator_getAssignment, METH_VARARGS, NULL},
 	 { (char *)"ResourceIterator_atEnd", _wrap_ResourceIterator_atEnd, METH_VARARGS, NULL},
 	 { (char *)"ResourceIterator_getArea", _wrap_ResourceIterator_getArea, METH_VARARGS, NULL},
 	 { (char *)"ResourceIterator_swigregister", ResourceIterator_swigregister, METH_VARARGS, NULL},

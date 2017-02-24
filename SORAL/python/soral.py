@@ -180,6 +180,9 @@ class ResourceIterator(_object):
     def __ref__(self):
         return _soral.ResourceIterator___ref__(self)
 
+    def getAssignment(self):
+        return _soral.ResourceIterator_getAssignment(self)
+
     def atEnd(self):
         return _soral.ResourceIterator_atEnd(self)
 
