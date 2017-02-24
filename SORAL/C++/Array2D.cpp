@@ -285,6 +285,20 @@ double* const &Array2D::operator[](int index) const
 	return value[index];
 }
 
+/// get a value from the given row and column in the array. 
+///
+/// Simple getter is for languages like python, to simplify the interface.
+double Array2D::get(int rowIndex, int colIndex) {
+	return value[rowIndex][colIndex];
+}
+
+/// set a value from the given row and column in the array. 
+///
+/// Simple setter is for languages like python, to simplify the interface.
+void Array2D::set(int rowIndex, int colIndex, double newValue) {
+	value[rowIndex][colIndex] = newValue;
+}
+
 /**** print() ***************************************************************/
 /// Prints an Array2D
 /**

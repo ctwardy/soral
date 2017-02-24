@@ -83,9 +83,13 @@ public:
 	Array2D(const Array2D& p_base, const Array2D& p_extension, const joinType p_joinTo);
 	virtual ~Array2D();
 	void print(void) const;
+#ifndef SWIG
 	double* const &operator[](int index);
 	double* const &operator[](int index) const;
 	double operator=(int index); // disable the built-in assignment operator.
+#endif
+	double get(int rowIndex, int colIndex);
+	void set(int rowIndex, int colIndex, double value);
 
 	const int getNumColumns() const
 	{

@@ -16,14 +16,17 @@
  */
 
 %module soral
+%rename(printSelf) print;
 #pragma SWIG nowarn=383
 %{
 #include "Allocatn.h"
 #include "containr.h"
 #include "Alloc-CC.h"
+#include "Array2D.h"
 %}
 
 %include "Allocatn.h"
 %include "containr.h"
 %include "Alloc-CC.h"
+%include "Array2D.h"
 

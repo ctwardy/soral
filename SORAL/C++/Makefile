@@ -22,6 +22,8 @@
 OBJS = Allocatn.o Array2D.o Alloc-CC.o Alloc-W.o userDef.o itr_area.o itr_activ.o itr_res.o con_area.o con_activ.o con_res.o 
 TB1  = TestBed.o
 S1   = sample.o
+CPPFLAGS=-fPIC
+
 
 TESTOBJS = AllocatnTESTMODE.o Array2DTESTMODE.o Alloc-CCTESTMODE.o Alloc-WTESTMODE.o userDefTESTMODE.o itr_areaTESTMODE.o itr_activTESTMODE.o itr_resTESTMODE.o con_areaTESTMODE.o con_activTESTMODE.o con_resTESTMODE.o
 TB2      = TestBedTESTMODE.o
@@ -37,13 +39,13 @@ else
 	ar -r libSoral.a $(OBJS)
 endif
 
-python: ../python ../python/soral_wrap.cpp
+python: ../python ../python/soral_wrap.cpp ../python/_soral.so
 
-../python: 
-	mkdir -p ../python
-
-../python/soral_wrap.cpp: $(OBJS)
+../python/soral_wrap.cpp: *.h libsoral.i
 	swig -c++ -python -outdir ../python -o ../python/soral_wrap.cpp libsoral.i
+
+../python/_soral.so: ../python/setup.py libSoral.a ../python/soral_wrap.cpp 
+	(cd ../python && python setup.py build_ext --inplace)
 
 # To use the library:  g++ mycode.cc -o mycode -lSoral
 # If the library isn't in the current dir (or path), you'll need to 
@@ -63,112 +65,112 @@ clean:
 
 exec: $(OBJS) $(TB1)
 	ar -r libSoral.a $(OBJS)
-	g++ -o SORALtestBed $(OBJS) $(TB1)
+	g++ $(CPPFLAGS) -o SORALtestBed $(OBJS) $(TB1)
 
 test: $(TESTOBJS) $(TB2)
 	ar -r libSoral.a $(TESTOBJS)
-	g++ -o SORALtestBed $(TESTOBJS) $(TB2)
+	g++ $(CPPFLAGS) -o SORALtestBed $(TESTOBJS) $(TB2)
 
 sample: $(OBJS) $(S1)
 	ar -r libSoral.a $(OBJS)
-	g++ -o sample $(OBJS) $(S1)
+	g++ $(CPPFLAGS) -o sample $(OBJS) $(S1)
 
 #-----------------------
 
 
 Alloc-CC.o: Alloc-CC.cpp 
-	g++ -c Alloc-CC.cpp
+	g++ $(CPPFLAGS) -c Alloc-CC.cpp
 
 Alloc-CCTESTMODE.o: Alloc-CC.cpp 
-	g++ -o Alloc-CCTESTMODE.o -c Alloc-CC.cpp -D _ALLOCATION_TESTMODE
+	g++ $(CPPFLAGS) -o Alloc-CCTESTMODE.o -c Alloc-CC.cpp -D _ALLOCATION_TESTMODE
 
 Alloc-W.o: Alloc-W.cpp 
-	g++ -c Alloc-W.cpp
+	g++ $(CPPFLAGS) -c Alloc-W.cpp
 
 Alloc-WTESTMODE.o: Alloc-W.cpp 
-	g++ -o Alloc-WTESTMODE.o -c Alloc-W.cpp -D _ALLOCATION_TESTMODE
+	g++ $(CPPFLAGS) -o Alloc-WTESTMODE.o -c Alloc-W.cpp -D _ALLOCATION_TESTMODE
 
 
 Allocatn.o: Allocatn.cpp 
-	g++ -c Allocatn.cpp
+	g++ $(CPPFLAGS) -c Allocatn.cpp
 
 AllocatnTESTMODE.o: Allocatn.cpp 
-	g++ -o AllocatnTESTMODE.o -c Allocatn.cpp -D _ALLOCATION_TESTMODE
+	g++ $(CPPFLAGS) -o AllocatnTESTMODE.o -c Allocatn.cpp -D _ALLOCATION_TESTMODE
 
 
 Array2D.o: Array2D.cpp 
-	g++ -c Array2D.cpp
+	g++ $(CPPFLAGS) -c Array2D.cpp
 
 Array2DTESTMODE.o: Array2D.cpp 
-	g++ -o Array2DTESTMODE.o -c Array2D.cpp -D _ALLOCATION_TESTMODE
+	g++ $(CPPFLAGS) -o Array2DTESTMODE.o -c Array2D.cpp -D _ALLOCATION_TESTMODE
 
 
 
 CC-test.o: CC-test.cpp 
-	g++ -c CC-test.cpp -D _ALLOCATION_TESTMODE
+	g++ $(CPPFLAGS) -c CC-test.cpp -D _ALLOCATION_TESTMODE
 
 CC-testTESTMODE.o: CC-test.cpp 
-	g++ -o CC-testTESTMODE.o -c CC-test.cpp -D _ALLOCATION_TESTMODE
+	g++ $(CPPFLAGS) -o CC-testTESTMODE.o -c CC-test.cpp -D _ALLOCATION_TESTMODE
 
 
 con_area.o: con_area.cpp 
-	g++ -c con_area.cpp
+	g++ $(CPPFLAGS) -c con_area.cpp
 
 con_areaTESTMODE.o: con_area.cpp
-	g++ -o con_areaTESTMODE.o -c con_area.cpp -D _ALLOCATION_TESTMODE
+	g++ $(CPPFLAGS) -o con_areaTESTMODE.o -c con_area.cpp -D _ALLOCATION_TESTMODE
 
 
 con_activ.o: con_activ.cpp 
-	g++ -c con_activ.cpp
+	g++ $(CPPFLAGS) -c con_activ.cpp
 
 con_activTESTMODE.o: con_activ.cpp 
-	g++ -o con_activTESTMODE.o -c con_activ.cpp -D _ALLOCATION_TESTMODE
+	g++ $(CPPFLAGS) -o con_activTESTMODE.o -c con_activ.cpp -D _ALLOCATION_TESTMODE
 
 
 con_res.o: con_res.cpp 
-	g++ -c con_res.cpp
+	g++ $(CPPFLAGS) -c con_res.cpp
 
 con_resTESTMODE.o: con_res.cpp 
-	g++ -o con_resTESTMODE.o -c con_res.cpp -D _ALLOCATION_TESTMODE
+	g++ $(CPPFLAGS) -o con_resTESTMODE.o -c con_res.cpp -D _ALLOCATION_TESTMODE
 
 
 
 itr_area.o: itr_area.cpp 
-	g++ -c itr_area.cpp
+	g++ $(CPPFLAGS) -c itr_area.cpp
 
 itr_areaTESTMODE.o: itr_area.cpp 
-	g++ -o itr_areaTESTMODE.o -c itr_area.cpp -D _ALLOCATION_TESTMODE
+	g++ $(CPPFLAGS) -o itr_areaTESTMODE.o -c itr_area.cpp -D _ALLOCATION_TESTMODE
 
 
 
 itr_activ.o: itr_activ.cpp 
-	g++ -c itr_activ.cpp
+	g++ $(CPPFLAGS) -c itr_activ.cpp
 
 itr_activTESTMODE.o: itr_activ.cpp 
-	g++ -o itr_activTESTMODE.o -c itr_activ.cpp -D _ALLOCATION_TESTMODE
+	g++ $(CPPFLAGS) -o itr_activTESTMODE.o -c itr_activ.cpp -D _ALLOCATION_TESTMODE
 
 
 
 itr_res.o: itr_res.cpp 
-	g++ -c itr_res.cpp
+	g++ $(CPPFLAGS) -c itr_res.cpp
 
 itr_resTESTMODE.o: itr_res.cpp 
-	g++ -o itr_resTESTMODE.o -c itr_res.cpp -D _ALLOCATION_TESTMODE
+	g++ $(CPPFLAGS) -o itr_resTESTMODE.o -c itr_res.cpp -D _ALLOCATION_TESTMODE
 
 sample.o: sample.cpp
-	g++ -c sample.cpp
+	g++ $(CPPFLAGS) -c sample.cpp
 
 userDef.o: userDef.cpp 
-	g++ -c userDef.cpp
+	g++ $(CPPFLAGS) -c userDef.cpp
 
 userDefTESTMODE.o: userDef.cpp
-	g++ -o userDefTESTMODE.o -c userDef.cpp -D _ALLOCATION_TESTMODE
+	g++ $(CPPFLAGS) -o userDefTESTMODE.o -c userDef.cpp -D _ALLOCATION_TESTMODE
 
 
 TestBed.o: TestBed.cpp
-	g++ -c TestBed.cpp
+	g++ $(CPPFLAGS) -c TestBed.cpp
 TestBedTESTMODE.o: 
-	g++ -o TestBedTESTMODE.o -c TestBed.cpp -D _ALLOCATION_TESTMODE
+	g++ $(CPPFLAGS) -o TestBedTESTMODE.o -c TestBed.cpp -D _ALLOCATION_TESTMODE
 
 
 
