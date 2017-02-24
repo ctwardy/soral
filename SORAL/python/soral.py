@@ -90,6 +90,40 @@ except AttributeError:
     _newclass = 0
 
 
+class doubleArray(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, doubleArray, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, doubleArray, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, nelements):
+        this = _soral.new_doubleArray(nelements)
+        try:
+            self.this.append(this)
+        except Exception:
+            self.this = this
+    __swig_destroy__ = _soral.delete_doubleArray
+    __del__ = lambda self: None
+
+    def __getitem__(self, index):
+        return _soral.doubleArray___getitem__(self, index)
+
+    def __setitem__(self, index, value):
+        return _soral.doubleArray___setitem__(self, index, value)
+
+    def cast(self):
+        return _soral.doubleArray_cast(self)
+    __swig_getmethods__["frompointer"] = lambda x: _soral.doubleArray_frompointer
+    if _newclass:
+        frompointer = staticmethod(_soral.doubleArray_frompointer)
+doubleArray_swigregister = _soral.doubleArray_swigregister
+doubleArray_swigregister(doubleArray)
+
+def doubleArray_frompointer(t):
+    return _soral.doubleArray_frompointer(t)
+doubleArray_frompointer = _soral.doubleArray_frompointer
+
 
 def toValArray(size, inArray):
     return _soral.toValArray(size, inArray)
@@ -291,6 +325,10 @@ class ActiveArea(_object):
 ActiveArea_swigregister = _soral.ActiveArea_swigregister
 ActiveArea_swigregister(ActiveArea)
 
+
+def newCharnesCooper(p_no_resources, p_no_areas, p_effectiveness, p_available, p_POC):
+    return _soral.newCharnesCooper(p_no_resources, p_no_areas, p_effectiveness, p_available, p_POC)
+newCharnesCooper = _soral.newCharnesCooper
 class CharnesCooper(Allocation):
     __swig_setmethods__ = {}
     for _s in [Allocation]:

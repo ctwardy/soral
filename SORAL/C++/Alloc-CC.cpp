@@ -75,6 +75,17 @@ using namespace std; // ASO 29/11/02 needed as iostream declares function in std
  * Author : Michael Eldridge
  * 
  */
+ 
+ 
+ extern "C" CharnesCooper* newCharnesCooper(const int p_no_resources, 
+						  const int p_no_areas, 
+						  const Array2D& p_effectiveness,
+						  const double p_available[], 
+						  const double p_POC[]) {
+    return new CharnesCooper(p_no_resources, p_no_areas, p_effectiveness, 
+        toValArray(p_no_resources, p_available), toValArray(p_no_areas, p_POC));
+}
+
 
 CharnesCooper::CharnesCooper(const int p_no_resources, 
 									  const int p_no_areas, 

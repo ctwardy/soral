@@ -3017,9 +3017,10 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 #define SWIGTYPE_p_ResourceIterator swig_types[8]
 #define SWIGTYPE_p_char swig_types[9]
 #define SWIGTYPE_p_double swig_types[10]
-#define SWIGTYPE_p_valarrayT_double_t swig_types[11]
-static swig_type_info *swig_types[13];
-static swig_module_info swig_module = {swig_types, 12, 0, 0, 0, 0};
+#define SWIGTYPE_p_doubleArray swig_types[11]
+#define SWIGTYPE_p_valarrayT_double_t swig_types[12]
+static swig_type_info *swig_types[14];
+static swig_module_info swig_module = {swig_types, 13, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3130,14 +3131,7 @@ namespace swig {
 #include "Array2D.h"
 
 
-#include <limits.h>
-#if !defined(SWIG_NO_LLONG_MAX)
-# if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
-#   define LLONG_MAX __LONG_LONG_MAX__
-#   define LLONG_MIN (-LLONG_MAX - 1LL)
-#   define ULLONG_MAX (LLONG_MAX * 2ULL + 1ULL)
-# endif
-#endif
+typedef double doubleArray;
 
 
 SWIGINTERN int
@@ -3270,6 +3264,47 @@ SWIG_AsVal_unsigned_SS_long (PyObject *obj, unsigned long *val)
 }
 
 
+SWIGINTERNINLINE int
+SWIG_AsVal_size_t (PyObject * obj, size_t *val)
+{
+  unsigned long v;
+  int res = SWIG_AsVal_unsigned_SS_long (obj, val ? &v : 0);
+  if (SWIG_IsOK(res) && val) *val = static_cast< size_t >(v);
+  return res;
+}
+
+SWIGINTERN doubleArray *new_doubleArray(size_t nelements){
+    return (new double[nelements]);
+  }
+SWIGINTERN void delete_doubleArray(doubleArray *self){
+    delete[] self;
+  }
+SWIGINTERN double doubleArray___getitem__(doubleArray *self,size_t index){
+    return self[index];
+  }
+
+  #define SWIG_From_double   PyFloat_FromDouble 
+
+SWIGINTERN void doubleArray___setitem__(doubleArray *self,size_t index,double value){
+    self[index] = value;
+  }
+SWIGINTERN double *doubleArray_cast(doubleArray *self){
+    return self;
+  }
+SWIGINTERN doubleArray *doubleArray_frompointer(double *t){
+    return static_cast< doubleArray * >(t);
+  }
+
+#include <limits.h>
+#if !defined(SWIG_NO_LLONG_MAX)
+# if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
+#   define LLONG_MAX __LONG_LONG_MAX__
+#   define LLONG_MIN (-LLONG_MAX - 1LL)
+#   define ULLONG_MAX (LLONG_MAX * 2ULL + 1ULL)
+# endif
+#endif
+
+
 SWIGINTERN int
 SWIG_AsVal_unsigned_SS_int (PyObject * obj, unsigned int *val)
 {
@@ -3358,12 +3393,173 @@ SWIGINTERNINLINE PyObject*
   return PyInt_FromLong((long) value);
 }
 
-
-  #define SWIG_From_double   PyFloat_FromDouble 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+SWIGINTERN PyObject *_wrap_new_doubleArray(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  size_t arg1 ;
+  size_t val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  doubleArray *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:new_doubleArray",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_size_t(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_doubleArray" "', argument " "1"" of type '" "size_t""'");
+  } 
+  arg1 = static_cast< size_t >(val1);
+  result = (doubleArray *)new_doubleArray(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_doubleArray, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_doubleArray(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  doubleArray *arg1 = (doubleArray *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_doubleArray",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_doubleArray, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_doubleArray" "', argument " "1"" of type '" "doubleArray *""'"); 
+  }
+  arg1 = reinterpret_cast< doubleArray * >(argp1);
+  delete_doubleArray(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_doubleArray___getitem__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  doubleArray *arg1 = (doubleArray *) 0 ;
+  size_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  size_t val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  double result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:doubleArray___getitem__",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_doubleArray, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "doubleArray___getitem__" "', argument " "1"" of type '" "doubleArray *""'"); 
+  }
+  arg1 = reinterpret_cast< doubleArray * >(argp1);
+  ecode2 = SWIG_AsVal_size_t(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "doubleArray___getitem__" "', argument " "2"" of type '" "size_t""'");
+  } 
+  arg2 = static_cast< size_t >(val2);
+  result = (double)doubleArray___getitem__(arg1,arg2);
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_doubleArray___setitem__(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  doubleArray *arg1 = (doubleArray *) 0 ;
+  size_t arg2 ;
+  double arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  size_t val2 ;
+  int ecode2 = 0 ;
+  double val3 ;
+  int ecode3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:doubleArray___setitem__",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_doubleArray, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "doubleArray___setitem__" "', argument " "1"" of type '" "doubleArray *""'"); 
+  }
+  arg1 = reinterpret_cast< doubleArray * >(argp1);
+  ecode2 = SWIG_AsVal_size_t(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "doubleArray___setitem__" "', argument " "2"" of type '" "size_t""'");
+  } 
+  arg2 = static_cast< size_t >(val2);
+  ecode3 = SWIG_AsVal_double(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "doubleArray___setitem__" "', argument " "3"" of type '" "double""'");
+  } 
+  arg3 = static_cast< double >(val3);
+  doubleArray___setitem__(arg1,arg2,arg3);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_doubleArray_cast(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  doubleArray *arg1 = (doubleArray *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  double *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:doubleArray_cast",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_doubleArray, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "doubleArray_cast" "', argument " "1"" of type '" "doubleArray *""'"); 
+  }
+  arg1 = reinterpret_cast< doubleArray * >(argp1);
+  result = (double *)doubleArray_cast(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_double, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_doubleArray_frompointer(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  double *arg1 = (double *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  doubleArray *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:doubleArray_frompointer",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_double, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "doubleArray_frompointer" "', argument " "1"" of type '" "double *""'"); 
+  }
+  arg1 = reinterpret_cast< double * >(argp1);
+  result = (doubleArray *)doubleArray_frompointer(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_doubleArray, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *doubleArray_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_doubleArray, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
 SWIGINTERN PyObject *_wrap_toValArray(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   unsigned int arg1 ;
@@ -4584,6 +4780,67 @@ SWIGINTERN PyObject *ActiveArea_swigregister(PyObject *SWIGUNUSEDPARM(self), PyO
   return SWIG_Py_Void();
 }
 
+SWIGINTERN PyObject *_wrap_newCharnesCooper(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int arg1 ;
+  int arg2 ;
+  Array2D *arg3 = 0 ;
+  double *arg4 ;
+  double *arg5 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  void *argp5 = 0 ;
+  int res5 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  CharnesCooper *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOO:newCharnesCooper",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "newCharnesCooper" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = static_cast< int >(val1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "newCharnesCooper" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3, SWIGTYPE_p_Array2D,  0  | 0);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "newCharnesCooper" "', argument " "3"" of type '" "Array2D const &""'"); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "newCharnesCooper" "', argument " "3"" of type '" "Array2D const &""'"); 
+  }
+  arg3 = reinterpret_cast< Array2D * >(argp3);
+  res4 = SWIG_ConvertPtr(obj3, &argp4,SWIGTYPE_p_double, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "newCharnesCooper" "', argument " "4"" of type '" "double const []""'"); 
+  } 
+  arg4 = reinterpret_cast< double * >(argp4);
+  res5 = SWIG_ConvertPtr(obj4, &argp5,SWIGTYPE_p_double, 0 |  0 );
+  if (!SWIG_IsOK(res5)) {
+    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "newCharnesCooper" "', argument " "5"" of type '" "double const []""'"); 
+  } 
+  arg5 = reinterpret_cast< double * >(argp5);
+  result = (CharnesCooper *)newCharnesCooper(arg1,arg2,(Array2D const &)*arg3,(double const (*))arg4,(double const (*))arg5);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_CharnesCooper, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_new_CharnesCooper(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   int arg1 ;
@@ -4597,8 +4854,10 @@ SWIGINTERN PyObject *_wrap_new_CharnesCooper(PyObject *SWIGUNUSEDPARM(self), PyO
   int ecode2 = 0 ;
   void *argp3 = 0 ;
   int res3 = 0 ;
-  valarray< double > temp4($1_dim0) ;
-  valarray< double > temp5($1_dim0) ;
+  void *argp4 ;
+  int res4 = 0 ;
+  void *argp5 ;
+  int res5 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
@@ -4626,46 +4885,30 @@ SWIGINTERN PyObject *_wrap_new_CharnesCooper(PyObject *SWIGUNUSEDPARM(self), PyO
   }
   arg3 = reinterpret_cast< Array2D * >(argp3);
   {
-    int i;
-    if (!PySequence_Check(obj3)) {
-      PyErr_SetString(PyExc_ValueError, "Expected a sequence"); 
-      SWIG_fail;
+    res4 = SWIG_ConvertPtr(obj3, &argp4, SWIGTYPE_p_valarrayT_double_t,  0  | 0);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "new_CharnesCooper" "', argument " "4"" of type '" "valarray< double > const""'"); 
+    }  
+    if (!argp4) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_CharnesCooper" "', argument " "4"" of type '" "valarray< double > const""'");
+    } else {
+      valarray< double > * temp = reinterpret_cast< valarray< double > * >(argp4);
+      arg4 = *temp;
+      if (SWIG_IsNewObj(res4)) delete temp;
     }
-    if (PySequence_Length(obj3) != arg4_dim0) {
-      PyErr_SetString(PyExc_ValueError, "Size mismatch. Expected arg4_dim0 elements");
-      SWIG_fail; 
-    }
-    for (i = 0; i < arg4_dim0; i++) {
-      PyObject *o = PySequence_GetItem(obj3, i); 
-      if (PyNumber_Check(o)) {
-        temp4[i] = (double) PyFloat_AsDouble(o); 
-      } else {
-        PyErr_SetString(PyExc_ValueError, "Sequence elements must be numbers");
-        SWIG_fail; 
-      }
-    }
-    arg4 = temp4; 
   }
   {
-    int i;
-    if (!PySequence_Check(obj4)) {
-      PyErr_SetString(PyExc_ValueError, "Expected a sequence"); 
-      SWIG_fail;
+    res5 = SWIG_ConvertPtr(obj4, &argp5, SWIGTYPE_p_valarrayT_double_t,  0  | 0);
+    if (!SWIG_IsOK(res5)) {
+      SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "new_CharnesCooper" "', argument " "5"" of type '" "valarray< double > const""'"); 
+    }  
+    if (!argp5) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_CharnesCooper" "', argument " "5"" of type '" "valarray< double > const""'");
+    } else {
+      valarray< double > * temp = reinterpret_cast< valarray< double > * >(argp5);
+      arg5 = *temp;
+      if (SWIG_IsNewObj(res5)) delete temp;
     }
-    if (PySequence_Length(obj4) != arg5_dim0) {
-      PyErr_SetString(PyExc_ValueError, "Size mismatch. Expected arg5_dim0 elements");
-      SWIG_fail; 
-    }
-    for (i = 0; i < arg5_dim0; i++) {
-      PyObject *o = PySequence_GetItem(obj4, i); 
-      if (PyNumber_Check(o)) {
-        temp5[i] = (double) PyFloat_AsDouble(o); 
-      } else {
-        PyErr_SetString(PyExc_ValueError, "Sequence elements must be numbers");
-        SWIG_fail; 
-      }
-    }
-    arg5 = temp5; 
   }
   result = (CharnesCooper *)new CharnesCooper(arg1,arg2,(Array2D const &)*arg3,arg4,arg5);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_CharnesCooper, SWIG_POINTER_NEW |  0 );
@@ -4765,7 +5008,8 @@ SWIGINTERN PyObject *_wrap_new_Array2D__SWIG_1(PyObject *SWIGUNUSEDPARM(self), P
   int ecode1 = 0 ;
   int val2 ;
   int ecode2 = 0 ;
-  valarray< double > temp3($1_dim0) ;
+  void *argp3 ;
+  int res3 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
@@ -4783,25 +5027,17 @@ SWIGINTERN PyObject *_wrap_new_Array2D__SWIG_1(PyObject *SWIGUNUSEDPARM(self), P
   } 
   arg2 = static_cast< int >(val2);
   {
-    int i;
-    if (!PySequence_Check(obj2)) {
-      PyErr_SetString(PyExc_ValueError, "Expected a sequence"); 
-      SWIG_fail;
+    res3 = SWIG_ConvertPtr(obj2, &argp3, SWIGTYPE_p_valarrayT_double_t,  0  | 0);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "new_Array2D" "', argument " "3"" of type '" "valarray< double > const""'"); 
+    }  
+    if (!argp3) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_Array2D" "', argument " "3"" of type '" "valarray< double > const""'");
+    } else {
+      valarray< double > * temp = reinterpret_cast< valarray< double > * >(argp3);
+      arg3 = *temp;
+      if (SWIG_IsNewObj(res3)) delete temp;
     }
-    if (PySequence_Length(obj2) != arg3_dim0) {
-      PyErr_SetString(PyExc_ValueError, "Size mismatch. Expected arg3_dim0 elements");
-      SWIG_fail; 
-    }
-    for (i = 0; i < arg3_dim0; i++) {
-      PyObject *o = PySequence_GetItem(obj2, i); 
-      if (PyNumber_Check(o)) {
-        temp3[i] = (double) PyFloat_AsDouble(o); 
-      } else {
-        PyErr_SetString(PyExc_ValueError, "Sequence elements must be numbers");
-        SWIG_fail; 
-      }
-    }
-    arg3 = temp3; 
   }
   result = (Array2D *)new Array2D(arg1,arg2,arg3);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Array2D, SWIG_POINTER_NEW |  0 );
@@ -5151,6 +5387,13 @@ SWIGINTERN PyObject *Array2D_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObje
 
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, NULL},
+	 { (char *)"new_doubleArray", _wrap_new_doubleArray, METH_VARARGS, NULL},
+	 { (char *)"delete_doubleArray", _wrap_delete_doubleArray, METH_VARARGS, NULL},
+	 { (char *)"doubleArray___getitem__", _wrap_doubleArray___getitem__, METH_VARARGS, NULL},
+	 { (char *)"doubleArray___setitem__", _wrap_doubleArray___setitem__, METH_VARARGS, NULL},
+	 { (char *)"doubleArray_cast", _wrap_doubleArray_cast, METH_VARARGS, NULL},
+	 { (char *)"doubleArray_frompointer", _wrap_doubleArray_frompointer, METH_VARARGS, NULL},
+	 { (char *)"doubleArray_swigregister", doubleArray_swigregister, METH_VARARGS, NULL},
 	 { (char *)"toValArray", _wrap_toValArray, METH_VARARGS, NULL},
 	 { (char *)"new_AreaIterator", _wrap_new_AreaIterator, METH_VARARGS, NULL},
 	 { (char *)"delete_AreaIterator", _wrap_delete_AreaIterator, METH_VARARGS, NULL},
@@ -5197,6 +5440,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"new_ActiveArea", _wrap_new_ActiveArea, METH_VARARGS, NULL},
 	 { (char *)"ActiveArea_getActiveAreaNum", _wrap_ActiveArea_getActiveAreaNum, METH_VARARGS, NULL},
 	 { (char *)"ActiveArea_swigregister", ActiveArea_swigregister, METH_VARARGS, NULL},
+	 { (char *)"newCharnesCooper", _wrap_newCharnesCooper, METH_VARARGS, NULL},
 	 { (char *)"new_CharnesCooper", _wrap_new_CharnesCooper, METH_VARARGS, NULL},
 	 { (char *)"delete_CharnesCooper", _wrap_delete_CharnesCooper, METH_VARARGS, NULL},
 	 { (char *)"CharnesCooper_swigregister", CharnesCooper_swigregister, METH_VARARGS, NULL},
@@ -5219,6 +5463,9 @@ static PyMethodDef SwigMethods[] = {
 static void *_p_CharnesCooperTo_p_Allocation(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((Allocation *)  ((CharnesCooper *) x));
 }
+static void *_p_doubleArrayTo_p_double(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((double *)  ((doubleArray *) x));
+}
 static swig_type_info _swigt__p_ActiveArea = {"_p_ActiveArea", "ActiveArea *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_ActiveAreasIterator = {"_p_ActiveAreasIterator", "ActiveAreasIterator *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_Allocation = {"_p_Allocation", "Allocation *", 0, 0, (void*)0, 0};
@@ -5230,6 +5477,7 @@ static swig_type_info _swigt__p_ResourceAssignment = {"_p_ResourceAssignment", "
 static swig_type_info _swigt__p_ResourceIterator = {"_p_ResourceIterator", "ResourceIterator *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_double = {"_p_double", "double *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_doubleArray = {"_p_doubleArray", "doubleArray *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_valarrayT_double_t = {"_p_valarrayT_double_t", "valarray< double > *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
@@ -5244,6 +5492,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_ResourceIterator,
   &_swigt__p_char,
   &_swigt__p_double,
+  &_swigt__p_doubleArray,
   &_swigt__p_valarrayT_double_t,
 };
 
@@ -5257,7 +5506,8 @@ static swig_cast_info _swigc__p_CharnesCooper[] = {  {&_swigt__p_CharnesCooper, 
 static swig_cast_info _swigc__p_ResourceAssignment[] = {  {&_swigt__p_ResourceAssignment, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ResourceIterator[] = {  {&_swigt__p_ResourceIterator, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_double[] = {  {&_swigt__p_double, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_double[] = {  {&_swigt__p_doubleArray, _p_doubleArrayTo_p_double, 0, 0},  {&_swigt__p_double, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_doubleArray[] = {  {&_swigt__p_doubleArray, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_valarrayT_double_t[] = {  {&_swigt__p_valarrayT_double_t, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
@@ -5272,6 +5522,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_ResourceIterator,
   _swigc__p_char,
   _swigc__p_double,
+  _swigc__p_doubleArray,
   _swigc__p_valarrayT_double_t,
 };
 

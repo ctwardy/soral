@@ -78,6 +78,10 @@ using namespace std;
  *
  */
 
+class CharnesCooper;
+extern "C" CharnesCooper* newCharnesCooper(const int p_no_resources,   const int p_no_areas,  const Array2D& p_effectiveness,
+    const double p_available[],  const double p_POC[]);
+
 class CharnesCooper : public Allocation
 {
 	// Constructors.

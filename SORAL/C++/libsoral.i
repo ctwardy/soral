@@ -24,13 +24,13 @@
 #include "Alloc-CC.h"
 #include "Array2D.h"
 %}
-/*
-    %include "carrays.i"
-    %array_class(double, doubleArray);
-*/
+
+
+%include "carrays.i"
+%array_class(double, doubleArray);
 
 /* Special typemap for initializing valarray<double> parameters */
-%include "typemaps.i"
+/*%include "typemaps.i"
 %typemap(in) const valarray<double> (valarray<double> temp($1_dim0)) { 
     int i;
     if (!PySequence_Check($input)) { 
@@ -51,7 +51,7 @@
         }
     }
     $1 = temp; 
-}
+}*/
 
 
 %include "Allocatn.h"
