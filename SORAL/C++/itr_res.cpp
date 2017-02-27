@@ -161,6 +161,38 @@ ResourceAssignment ResourceIterator::operator*(void) const
 
 }
 
+
+/**** getResourceAssignment() ***********************************************************/
+/// Returns the object pointed to by this iterator.
+/**
+ * Rewritten: Andre Oboler (ASO)
+ */
+
+ResourceAssignment ResourceIterator::getResourceAssignment() const
+{
+	#ifdef _ALLOCATION_TESTMODE
+		cout << "Returning the resource pointed to by the iterator (ResourceIterator::operator*())" << endl;
+	#endif
+
+	if (atEnd())
+	{
+		cerr << "Warning: There is no current resource assignment. " 
+			 << "Returning (0,0)." << endl;
+		// Perhaps throw an exception warning here.
+		return ResourceAssignment(0,0);
+	}
+
+	return ResourceAssignment (current->getResourceNum(), 
+							   current->getTime()         );
+
+}
+
+
+
+
+
+
+
 /**** atEnd() **************************************************************/
 /// Returns true iff the iterator is at the end of the list.
 /**

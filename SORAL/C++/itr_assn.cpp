@@ -192,3 +192,5 @@ ActiveArea ActiveAreasIterator::operator*(void) const
 	return *current;
 	// return get();
 }
+
+
