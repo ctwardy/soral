@@ -3,7 +3,7 @@
 import array
 import soral
 
-print 'PySoral testbed'
+print 'PySoral test based on tom.cpp'
 
 
 def runTest():
