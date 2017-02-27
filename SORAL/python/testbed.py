@@ -32,7 +32,7 @@ def runTest():
             value = ESW[areaIdx]*speed[areaIdx]/area[areaIdx]
             effectiveness.set(areaIdx, resourceIdx, value)
     
-    theAllocation = soral.newCharnesCooper(resources, areas, effectiveness, availableHours, area)
+    theAllocation = soral.newCharnesCooper(resources, areas, effectiveness, availableHours, POA)
     
     print "The calculated allocation";
     printAssignments(theAllocation);

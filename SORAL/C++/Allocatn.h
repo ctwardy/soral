@@ -378,6 +378,7 @@ class Allocation
 		double getPOS(int areaNum);
 		double getNewPOC(int areaNum);
 		double getTotalPOS(void);
+		double getPOC_debug_only(int areaNum); 
 
    private:   // No one should see these directly. Even the kids.
 

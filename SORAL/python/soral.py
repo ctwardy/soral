@@ -256,6 +256,9 @@ class Allocation(_object):
 
     def getTotalPOS(self):
         return _soral.Allocation_getTotalPOS(self)
+
+    def getPOC_debug_only(self, areaNum):
+        return _soral.Allocation_getPOC_debug_only(self, areaNum)
 Allocation_swigregister = _soral.Allocation_swigregister
 Allocation_swigregister(Allocation)
 

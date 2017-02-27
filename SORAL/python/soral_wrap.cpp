@@ -4310,6 +4310,37 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_Allocation_getPOC_debug_only(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Allocation *arg1 = (Allocation *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  double result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:Allocation_getPOC_debug_only",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Allocation, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Allocation_getPOC_debug_only" "', argument " "1"" of type '" "Allocation *""'"); 
+  }
+  arg1 = reinterpret_cast< Allocation * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Allocation_getPOC_debug_only" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  result = (double)(arg1)->getPOC_debug_only(arg2);
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *Allocation_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
@@ -5448,6 +5479,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"Allocation_getPOS", _wrap_Allocation_getPOS, METH_VARARGS, NULL},
 	 { (char *)"Allocation_getNewPOC", _wrap_Allocation_getNewPOC, METH_VARARGS, NULL},
 	 { (char *)"Allocation_getTotalPOS", _wrap_Allocation_getTotalPOS, METH_VARARGS, NULL},
+	 { (char *)"Allocation_getPOC_debug_only", _wrap_Allocation_getPOC_debug_only, METH_VARARGS, NULL},
 	 { (char *)"Allocation_swigregister", Allocation_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_AreaAssignment", _wrap_delete_AreaAssignment, METH_VARARGS, NULL},
 	 { (char *)"new_AreaAssignment", _wrap_new_AreaAssignment, METH_VARARGS, NULL},

@@ -379,6 +379,14 @@ double Allocation::getNewPOC(int areaNum)
 	return myNewPOC[areaNum];
 }
 
+
+
+// Only here to help debug whether the number we passed in was received.
+double Allocation::getPOC_debug_only(int areaNum) {
+    return myPOC[areaNum];
+}
+
+
 /**** getTotalPOS() **********************************************************/
 /// Returns the totalPOS over all areas, calculating it if needed
 /**
