@@ -18,13 +18,12 @@ def runTest():
     # Configure the arrays with some test values
     for i in range(0, areas):
         area[i] = [28, 30, 14, 12][i]
-        POA[i] = [ 0.1935,  0.2581,  0.2903,  0.2581][i]
+        POA[i] = [0.1935,  0.2581,  0.2903,  0.2581][i]
         ESW[i] = 1
         speed[i] = 1
-        
+
     availableHours = soral.doubleArray(resources)
     availableHours[0] = 40
-    #availableHours = [40]
     
     effectiveness = soral.Array2D(areas, resources)
     
@@ -35,8 +34,22 @@ def runTest():
     
     theAllocation = soral.newCharnesCooper(resources, areas, effectiveness, availableHours, area)
     
-    print "The calculated allocation\n";
+    print "The calculated allocation";
     printAssignments(theAllocation);
+    
+    print "PODs: "
+    for i in range(0, areas):
+        print "  " +str(i) + ": " + str(theAllocation.getPOD(i))
+
+    print "Adjusted POAs: "
+    for i in range(0, areas):
+        print "  " +str(i) + ": " + str(theAllocation.getNewPOC(i))
+
+    print "Segment POSs: "
+    for i in range(0, areas):
+        print "  " +str(i) + ": " + str(theAllocation.getPOS(i))
+
+    print " Cumulative POS: " + str(theAllocation.getTotalPOS()) 
     
     del theAllocation
 
