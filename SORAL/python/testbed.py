@@ -59,7 +59,7 @@ def printAssignments( theAllocation ):
             resIndex = resAssign.getResourceNum()
             time = resAssign.getTime()
             
-            print "  Area: " + str(areaIndex) + "  Resource: " + str(resIndex) + "  Time: " + str(time) + "\n"		  
+            print "  Area: " + str(areaIndex) + "  Resource: " + str(resIndex) + "  Time: " + str(time)	  
             resItr.increment()
     
     	activeItr.increment()
