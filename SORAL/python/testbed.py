@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-import array
 import soral
 
 print 'PySoral test based on tom.cpp'
