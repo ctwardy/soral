@@ -55,11 +55,11 @@ def printAssignments( theAllocation ):
     	resItr = soral.ResourceIterator(theAllocation, areaIndex)
     	
     	while ( False == resItr.atEnd() ):
-            resAssign = resItr.getAssignment()
+            resAssign = resItr.getResourceAssignment()
             resIndex = resAssign.getResourceNum()
             time = resAssign.getTime()
             
-            print "  Area: " + areaIndex + "  Resource: " + resIndex + "  Time: " + time + "\n"		  
+            print "  Area: " + str(areaIndex) + "  Resource: " + str(resIndex) + "  Time: " + str(time) + "\n"		  
             resItr.increment()
     
     	activeItr.increment()
