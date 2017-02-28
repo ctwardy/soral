@@ -18,6 +18,7 @@
 %module soral
 %rename(printSelf) print;
 #pragma SWIG nowarn=383
+#pragma SWIG nowarn=503
 %{
 #include "Allocatn.h"
 #include "containr.h"

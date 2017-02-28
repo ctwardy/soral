@@ -47,6 +47,12 @@ python: ../python ../python/soral_wrap.cpp ../python/_soral.so
 ../python/_soral.so: ../python/setup.py libSoral.a ../python/soral_wrap.cpp 
 	(cd ../python && python setup.py build_ext --inplace)
 
+node: ../node/soral_wrap.cpp
+
+../node/soral_wrap.cpp: *.h libsoral.i
+	swig -c++ -javascript -node  -outdir ../node -o ../node/soral_wrap.cpp libsoral.i
+
+
 # To use the library:  g++ mycode.cc -o mycode -lSoral
 # If the library isn't in the current dir (or path), you'll need to 
 # use -L and -I to specify libpath and includepath for Soral.
