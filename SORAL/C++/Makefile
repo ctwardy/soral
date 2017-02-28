@@ -24,6 +24,7 @@ TB1  = TestBed.o
 S1   = sample.o
 CPPFLAGS=-fPIC
 
+NODE_V8_VERSION=-DV8_VERSION=0x051200 
 
 TESTOBJS = AllocatnTESTMODE.o Array2DTESTMODE.o Alloc-CCTESTMODE.o Alloc-WTESTMODE.o userDefTESTMODE.o itr_areaTESTMODE.o itr_activTESTMODE.o itr_resTESTMODE.o con_areaTESTMODE.o con_activTESTMODE.o con_resTESTMODE.o
 TB2      = TestBedTESTMODE.o
@@ -50,7 +51,10 @@ python: ../python ../python/soral_wrap.cpp ../python/_soral.so
 node: ../node/soral_wrap.cpp
 
 ../node/soral_wrap.cpp: *.h libsoral.i
-	swig -c++ -javascript -node  -outdir ../node -o ../node/soral_wrap.cpp libsoral.i
+	echo "If you have trouble check your node/v8 version and the NODE_V8_VERSION setting in the Makefile"
+	swig -c++ -javascript -v8 $(NODE_V8_VERSION) -outdir ../node -o ../node/soral_wrap_raw.cpp libsoral.i
+	cat ../node/soral_wrap_headers.cpp ../node/soral_wrap_raw.cpp > ../node/soral_wrap.cpp
+
 
 
 # To use the library:  g++ mycode.cc -o mycode -lSoral
