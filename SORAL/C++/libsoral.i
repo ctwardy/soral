@@ -17,8 +17,9 @@
 
 %module soral
 %rename(printSelf) print;
+%rename(incr) operator++();
 #pragma SWIG nowarn=383
-#pragma SWIG nowarn=503
+/* #pragma SWIG nowarn=503 */
 %{
 #include "Allocatn.h"
 #include "containr.h"
@@ -29,6 +30,9 @@
 
 %include "carrays.i"
 %array_class(double, doubleArray);
+/* %array_functions(double, doubleArray); */
+
+
 
 /* Special typemap for initializing valarray<double> parameters */
 /*%include "typemaps.i"
