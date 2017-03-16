@@ -55,6 +55,7 @@ node: ../node/soral_wrap.cpp
 	echo "If you have trouble check your node/v8 version and the NODE_V8_VERSION setting in the Makefile"
 	swig -c++ -javascript -v8 $(NODE_V8_VERSION) -outdir ../node -o ../node/soral_wrap_raw.cpp libsoral.i
 	cat ../node/soral_wrap_headers.cpp ../node/soral_wrap_raw.cpp > ../node/soral_wrap.cpp
+	( cd ../node && node-gyp clean && node-gyp configure && node-gyp build )
 
 
 

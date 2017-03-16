@@ -55,6 +55,8 @@ ActiveAreasIterator::ActiveAreasIterator(const Allocation& p_allocation)
 //ActiveAreasIterator::ActiveAreasIterator(CharnesCooper *p_allocation) 
 :	myAllocation(p_allocation)
 {
+        cout << "CP896" << endl;
+
 	#ifdef _ALLOCATION_TESTMODE
 		cout << "Creating an assigned area iterator (ActiveAreasIterator::ActiveAreasIterator)" << endl;
 	#endif

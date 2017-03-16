@@ -87,7 +87,7 @@ ActiveAreasIterator::ActiveAreasIterator(const Allocation& p_allocation)
 	#endif
 	
 	current=myAllocation.firstArea();
-
+	
 	#ifdef _ALLOCATION_TESTMODE
 		cout << "Finished creating an active area iterator (ActiveAreasIterator::ActiveAreasIterator)" << endl;
 	#endif

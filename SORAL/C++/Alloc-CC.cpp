@@ -83,11 +83,11 @@ using namespace std; // ASO 29/11/02 needed as iostream declares function in std
 						  const double p_available[], 
 						  const double p_POC[]) {
     						  
-    cout << "POCs in:  0:" << p_POC[0] << 
+    /*cout << "POCs in:  0:" << p_POC[0] << 
         ", 1: " << p_POC[1] <<
         ", 2: " << p_POC[2] <<
         ", 3: " << p_POC[3] <<
-        endl;
+        endl;*/
     						  
     						  
     CharnesCooper* obj = new CharnesCooper(p_no_resources, p_no_areas, p_effectiveness, 
@@ -95,12 +95,12 @@ using namespace std; // ASO 29/11/02 needed as iostream declares function in std
     
     
     // debug that correct parameters arrived
-     cout << "endurances: 0:" << obj->getEndurance(0) << endl;
+    /* cout << "endurances: 0:" << obj->getEndurance(0) << endl;
     cout << "POCs out: 0:" << obj->getPOC_debug_only(0) << 
         ", 1: " << obj->getPOC_debug_only(1) <<
         ", 2: " << obj->getPOC_debug_only(2) <<
         ", 3: " << obj->getPOC_debug_only(3) <<
-        endl;
+        endl; */
 
     
     return obj;
