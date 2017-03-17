@@ -1,7 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import soral
-from collections import DefaultDict
+from collections import defaultdict
 
 """Updated to hold many test cases."""
 
@@ -19,7 +19,7 @@ class Region():
     """
     def __init__(self, id, POA, area=1, polygon=None):
         assert POA >= 0
-        assert area == 0
+        assert area > 0
         self.id = id
         self.POA = POA
         self.area = area
@@ -52,9 +52,9 @@ class Resource():
             self.Ws = Ws
         elif W:
             assert W >= 0
-            self.Ws = DefaultDict(lambda x: W)
+            self.Ws = defaultdict(lambda x: W)
         else:
-            self.Ws = DefaultDict(lambda x: 1)
+            self.Ws = defaultdict(lambda x: 1)
 
     def set_speeds(self, speed, speeds):
         """Run after set_Ws. Ensure self.speeds is well-defined."""
@@ -64,9 +64,9 @@ class Resource():
             self.speeds = speeds
         elif speed:
             assert speed > 0
-            self.speeds = DefaultDict(lambda x: speed)
+            self.speeds = defaultdict(lambda x: speed)
         else:
-            self.speeds = DefaultDict(lambda x: 1)
+            self.speeds = defaultdict(lambda x: 1)
 
 
 class TestCase():
@@ -165,10 +165,10 @@ class TestCase():
 
     def __repr__(self):
         # TODO: Use DataFrame for aligned printing?
-        print "TotalPOS: %7.2f" % self.allocation.getTotalPOS()
-        print "PODs:\n----\n", self.POD
-        print "POCnew:\n-------\n", self.POCnew
-        print "POS:\n----\n", self.POS
+        print("TotalPOS: %7.2f" % self.allocation.getTotalPOS())
+        print("PODs:\n----\n", self.POD)
+        print("POCnew:\n-------\n", self.POCnew)
+        print("POS:\n----\n", self.POS)
 
 
     def printAssignments(self):
@@ -185,7 +185,7 @@ class TestCase():
                 resAssign = resItr.getResourceAssignment()
                 resIndex = resAssign.getResourceNum()
                 time = resAssign.getTime()
-                print "  Area: %d, Resource: %d, Time: %5.2f" % (areaIndex, resIndex, time)	  
+                print("  Area: %d, Resource: %d, Time: %5.2f" % (areaIndex, resIndex, time) )
                 resItr.increment()
 
             activeItr.increment()
@@ -201,7 +201,7 @@ def case_0():
     resources = [Resource(id='A', W=4, speed=1, hours=0.05)]
     answer = 0.05
     case = TestCase(regions, resources)
-    print case
+    print(case)
     np.testing.assert_allclose(case._charnes_cooper(), answer)
     np.testing.assert_allclose(case._washburn(), answer)
     
@@ -215,7 +215,7 @@ def case_1():
     case = TestCase(regions, resources)
     assert case._charnes_cooper() == answer
     assert case._washburn() == answer
-    print case
+    print(case)
     np.testing.assert_allclose(case._charnes_cooper(), answer)
     np.testing.assert_allclose(case._washburn(), answer)
 
@@ -230,7 +230,7 @@ def case_7():
                        [5.79635, 0]])
 
     case = TestCase(regions, resources)
-    print case
+    print(case)
     np.testing.assert_allclose(case.allocate(), answer)
 
 def case_tom():
@@ -242,11 +242,13 @@ def case_tom():
     case = TestCase(regions, resources)
     #assert case._charnes_cooper() == answer
     #assert case._washburn() == answer
-    print case_tom
+    print(case_tom)
 
     
 if __name__ == '__main__':
-    case_11()
-    case_41()
+    # case_11()
+    #case_41()
+    case_0()
+    case_1()
     case_tom()
 

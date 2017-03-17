@@ -44,7 +44,7 @@ endif
 python: ../python ../python/soral_wrap.cpp ../python/_soral.so
 
 ../python/soral_wrap.cpp: *.h libsoral.i
-	swig -c++ -python -outdir ../python -o ../python/soral_wrap.cpp libsoral.i
+	swig -c++ -python -py3 -outdir ../python -o ../python/soral_wrap.cpp libsoral.i
 
 ../python/_soral.so: ../python/setup.py libSoral.a ../python/soral_wrap.cpp 
 	(cd ../python && python setup.py build_ext --inplace)

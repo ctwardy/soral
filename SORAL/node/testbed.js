@@ -13,7 +13,7 @@ function runTest() {
     var area = new soral.doubleArray(areas);
     var POA =  new soral.doubleArray(areas);
     var ESW =  new soral.doubleArray(areas);
-    var speed =  new soral.doubleArray(areas);
+    var speed = new soral.doubleArray(areas);
     
     // Configure the arrays with some test values
     for (i = 0; i < areas; i++) {
