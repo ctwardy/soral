@@ -74,7 +74,8 @@ using namespace std; //ASO 29/11/02 iostream declares things in the std
                      //namespace rather than global as iostream.h did.
                      
                      
-extern "C"  valarray<double> toValArray(unsigned int size, const double inArray[]) {
+// extern "C"  
+valarray<double> toValArray(unsigned int size, const double inArray[]) {
     valarray<double> outArray(size);
     for (int i = 0; i < size; i++) {
         outArray[i] = inArray[i];

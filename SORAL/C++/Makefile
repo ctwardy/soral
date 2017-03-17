@@ -58,6 +58,9 @@ node: ../node/soral_wrap.cpp
 	( cd ../node && node-gyp clean && node-gyp configure && node-gyp build )
 
 
+runtests: runtests.cpp
+	g++ $(CPPFLAGS) runtests.cpp -L. -lSoral -o runtests
+	
 
 # To use the library:  g++ mycode.cc -o mycode -lSoral
 # If the library isn't in the current dir (or path), you'll need to 
