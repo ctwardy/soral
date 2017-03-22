@@ -48,13 +48,14 @@ class Resource():
     def set_Ws(self, W, Ws):
         """Ensure self.Ws is well-defined."""
         if Ws:
+            assert isinstance(Ws, defaultdict)
             assert all(Ws.values() >= 0)
             self.Ws = Ws
         elif W:
             assert W >= 0
-            self.Ws = defaultdict(lambda x: W)
+            self.Ws = defaultdict(lambda W=W: W)
         else:
-            self.Ws = defaultdict(lambda x: 1)
+            self.Ws = defaultdict(lambda: 1)
 
     def set_speeds(self, speed, speeds):
         """Run after set_Ws. Ensure self.speeds is well-defined."""
@@ -64,9 +65,9 @@ class Resource():
             self.speeds = speeds
         elif speed:
             assert speed > 0
-            self.speeds = defaultdict(lambda x: speed)
+            self.speeds = defaultdict(lambda speed=speed: speed)
         else:
-            self.speeds = defaultdict(lambda x: 1)
+            self.speeds = defaultdict(lambda: 1)
 
 
 class TestCase():
@@ -77,15 +78,15 @@ class TestCase():
     """
     def __init__(self, regions, resources):
         for region in regions:
-            assert(type(region) == Region)
+            assert(isinstance(region, Region)) # assert(type(region) == Region)
         for resource in resources:
-            assert(type(resource) == Resource)
+            assert(isinstance(resource, Resource)) # assert(type(resource) == Resource)
 
         self.regions = regions
         self.resources = resources
-        self.hours = hours
+        # self.hours = hours # hours are part of Resource not TestCase
         self.num_regions = len(regions)
-        self.num_resources = len(resoures)
+        self.num_resources = len(resources)
         self.soral_init()
 
     def soral_init(self):
@@ -97,7 +98,7 @@ class TestCase():
         self._areas = soral.doubleArray(N_reg)
         self._POAs = soral.doubleArray(N_reg)
         self._hours = soral.doubleArray(N_rsrcs)
-        self._Ws = soral.Array2D(N_reg)
+        self._Ws = soral.doubleArray(N_reg)
         self._speeds = soral.Array2D(N_reg, N_rsrcs)
         self._effectiveness = soral.Array2D(N_reg, N_rsrcs)
 
@@ -108,13 +109,19 @@ class TestCase():
             self._POAs[i] = region.POA
 
         # Split the resources
-        for i in range(num_resources):
+        for i in range(N_rsrcs):
             resource = self.resources[i]
             self._hours[i] = resource.hours
             # In general, speeds & effectiveness are 2D
-            for j in range(num_regions):
-                region = regions[j]
+            for j in range(N_reg):
+                region = self.regions[j]
                 reg_id = region.id
+                print("Reg_id: ")
+                print(reg_id)
+                print("resource.Ws[1]:")
+                print(resource.Ws[1])
+                print("resource.speeds[1]:")
+                print(resource.speeds[1])
                 W, v = resource.Ws[reg_id], resource.speeds[reg_id]
                 self._speeds.set(j, i, v)
                 self._effectiveness.set(j, i, W * v / region.area)
