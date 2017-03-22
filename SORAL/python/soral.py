@@ -102,7 +102,7 @@ class doubleArray(_object):
     __getattr__ = lambda self, name: _swig_getattr(self, doubleArray, name)
     __repr__ = _swig_repr
 
-    def __init__(self, nelements: 'size_t'):
+    def __init__(self, nelements):
         this = _soral.new_doubleArray(nelements)
         try:
             self.this.append(this)
@@ -111,13 +111,13 @@ class doubleArray(_object):
     __swig_destroy__ = _soral.delete_doubleArray
     __del__ = lambda self: None
 
-    def __getitem__(self, index: 'size_t') -> "double":
+    def __getitem__(self, index):
         return _soral.doubleArray___getitem__(self, index)
 
-    def __setitem__(self, index: 'size_t', value: 'double') -> "void":
+    def __setitem__(self, index, value):
         return _soral.doubleArray___setitem__(self, index, value)
 
-    def cast(self) -> "double *":
+    def cast(self):
         return _soral.doubleArray_cast(self)
     if _newclass:
         frompointer = staticmethod(_soral.doubleArray_frompointer)
@@ -126,12 +126,12 @@ class doubleArray(_object):
 doubleArray_swigregister = _soral.doubleArray_swigregister
 doubleArray_swigregister(doubleArray)
 
-def doubleArray_frompointer(t: 'double *') -> "doubleArray *":
+def doubleArray_frompointer(t):
     return _soral.doubleArray_frompointer(t)
 doubleArray_frompointer = _soral.doubleArray_frompointer
 
 
-def toValArray(size: 'unsigned int', inArray: 'double const []') -> "valarray< double >":
+def toValArray(size, inArray):
     return _soral.toValArray(size, inArray)
 toValArray = _soral.toValArray
 class AreaIterator(_object):
@@ -141,7 +141,7 @@ class AreaIterator(_object):
     __getattr__ = lambda self, name: _swig_getattr(self, AreaIterator, name)
     __repr__ = _swig_repr
 
-    def __init__(self, p_allocation: 'Allocation', p_resource_num: 'int const'):
+    def __init__(self, p_allocation, p_resource_num):
         this = _soral.new_AreaIterator(p_allocation, p_resource_num)
         try:
             self.this.append(this)
@@ -150,16 +150,16 @@ class AreaIterator(_object):
     __swig_destroy__ = _soral.delete_AreaIterator
     __del__ = lambda self: None
 
-    def increment(self) -> "void":
+    def increment(self):
         return _soral.AreaIterator_increment(self)
 
-    def __ref__(self) -> "AreaAssignment":
+    def __ref__(self):
         return _soral.AreaIterator___ref__(self)
 
-    def atEnd(self) -> "bool":
+    def atEnd(self):
         return _soral.AreaIterator_atEnd(self)
 
-    def getResource(self) -> "int":
+    def getResource(self):
         return _soral.AreaIterator_getResource(self)
 AreaIterator_swigregister = _soral.AreaIterator_swigregister
 AreaIterator_swigregister(AreaIterator)
@@ -171,7 +171,7 @@ class ResourceIterator(_object):
     __getattr__ = lambda self, name: _swig_getattr(self, ResourceIterator, name)
     __repr__ = _swig_repr
 
-    def __init__(self, p_allocation: 'Allocation', p_area_num: 'int const'):
+    def __init__(self, p_allocation, p_area_num):
         this = _soral.new_ResourceIterator(p_allocation, p_area_num)
         try:
             self.this.append(this)
@@ -180,19 +180,19 @@ class ResourceIterator(_object):
     __swig_destroy__ = _soral.delete_ResourceIterator
     __del__ = lambda self: None
 
-    def increment(self) -> "void":
+    def increment(self):
         return _soral.ResourceIterator_increment(self)
 
-    def __ref__(self) -> "ResourceAssignment":
+    def __ref__(self):
         return _soral.ResourceIterator___ref__(self)
 
-    def getResourceAssignment(self) -> "ResourceAssignment":
+    def getResourceAssignment(self):
         return _soral.ResourceIterator_getResourceAssignment(self)
 
-    def atEnd(self) -> "bool":
+    def atEnd(self):
         return _soral.ResourceIterator_atEnd(self)
 
-    def getArea(self) -> "int":
+    def getArea(self):
         return _soral.ResourceIterator_getArea(self)
 ResourceIterator_swigregister = _soral.ResourceIterator_swigregister
 ResourceIterator_swigregister(ResourceIterator)
@@ -204,7 +204,7 @@ class ActiveAreasIterator(_object):
     __getattr__ = lambda self, name: _swig_getattr(self, ActiveAreasIterator, name)
     __repr__ = _swig_repr
 
-    def __init__(self, p_allocation: 'Allocation'):
+    def __init__(self, p_allocation):
         this = _soral.new_ActiveAreasIterator(p_allocation)
         try:
             self.this.append(this)
@@ -213,16 +213,16 @@ class ActiveAreasIterator(_object):
     __swig_destroy__ = _soral.delete_ActiveAreasIterator
     __del__ = lambda self: None
 
-    def getCurrentActiveAreaNum(self) -> "int":
+    def getCurrentActiveAreaNum(self):
         return _soral.ActiveAreasIterator_getCurrentActiveAreaNum(self)
 
-    def __ref__(self) -> "ActiveArea":
+    def __ref__(self):
         return _soral.ActiveAreasIterator___ref__(self)
 
-    def increment(self) -> "void":
+    def increment(self):
         return _soral.ActiveAreasIterator_increment(self)
 
-    def atEnd(self) -> "bool":
+    def atEnd(self):
         return _soral.ActiveAreasIterator_atEnd(self)
 ActiveAreasIterator_swigregister = _soral.ActiveAreasIterator_swigregister
 ActiveAreasIterator_swigregister(ActiveAreasIterator)
@@ -239,31 +239,31 @@ class Allocation(_object):
     __swig_destroy__ = _soral.delete_Allocation
     __del__ = lambda self: None
 
-    def getEndurance(self, resourceNum: 'int') -> "double":
+    def getEndurance(self, resourceNum):
         return _soral.Allocation_getEndurance(self, resourceNum)
 
-    def getEffectiveness(self, areaNum: 'int', resourceNum: 'int') -> "double":
+    def getEffectiveness(self, areaNum, resourceNum):
         return _soral.Allocation_getEffectiveness(self, areaNum, resourceNum)
 
-    def calcAllocation(self) -> "void":
+    def calcAllocation(self):
         return _soral.Allocation_calcAllocation(self)
 
-    def getCoverage(self, areaNum: 'int') -> "double":
+    def getCoverage(self, areaNum):
         return _soral.Allocation_getCoverage(self, areaNum)
 
-    def getPOD(self, areaNum: 'int') -> "double":
+    def getPOD(self, areaNum):
         return _soral.Allocation_getPOD(self, areaNum)
 
-    def getPOS(self, areaNum: 'int') -> "double":
+    def getPOS(self, areaNum):
         return _soral.Allocation_getPOS(self, areaNum)
 
-    def getNewPOC(self, areaNum: 'int') -> "double":
+    def getNewPOC(self, areaNum):
         return _soral.Allocation_getNewPOC(self, areaNum)
 
-    def getTotalPOS(self) -> "double":
+    def getTotalPOS(self):
         return _soral.Allocation_getTotalPOS(self)
 
-    def getPOC_debug_only(self, areaNum: 'int') -> "double":
+    def getPOC_debug_only(self, areaNum):
         return _soral.Allocation_getPOC_debug_only(self, areaNum)
 Allocation_swigregister = _soral.Allocation_swigregister
 Allocation_swigregister(Allocation)
@@ -284,10 +284,10 @@ class AreaAssignment(_object):
         except __builtin__.Exception:
             self.this = this
 
-    def getAreaNum(self) -> "int":
+    def getAreaNum(self):
         return _soral.AreaAssignment_getAreaNum(self)
 
-    def getTime(self) -> "double":
+    def getTime(self):
         return _soral.AreaAssignment_getTime(self)
 AreaAssignment_swigregister = _soral.AreaAssignment_swigregister
 AreaAssignment_swigregister(AreaAssignment)
@@ -308,10 +308,10 @@ class ResourceAssignment(_object):
         except __builtin__.Exception:
             self.this = this
 
-    def getResourceNum(self) -> "int":
+    def getResourceNum(self):
         return _soral.ResourceAssignment_getResourceNum(self)
 
-    def getTime(self) -> "double":
+    def getTime(self):
         return _soral.ResourceAssignment_getTime(self)
 ResourceAssignment_swigregister = _soral.ResourceAssignment_swigregister
 ResourceAssignment_swigregister(ResourceAssignment)
@@ -332,13 +332,13 @@ class ActiveArea(_object):
         except __builtin__.Exception:
             self.this = this
 
-    def getActiveAreaNum(self) -> "int":
+    def getActiveAreaNum(self):
         return _soral.ActiveArea_getActiveAreaNum(self)
 ActiveArea_swigregister = _soral.ActiveArea_swigregister
 ActiveArea_swigregister(ActiveArea)
 
 
-def newCharnesCooper(p_no_resources: 'int const', p_no_areas: 'int const', p_effectiveness: 'Array2D', p_available: 'double const []', p_POC: 'double const []') -> "CharnesCooper *":
+def newCharnesCooper(p_no_resources, p_no_areas, p_effectiveness, p_available, p_POC):
     return _soral.newCharnesCooper(p_no_resources, p_no_areas, p_effectiveness, p_available, p_POC)
 newCharnesCooper = _soral.newCharnesCooper
 class CharnesCooper(Allocation):
@@ -352,7 +352,7 @@ class CharnesCooper(Allocation):
     __getattr__ = lambda self, name: _swig_getattr(self, CharnesCooper, name)
     __repr__ = _swig_repr
 
-    def __init__(self, p_no_resources: 'int const', p_no_areas: 'int const', p_effectiveness: 'Array2D', p_available: 'valarray< double > const', p_POC: 'valarray< double > const'):
+    def __init__(self, p_no_resources, p_no_areas, p_effectiveness, p_available, p_POC):
         this = _soral.new_CharnesCooper(p_no_resources, p_no_areas, p_effectiveness, p_available, p_POC)
         try:
             self.this.append(this)
@@ -381,19 +381,19 @@ class Array2D(_object):
     __swig_destroy__ = _soral.delete_Array2D
     __del__ = lambda self: None
 
-    def printSelf(self) -> "void":
+    def printSelf(self):
         return _soral.Array2D_printSelf(self)
 
-    def get(self, rowIndex: 'int', colIndex: 'int') -> "double":
+    def get(self, rowIndex, colIndex):
         return _soral.Array2D_get(self, rowIndex, colIndex)
 
-    def set(self, rowIndex: 'int', colIndex: 'int', value: 'double') -> "void":
+    def set(self, rowIndex, colIndex, value):
         return _soral.Array2D_set(self, rowIndex, colIndex, value)
 
-    def getNumColumns(self) -> "int const":
+    def getNumColumns(self):
         return _soral.Array2D_getNumColumns(self)
 
-    def getNumRows(self) -> "int const":
+    def getNumRows(self):
         return _soral.Array2D_getNumRows(self)
 Array2D_swigregister = _soral.Array2D_swigregister
 Array2D_swigregister(Array2D)
