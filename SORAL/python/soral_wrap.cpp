@@ -3012,12 +3012,13 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 #define SWIGTYPE_p_CharnesCooper swig_types[6]
 #define SWIGTYPE_p_ResourceAssignment swig_types[7]
 #define SWIGTYPE_p_ResourceIterator swig_types[8]
-#define SWIGTYPE_p_char swig_types[9]
-#define SWIGTYPE_p_double swig_types[10]
-#define SWIGTYPE_p_doubleArray swig_types[11]
-#define SWIGTYPE_p_valarrayT_double_t swig_types[12]
-static swig_type_info *swig_types[14];
-static swig_module_info swig_module = {swig_types, 13, 0, 0, 0, 0};
+#define SWIGTYPE_p_Washburn swig_types[9]
+#define SWIGTYPE_p_char swig_types[10]
+#define SWIGTYPE_p_double swig_types[11]
+#define SWIGTYPE_p_doubleArray swig_types[12]
+#define SWIGTYPE_p_valarrayT_double_t swig_types[13]
+static swig_type_info *swig_types[15];
+static swig_module_info swig_module = {swig_types, 14, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3125,6 +3126,7 @@ namespace swig {
 #include "Allocatn.h"
 #include "containr.h"
 #include "Alloc-CC.h"
+#include "Alloc-W.h"
 #include "Array2D.h"
 
 
@@ -5053,6 +5055,172 @@ SWIGINTERN PyObject *CharnesCooper_swigregister(PyObject *SWIGUNUSEDPARM(self), 
   return SWIG_Py_Void();
 }
 
+SWIGINTERN PyObject *_wrap_newWashburn(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int arg1 ;
+  int arg2 ;
+  Array2D *arg3 = 0 ;
+  double *arg4 ;
+  double *arg5 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  void *argp5 = 0 ;
+  int res5 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  Washburn *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOO:newWashburn",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "newWashburn" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = static_cast< int >(val1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "newWashburn" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3, SWIGTYPE_p_Array2D,  0  | 0);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "newWashburn" "', argument " "3"" of type '" "Array2D const &""'"); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "newWashburn" "', argument " "3"" of type '" "Array2D const &""'"); 
+  }
+  arg3 = reinterpret_cast< Array2D * >(argp3);
+  res4 = SWIG_ConvertPtr(obj3, &argp4,SWIGTYPE_p_double, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "newWashburn" "', argument " "4"" of type '" "double const []""'"); 
+  } 
+  arg4 = reinterpret_cast< double * >(argp4);
+  res5 = SWIG_ConvertPtr(obj4, &argp5,SWIGTYPE_p_double, 0 |  0 );
+  if (!SWIG_IsOK(res5)) {
+    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "newWashburn" "', argument " "5"" of type '" "double const []""'"); 
+  } 
+  arg5 = reinterpret_cast< double * >(argp5);
+  result = (Washburn *)newWashburn(arg1,arg2,(Array2D const &)*arg3,(double const (*))arg4,(double const (*))arg5);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Washburn, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_Washburn(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int arg1 ;
+  int arg2 ;
+  Array2D *arg3 = 0 ;
+  valarray< double > arg4 ;
+  valarray< double > arg5 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  void *argp4 ;
+  int res4 = 0 ;
+  void *argp5 ;
+  int res5 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  Washburn *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOO:new_Washburn",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_Washburn" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = static_cast< int >(val1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "new_Washburn" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3, SWIGTYPE_p_Array2D,  0  | 0);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "new_Washburn" "', argument " "3"" of type '" "Array2D const &""'"); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_Washburn" "', argument " "3"" of type '" "Array2D const &""'"); 
+  }
+  arg3 = reinterpret_cast< Array2D * >(argp3);
+  {
+    res4 = SWIG_ConvertPtr(obj3, &argp4, SWIGTYPE_p_valarrayT_double_t,  0  | 0);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "new_Washburn" "', argument " "4"" of type '" "valarray< double > const""'"); 
+    }  
+    if (!argp4) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_Washburn" "', argument " "4"" of type '" "valarray< double > const""'");
+    } else {
+      valarray< double > * temp = reinterpret_cast< valarray< double > * >(argp4);
+      arg4 = *temp;
+      if (SWIG_IsNewObj(res4)) delete temp;
+    }
+  }
+  {
+    res5 = SWIG_ConvertPtr(obj4, &argp5, SWIGTYPE_p_valarrayT_double_t,  0  | 0);
+    if (!SWIG_IsOK(res5)) {
+      SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "new_Washburn" "', argument " "5"" of type '" "valarray< double > const""'"); 
+    }  
+    if (!argp5) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_Washburn" "', argument " "5"" of type '" "valarray< double > const""'");
+    } else {
+      valarray< double > * temp = reinterpret_cast< valarray< double > * >(argp5);
+      arg5 = *temp;
+      if (SWIG_IsNewObj(res5)) delete temp;
+    }
+  }
+  result = (Washburn *)new Washburn(arg1,arg2,(Array2D const &)*arg3,arg4,arg5);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Washburn, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_Washburn(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Washburn *arg1 = (Washburn *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_Washburn",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Washburn, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_Washburn" "', argument " "1"" of type '" "Washburn *""'"); 
+  }
+  arg1 = reinterpret_cast< Washburn * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *Washburn_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_Washburn, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
 SWIGINTERN PyObject *_wrap_new_Array2D__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   int arg1 ;
@@ -5531,6 +5699,10 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"new_CharnesCooper", _wrap_new_CharnesCooper, METH_VARARGS, NULL},
 	 { (char *)"delete_CharnesCooper", _wrap_delete_CharnesCooper, METH_VARARGS, NULL},
 	 { (char *)"CharnesCooper_swigregister", CharnesCooper_swigregister, METH_VARARGS, NULL},
+	 { (char *)"newWashburn", _wrap_newWashburn, METH_VARARGS, NULL},
+	 { (char *)"new_Washburn", _wrap_new_Washburn, METH_VARARGS, NULL},
+	 { (char *)"delete_Washburn", _wrap_delete_Washburn, METH_VARARGS, NULL},
+	 { (char *)"Washburn_swigregister", Washburn_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_Array2D", _wrap_new_Array2D, METH_VARARGS, NULL},
 	 { (char *)"delete_Array2D", _wrap_delete_Array2D, METH_VARARGS, NULL},
 	 { (char *)"Array2D_printSelf", _wrap_Array2D_printSelf, METH_VARARGS, NULL},
@@ -5545,6 +5717,9 @@ static PyMethodDef SwigMethods[] = {
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
+static void *_p_WashburnTo_p_Allocation(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((Allocation *)  ((Washburn *) x));
+}
 static void *_p_CharnesCooperTo_p_Allocation(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((Allocation *)  ((CharnesCooper *) x));
 }
@@ -5560,6 +5735,7 @@ static swig_type_info _swigt__p_Array2D = {"_p_Array2D", "Array2D *", 0, 0, (voi
 static swig_type_info _swigt__p_CharnesCooper = {"_p_CharnesCooper", "CharnesCooper *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_ResourceAssignment = {"_p_ResourceAssignment", "ResourceAssignment *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_ResourceIterator = {"_p_ResourceIterator", "ResourceIterator *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_Washburn = {"_p_Washburn", "Washburn *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_double = {"_p_double", "double *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_doubleArray = {"_p_doubleArray", "doubleArray *", 0, 0, (void*)0, 0};
@@ -5575,6 +5751,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_CharnesCooper,
   &_swigt__p_ResourceAssignment,
   &_swigt__p_ResourceIterator,
+  &_swigt__p_Washburn,
   &_swigt__p_char,
   &_swigt__p_double,
   &_swigt__p_doubleArray,
@@ -5583,13 +5760,14 @@ static swig_type_info *swig_type_initial[] = {
 
 static swig_cast_info _swigc__p_ActiveArea[] = {  {&_swigt__p_ActiveArea, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ActiveAreasIterator[] = {  {&_swigt__p_ActiveAreasIterator, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_Allocation[] = {  {&_swigt__p_Allocation, 0, 0, 0},  {&_swigt__p_CharnesCooper, _p_CharnesCooperTo_p_Allocation, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_Allocation[] = {  {&_swigt__p_Allocation, 0, 0, 0},  {&_swigt__p_Washburn, _p_WashburnTo_p_Allocation, 0, 0},  {&_swigt__p_CharnesCooper, _p_CharnesCooperTo_p_Allocation, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_AreaAssignment[] = {  {&_swigt__p_AreaAssignment, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_AreaIterator[] = {  {&_swigt__p_AreaIterator, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_Array2D[] = {  {&_swigt__p_Array2D, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_CharnesCooper[] = {  {&_swigt__p_CharnesCooper, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ResourceAssignment[] = {  {&_swigt__p_ResourceAssignment, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ResourceIterator[] = {  {&_swigt__p_ResourceIterator, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_Washburn[] = {  {&_swigt__p_Washburn, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_double[] = {  {&_swigt__p_doubleArray, _p_doubleArrayTo_p_double, 0, 0},  {&_swigt__p_double, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_doubleArray[] = {  {&_swigt__p_doubleArray, 0, 0, 0},{0, 0, 0, 0}};
@@ -5605,6 +5783,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_CharnesCooper,
   _swigc__p_ResourceAssignment,
   _swigc__p_ResourceIterator,
+  _swigc__p_Washburn,
   _swigc__p_char,
   _swigc__p_double,
   _swigc__p_doubleArray,

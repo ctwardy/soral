@@ -63,8 +63,6 @@ def printAssignments( theAllocation ):
     while ( False == activeItr.atEnd() ):
         areaIndex = activeItr.getCurrentActiveAreaNum()
         area = soral.ActiveArea(areaIndex)
-        #area = soral.ActiveArea(activeItr)
-        #areaIndex = area.getActiveAreaNum()
 
     	resItr = soral.ResourceIterator(theAllocation, areaIndex)
     	

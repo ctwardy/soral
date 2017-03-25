@@ -24,6 +24,7 @@
 #include "Allocatn.h"
 #include "containr.h"
 #include "Alloc-CC.h"
+#include "Alloc-W.h"
 #include "Array2D.h"
 %}
 
@@ -62,5 +63,6 @@
 %include "Allocatn.h"
 %include "containr.h"
 %include "Alloc-CC.h"
+%include "Alloc-W.h"
 %include "Array2D.h"
 

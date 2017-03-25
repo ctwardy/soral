@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import soral
+import numpy as np
 from collections import defaultdict
 
 """Updated to hold many test cases."""
@@ -48,8 +49,9 @@ class Resource():
     def set_Ws(self, W, Ws):
         """Ensure self.Ws is well-defined."""
         if Ws:
-            assert isinstance(Ws, defaultdict)
-            assert all(Ws.values() >= 0)
+            # print(type(Ws.values()), Ws.values())
+            assert Ws is None or isinstance(Ws, dict)
+            assert all(np.array(Ws.values()) >= 0)
             self.Ws = Ws
         elif W:
             assert W >= 0
@@ -117,16 +119,40 @@ class TestCase():
                 region = self.regions[j]
                 reg_id = region.id
                 print("Reg_id: ")
-                print(reg_id)
-                print("resource.Ws[1]:")
-                print(resource.Ws[1])
-                print("resource.speeds[1]:")
-                print(resource.speeds[1])
+                print(reg_id, resource.Ws.items())
                 W, v = resource.Ws[reg_id], resource.speeds[reg_id]
                 self._speeds.set(j, i, v)
                 self._effectiveness.set(j, i, W * v / region.area)
-
+                
+        self.allocate()
         print('Done with init.')
+        
+        
+    def unpackAllocation(self, theAllocation ):
+        alloc = np.zeros([self.num_resources, self.num_regions])
+        
+        activeItr = soral.ActiveAreasIterator(theAllocation)
+        
+        # While there are still areas with assignments
+        while ( False == activeItr.atEnd() ):
+            
+            areaIndex = activeItr.getCurrentActiveAreaNum()
+            area = soral.ActiveArea(areaIndex)
+    
+            resItr = soral.ResourceIterator(theAllocation, areaIndex)
+        	
+            while ( False == resItr.atEnd() ):
+                resAssign = resItr.getResourceAssignment()
+                resIndex = resAssign.getResourceNum()
+                time = resAssign.getTime()
+                
+                # print "  Area: " + str(areaIndex) + "  Resource: " + str(resIndex) + "  Time: " + str(time)	  
+                alloc[resIndex,areaIndex] = time
+                resItr.increment()
+        
+            activeItr.increment()
+        	
+        return alloc
 
     def _charnes_cooper(self):
         """Create a Charnes-Cooper allocation.
@@ -137,29 +163,32 @@ class TestCase():
         # TODO: pick best resource
         CC = soral.newCharnesCooper
         resource = self.resources[0]
-        effect = self._effectiveness[0] # actually need to use iterator, right?
-        theAllocation = CC(self.num_resources,
-                           self.num_areas,
+        effect = self._effectiveness.get(0,0) # actually need to use iterator, right?
+        self.allocation = CC(self.num_resources,
+                           self.num_regions,
                            self._effectiveness,
                            self._hours,
                            self._POAs)
         # TODO: unpack theAllocation
-        return theAllocation
+        return self.unpackAllocation(self.allocation)
 
     def _washburn(self):
-        Wash = soral.Washburn(self.num_resources,
-                              self.num_areas,
+        self.allocation = soral.newWashburn(self.num_resources,
+                              self.num_regions,
                               self._effectiveness,
                               self._hours,
                               self._POAs)
-        return Wash
+        return self.unpackAllocation(self.allocation)
+        
 
     def allocate(self):
         if self.num_resources > 1:
-            ans = self._washburn()
+            self._washburn()
         else:
-            ans = self._charnes_cooper()
-        self.allocation = ans
+            self._charnes_cooper()
+
+        ans = self.allocation
+
         self.POD = np.array([ans.getPOD(i) for i in range(self.num_regions)])
         self.POCnew = np.array([ans.getNewPOC(i) for i in range(self.num_regions)])
         self.POS = np.array([ans.getPOS(i) for i in range(self.num_regions)])
@@ -172,10 +201,12 @@ class TestCase():
 
     def __repr__(self):
         # TODO: Use DataFrame for aligned printing?
-        print("TotalPOS: %7.2f" % self.allocation.getTotalPOS())
-        print("PODs:\n----\n", self.POD)
-        print("POCnew:\n-------\n", self.POCnew)
-        print("POS:\n----\n", self.POS)
+        r1 = "TotalPOS: %7.2f\n" % self.allocation.getTotalPOS()
+        r2 = "PODs:\n%s\n" % str(self.POD)
+        r3 = "POCnew:\n%s\n" % str(self.POCnew)
+        r4 = "POS:\n%s\n" % str(self.POS)
+        r5 = "Allocations:\n%s\n" % str(self.unpackAllocation(self.allocation))
+        return r1+r2+r3+r4 + r5
 
 
     def printAssignments(self):
@@ -216,15 +247,15 @@ def case_1():
     """4 areas, 1 resource"""
     
     regions = [Region(id=i, POA=p) for i, p in enumerate([8, 4, 1, 2])]
-    resources = [Resource(id='A', Ws={'0':1, '1':4, '2':12, '3':8}, hours=0.05)]
-    answer = np.array([0, 0.033333, 0, 0.01666667])
+    resources = [Resource(id='A', Ws={0:1, 1:4, 2:12, 3:8}, hours=0.05)]
+    answer = np.array([[0, 0.033333, 0, 0.01666667]])
 
     case = TestCase(regions, resources)
-    assert case._charnes_cooper() == answer
-    assert case._washburn() == answer
     print(case)
-    np.testing.assert_allclose(case._charnes_cooper(), answer)
-    np.testing.assert_allclose(case._washburn(), answer)
+    # assert case._charnes_cooper() == answer
+    # assert case._washburn() == answer
+    np.testing.assert_allclose(case._charnes_cooper(), answer, rtol=1e-04)
+    np.testing.assert_allclose(case._washburn(), answer, rtol=1e-04)
 
     
 def case_7():
@@ -249,7 +280,7 @@ def case_tom():
     case = TestCase(regions, resources)
     #assert case._charnes_cooper() == answer
     #assert case._washburn() == answer
-    print(case_tom)
+    print(case)
 
     
 if __name__ == '__main__':

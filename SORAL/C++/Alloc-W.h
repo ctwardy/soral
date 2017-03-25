@@ -79,6 +79,12 @@ using namespace std;
  * Author : David Albrecht
  *
  */
+ 
+ 
+class Washburn;
+extern "C" Washburn* newWashburn(const int p_no_resources,   const int p_no_areas,  const Array2D& p_effectiveness,
+    const double p_available[],  const double p_POC[]);
+
 
 class Washburn : public Allocation
 {

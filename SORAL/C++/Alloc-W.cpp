@@ -56,6 +56,22 @@
 
 using namespace std; 
 
+
+ extern "C" Washburn* newWashburn(const int p_no_resources, 
+						  const int p_no_areas, 
+						  const Array2D& p_effectiveness,
+						  const double p_available[], 
+						  const double p_POC[]) {
+    						  
+    Washburn* obj = new Washburn(p_no_resources, p_no_areas, p_effectiveness, 
+        toValArray(p_no_resources, p_available), toValArray(p_no_areas, p_POC));
+        
+    return obj;
+}
+
+
+
+
 // Define our numerical tolerance TOL. The authors of 
 // Numerical Recipes recommend TOL no smaller than
 // the square root of machine precision.
