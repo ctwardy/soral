@@ -24,8 +24,14 @@ class Region():
         self.id = id
         self.POA = POA
         self.area = area
+        self.polygon = polygon
         self.pden = 1.*POA / area
 
+    def __repr__(self):
+        """Unambiguous representation of object."""
+        return "Region(id=%r, POA=%r, area=%r, polygon=%r)" \
+            % (self.id, self.POA, self.area, self.polygon)
+  
 class Resource():
     """SAR resource. Resources have W and speed.
     :param id: - string or int identifier, used in hashing
@@ -46,6 +52,17 @@ class Resource():
         self.set_Ws(W, Ws)
         self.set_speeds(speed, speeds)
 
+    def __repr__(self):
+        """Unambiguous representation of object."""
+        r0 = ['Resource():',
+              '        id: %r', id,
+              '     hours: %r', hours,
+              '         W: %r', W,
+              '        Ws: %r', Ws,
+              '     speed: %r', speed,
+              '    speeds: %r', speeds]
+        return '\n'.join(r0)
+    
     def set_Ws(self, W, Ws):
         """Ensure self.Ws is well-defined."""
         if Ws:
@@ -89,12 +106,10 @@ class TestCase():
         # self.hours = hours # hours are part of Resource not TestCase
         self.num_regions = len(regions)
         self.num_resources = len(resources)
-        self.soral_init()
+        self._soral_init()
 
-    def soral_init(self):
-        """Split from objects to SORAL-style arrays to prepare for calling.
-        
-        """
+    def _soral_init(self):
+        """Split from objects to SORAL-style arrays & call allocate."""
         # TODO: use DataFrames to read the dicts?
         N_reg, N_rsrcs = self.num_regions, self.num_resources
         self._areas = soral.doubleArray(N_reg)
@@ -126,27 +141,41 @@ class TestCase():
                 
         self.allocate()
         print('Done with init.')
-        
-        
+             
+    def __repr__(self):
+        """Unambiguous representation of the TestCase.
+        Arguably it should not include the resulting allocation.
+        But hey. Convenience.
+        """
+        r0 = ["TestCase:",
+              "Regions  : %r" % self.regions,
+              "Resources: %r" % self.resources,
+              "::::::::::",
+              "TotalPOS : %7.2f" % self.getTotalPOS(),
+              "PODs     : %s" % str(self.POD),
+              "POCnew   : %s" % str(self.POCnew),
+              "POS      : %s" % str(self.POS),
+              "Allocatns: %s" % str(self.unpackAllocation(self.allocation))]
+        return '\n'.join(r0)
+
     def unpackAllocation(self, theAllocation ):
+        """Extract a 2D NumPy array."""
+        #TODO: This should really be part of the Allocation object, not TestCase
+        #TODO: Use sparse array?
+
         alloc = np.zeros([self.num_resources, self.num_regions])
-        
         activeItr = soral.ActiveAreasIterator(theAllocation)
         
         # While there are still areas with assignments
-        while ( False == activeItr.atEnd() ):
-            
+        while ( not activeItr.atEnd() ):
             areaIndex = activeItr.getCurrentActiveAreaNum()
             area = soral.ActiveArea(areaIndex)
-    
             resItr = soral.ResourceIterator(theAllocation, areaIndex)
-        	
-            while ( False == resItr.atEnd() ):
+            while ( not resItr.atEnd() ):
                 resAssign = resItr.getResourceAssignment()
                 resIndex = resAssign.getResourceNum()
                 time = resAssign.getTime()
-                
-                # print "  Area: " + str(areaIndex) + "  Resource: " + str(resIndex) + "  Time: " + str(time)	  
+                # print "  Area: %d, Resource: %d, Time: %s" % (areaIndex, resIndex, time)
                 alloc[resIndex,areaIndex] = time
                 resItr.increment()
         
@@ -199,34 +228,6 @@ class TestCase():
     def reset(self):
         del self.allocation, self.POD, self.POS, self.POCnew, self.TotalPOS
 
-    def __repr__(self):
-        # TODO: Use DataFrame for aligned printing?
-        r1 = "TotalPOS: %7.2f\n" % self.allocation.getTotalPOS()
-        r2 = "PODs:\n%s\n" % str(self.POD)
-        r3 = "POCnew:\n%s\n" % str(self.POCnew)
-        r4 = "POS:\n%s\n" % str(self.POS)
-        r5 = "Allocations:\n%s\n" % str(self.unpackAllocation(self.allocation))
-        return r1+r2+r3+r4 + r5
-
-
-    def printAssignments(self):
-        activeItr = soral.ActiveAreasIterator(self.allocation)
-
-        # While there are still areas with assignments
-        while not activeItr.atEnd():
-            areaIndex = activeItr.getCurrentActiveAreaNum()
-            area = soral.ActiveArea(areaIndex)
-            #area = soral.ActiveArea(activeItr)
-            #areaIndex = area.getActiveAreaNum()
-            resItr = soral.ResourceIterator(theAllocation, areaIndex)
-            while not resItr.atEnd():
-                resAssign = resItr.getResourceAssignment()
-                resIndex = resAssign.getResourceNum()
-                time = resAssign.getTime()
-                print("  Area: %d, Resource: %d, Time: %5.2f" % (areaIndex, resIndex, time) )
-                resItr.increment()
-
-            activeItr.increment()
 
 ######################   
 # Cases

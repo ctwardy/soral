@@ -2,7 +2,7 @@
 
 import soral
 
-print 'PySoral test based on tom.cpp'
+print('PySoral test based on tom.cpp')
 
 
 def runTest():
@@ -35,22 +35,22 @@ def runTest():
     
     theAllocation = soral.newCharnesCooper(resources, areas, effectiveness, availableHours, POA)
     
-    print "The calculated allocation";
-    printAssignments(theAllocation);
+    print("The calculated allocation")
+    printAssignments(theAllocation)
     
-    print "PODs: "
+    print("PODs: ")
     for i in range(0, areas):
-        print "  " +str(i) + ": " + str(theAllocation.getPOD(i))
+        print("  " +str(i) + ": " + str(theAllocation.getPOD(i)))
 
-    print "Adjusted POAs: "
+    print("Adjusted POAs: ")
     for i in range(0, areas):
-        print "  " +str(i) + ": " + str(theAllocation.getNewPOC(i))
+        print("  " +str(i) + ": " + str(theAllocation.getNewPOC(i)))
 
-    print "Segment POSs: "
+    print("Segment POSs: ")
     for i in range(0, areas):
-        print "  " +str(i) + ": " + str(theAllocation.getPOS(i))
+        print("  " +str(i) + ": " + str(theAllocation.getPOS(i)))
 
-    print " Cumulative POS: " + str(theAllocation.getTotalPOS()) 
+    print(" Cumulative POS: " + str(theAllocation.getTotalPOS()) )
     
     del theAllocation
 
@@ -64,20 +64,17 @@ def printAssignments( theAllocation ):
         areaIndex = activeItr.getCurrentActiveAreaNum()
         area = soral.ActiveArea(areaIndex)
 
-    	resItr = soral.ResourceIterator(theAllocation, areaIndex)
+        resItr = soral.ResourceIterator(theAllocation, areaIndex)
     	
-    	while ( False == resItr.atEnd() ):
+        while ( False == resItr.atEnd() ):
             resAssign = resItr.getResourceAssignment()
             resIndex = resAssign.getResourceNum()
             time = resAssign.getTime()
             
-            print "  Area: " + str(areaIndex) + "  Resource: " + str(resIndex) + "  Time: " + str(time)	  
+            print("  Area: " + str(areaIndex) + "  Resource: " + str(resIndex) + "  Time: " + str(time)	  )
             resItr.increment()
     
-    	activeItr.increment()
-
-
-
+        activeItr.increment()
 
 
 runTest()
