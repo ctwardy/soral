@@ -78,7 +78,7 @@
 
 using namespace std;
 
-// extern "C" 
+extern "C" 
 valarray<double> toValArray(unsigned int size, const double inArray[]);
 
 
