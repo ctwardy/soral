@@ -55,12 +55,12 @@ class Resource():
     def __repr__(self):
         """Unambiguous representation of object."""
         r0 = ['Resource():',
-              '        id: %r', id,
-              '     hours: %r', hours,
-              '         W: %r', W,
-              '        Ws: %r', Ws,
-              '     speed: %r', speed,
-              '    speeds: %r', speeds]
+              '        id: %r' % self.id,
+              '     hours: %r' % self.hours,
+#              '         W: %r' % self.W,
+              '        Ws: %r' % self.Ws,
+#              '     speed: %r' % self.speed,
+              '    speeds: %r' % self.speeds]
         return '\n'.join(r0)
     
     def set_Ws(self, W, Ws):

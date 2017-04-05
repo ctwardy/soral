@@ -12,12 +12,12 @@
 # ASO 18feb03 - Added TestBed to what Charles had.
 # ASO 19feb03 - Added userDef to the makefile
 # crt 06mar03 - Alphabetized .o listing. 
-#               Added Alloc-W.o entry. (?!) How was it compiling before? (?!)
-#               Removed extraneous mentions of .h files. 
-#               They're included by the .cpp!
+#			   Added Alloc-W.o entry. (?!) How was it compiling before? (?!)
+#			   Removed extraneous mentions of .h files. 
+#			   They're included by the .cpp!
 # crt 19apr03 - Added "make test" to compile exec in testmode.
 # crt 01may03 - Added "make sample" to make the sample prog. Modified so
-#               you can make both exec and sample.
+#			   you can make both exec and sample.
 
 OBJS = Allocatn.o Array2D.o Alloc-CC.o Alloc-W.o userDef.o itr_area.o itr_activ.o itr_res.o con_area.o con_activ.o con_res.o 
 TB1  = TestBed.o
@@ -28,10 +28,12 @@ CPPFLAGS=-fPIC
 NODE_V8_VERSION=-DV8_VERSION=0x040685 
 
 TESTOBJS = AllocatnTESTMODE.o Array2DTESTMODE.o Alloc-CCTESTMODE.o Alloc-WTESTMODE.o userDefTESTMODE.o itr_areaTESTMODE.o itr_activTESTMODE.o itr_resTESTMODE.o con_areaTESTMODE.o con_activTESTMODE.o con_resTESTMODE.o
-TB2      = TestBedTESTMODE.o
-S2       = sampleTESTMODE.o
+TB2	  = TestBedTESTMODE.o
+S2	   = sampleTESTMODE.o
 
-OS       := $(shell uname -s)
+OS	   := $(shell uname -s)
+
+all: libsoral.a python node
 
 libsoral.a: $(OBJS)
 ifeq ($(OS),"Windows*")
@@ -74,9 +76,26 @@ libinstall:
 	echo "libinstall should put libsoral.a and *.h in the right places"
 	echo "But right now it does nothing."
 
-clean:
+clean: clean-CPP clean-python clean-node
+
+clean-CPP:
 	rm -f $(OBJS) $(TB1) $(S1) libsoral.a
 	rm -f $(TESTOBJS) $(TB2) $(S2)
+	
+clean-python:
+	rm -rf ../python/build/temp*
+	rm -f ../python/soral.pyc
+	rm -f ../python/soral.py
+	rm -f ../python/__pycache__/*
+	rm -f ../python/_soral.so
+	rm -f ../python/soral_wrap.cpp
+
+clean-node:
+	rm -f ../node/build/Release/soral.node
+	rm -f ../node/build/Release/obj.target/soral.node
+	rm -f ../node/build/Release/obj.target/soral/soral_wrap.o
+	rm -f ../node/soral_wrap_raw.cpp
+	rm -f ../node/soral_wrap.cpp
 
 exec: $(OBJS) $(TB1)
 	ar -r libSoral.a $(OBJS)
