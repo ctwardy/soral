@@ -7,16 +7,17 @@ The SORAL library is written in C++ and the ports for Python and Node are genera
 Dependencies: 
 -------------
 
-### Ubuntu
+### Linux
 
- * apt-get install python-dev
- * apt-get install swig
+ * python-dev: apt-get install python-dev
+ * swig 3: apt-get install swig
+ * node-gyp: apt-get install node-gyp
  
-On Mac: 
+### MacOS: 
 
- * Anaconda Python; see https://www.continuum.io/why-anaconda
- * Swig; see http://macappstore.org/swig/
- 
+ * Anaconda Python: see https://www.continuum.io/why-anaconda
+ * Swig: see http://macappstore.org/swig/
+ * node-gyp: sudo npm install -g node-gyp
  
 ### Generated Files (do not hand edit)
 
