@@ -82,9 +82,20 @@ using namespace std;
  
  
 class Washburn;
+
+
+
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-type-c-linkage"
+#endif
+
 extern "C" Washburn* newWashburn(const int p_no_resources,   const int p_no_areas,  const Array2D& p_effectiveness,
     const double p_available[],  const double p_POC[]);
 
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
 
 class Washburn : public Allocation
 {

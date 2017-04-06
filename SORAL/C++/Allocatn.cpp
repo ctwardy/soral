@@ -74,6 +74,11 @@ using namespace std; //ASO 29/11/02 iostream declares things in the std
                      //namespace rather than global as iostream.h did.
                      
                      
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-type-c-linkage"
+#endif
+
 extern "C"  
 valarray<double> toValArray(unsigned int size, const double inArray[]) {
     valarray<double> outArray(size);
@@ -82,6 +87,11 @@ valarray<double> toValArray(unsigned int size, const double inArray[]) {
     }
     return outArray;
 }
+
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
                      
 
 /**** Allocation *************************************************************/

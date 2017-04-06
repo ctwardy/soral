@@ -57,7 +57,12 @@
 using namespace std; 
 
 
- extern "C" Washburn* newWashburn(const int p_no_resources, 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-type-c-linkage"
+#endif
+
+extern "C" Washburn* newWashburn(const int p_no_resources, 
 						  const int p_no_areas, 
 						  const Array2D& p_effectiveness,
 						  const double p_available[], 
@@ -69,6 +74,10 @@ using namespace std;
     return obj;
 }
 
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
 
 
 

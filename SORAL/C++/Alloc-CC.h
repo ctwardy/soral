@@ -79,8 +79,22 @@ using namespace std;
  */
 
 class CharnesCooper;
+
+
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-type-c-linkage"
+#endif
+
 extern "C" CharnesCooper* newCharnesCooper(const int p_no_resources,   const int p_no_areas,  const Array2D& p_effectiveness,
     const double p_available[],  const double p_POC[]);
+
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
+
+
 
 class CharnesCooper : public Allocation
 {

@@ -78,9 +78,17 @@
 
 using namespace std;
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wreturn-type-c-linkage"
+#endif
+
 extern "C" 
 valarray<double> toValArray(unsigned int size, const double inArray[]);
 
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
 
 // Forward declarations.
 class Allocation;

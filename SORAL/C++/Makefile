@@ -31,6 +31,9 @@ TESTOBJS = AllocatnTESTMODE.o Array2DTESTMODE.o Alloc-CCTESTMODE.o Alloc-WTESTMO
 TB2	  = TestBedTESTMODE.o
 S2	   = sampleTESTMODE.o
 
+# Wants swig 3 or higher
+SWIG = swig
+
 OS	   := $(shell uname -s)
 
 all: libsoral.a python node
@@ -46,7 +49,7 @@ endif
 python: ../python ../python/soral_wrap.cpp ../python/_soral.so
 
 ../python/soral_wrap.cpp: *.h libsoral.i
-	swig -c++ -python -outdir ../python -o ../python/soral_wrap.cpp libsoral.i
+	$(SWIG) -c++ -python -outdir ../python -o ../python/soral_wrap.cpp libsoral.i
 
 ../python/_soral.so: ../python/setup.py libSoral.a ../python/soral_wrap.cpp 
 	(cd ../python && python setup.py build_ext --inplace)
@@ -55,7 +58,7 @@ node: ../node/soral_wrap.cpp
 
 ../node/soral_wrap.cpp: *.h libsoral.i
 	echo "If you have trouble check your node/v8 version and the NODE_V8_VERSION setting in the Makefile"
-	swig -c++ -javascript -v8 $(NODE_V8_VERSION) -outdir ../node -o ../node/soral_wrap_raw.cpp libsoral.i
+	$(SWIG) -c++ -javascript -v8 $(NODE_V8_VERSION) -outdir ../node -o ../node/soral_wrap_raw.cpp libsoral.i
 	cat ../node/soral_wrap_headers.cpp ../node/soral_wrap_raw.cpp > ../node/soral_wrap.cpp
 	( cd ../node && node-gyp clean && node-gyp configure && node-gyp build )
 
