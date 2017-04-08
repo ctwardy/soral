@@ -23,10 +23,40 @@ OBJS = Allocatn.o Array2D.o Alloc-CC.o Alloc-W.o userDef.o itr_area.o itr_activ.
 TB1  = TestBed.o
 S1   = sample.o
 CPP = g++
-CPPFLAGS=-fPIC
+# CPPFLAGS=-fPIC
+export MACOSX_DEPLOYMENT_TARGET=10.12
 
-# NODE_V8_VERSION=-DV8_VERSION=0x051200 
+OS := $(shell uname)
+ifeq ($(OS),Darwin)
+	# MacOS commands 
+	USE_OSX_SDK = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
+	export CFLAGS=-fPIC --sysroot=$(USE_OSX_SDK)
+	export CPPFLAGS=-fPIC --sysroot=$(USE_OSX_SDK) 
+	export LDFLAGS=-L$(USE_OSX_SDK)/usr/lib
+else
+	# Linux
+	export CFLAGS=-fPIC  
+	export CPPFLAGS=-fPIC 
+endif
+
+
+# You may need to add your V8 version here; see https://nodejs.org/en/download/releases/ for a table of values
+NODE_VERSION_RAW := $(strip $(shell node --version) )
+NODE_VERSION := $(subst v,,$(NODE_VERSION_RAW))
+
+NODE_VER_COMP_7 = $(strip $(shell ./vercomp.sh $(NODE_VERSION) 7.0))
+
+NODE_V8_VERSION=
+ifeq ($(strip $(NODE_VERSION)),7.4.0) 
+NODE_V8_VERSION=-DV8_VERSION=0x050450 
+endif
+ifeq ($(strip $(NODE_VERSION)),5.12.0) 
 NODE_V8_VERSION=-DV8_VERSION=0x040685 
+endif
+
+# Check NODE version
+# $(info NODE_VER_COMP_7 is $(NODE_VER_COMP_7) )
+
 
 TESTOBJS = AllocatnTESTMODE.o Array2DTESTMODE.o Alloc-CCTESTMODE.o Alloc-WTESTMODE.o userDefTESTMODE.o itr_areaTESTMODE.o itr_activTESTMODE.o itr_resTESTMODE.o con_areaTESTMODE.o con_activTESTMODE.o con_resTESTMODE.o
 TB2	  = TestBedTESTMODE.o
@@ -37,8 +67,9 @@ SWIG = swig
 
 OS	   := $(shell uname -s)
 
-all: libsoral.a python node
+all: CPP python node
 
+CPP: libsoral.a
 
 libsoral.a: $(OBJS)
 ifeq ($(OS),"Windows*")
@@ -54,15 +85,20 @@ python: libsoral.a ../python ../python/soral_wrap.cpp ../python/_soral.so
 	$(SWIG) -c++ -python -outdir ../python -o ../python/soral_wrap.cpp libsoral.i
 
 ../python/_soral.so: ../python/setup.py libSoral.a ../python/soral_wrap.cpp 
-	(cd ../python && python setup.py build_ext --inplace)
+	( cd ../python && python setup.py build_ext --inplace )
 
-node: libsoral.a ../node/soral_wrap.cpp
+node: nodeVersionCheck libsoral.a ../node/soral_wrap.cpp
 
 ../node/soral_wrap.cpp: *.h libsoral.i
-	echo "If you have trouble check your node/v8 version and the NODE_V8_VERSION setting in the Makefile"
+	@echo ""
+	@echo "** Detected Node version: $(NODE_VERSION)"
+	@echo "** NODE_V8_VERSION flag: $(NODE_V8_VERSION)"
+	@echo "** Check the NODE_V8_VERSION setting in the Makefile if you have trouble compiling"
+	@echo "** If you don't need Node, just do make CPP python"
+	@echo ""
 	$(SWIG) -c++ -javascript -v8 $(NODE_V8_VERSION) -outdir ../node -o ../node/soral_wrap_raw.cpp libsoral.i
 	cat ../node/soral_wrap_headers.cpp ../node/soral_wrap_raw.cpp > ../node/soral_wrap.cpp
-	( cd ../node && node-gyp clean && node-gyp configure && node-gyp build )
+	( cd ../node && node-gyp clean && node-gyp configure   && node-gyp build   )
 
 
 runtests: runtests.cpp
@@ -210,6 +246,21 @@ TestBedTESTMODE.o:
 	$(CPP) $(CPPFLAGS) -o TestBedTESTMODE.o -c TestBed.cpp -D _ALLOCATION_TESTMODE
 
 
+
+
+
+
+nodeVersionCheck: 
+ifeq ($(NODE_VER_COMP_7),>)
+	@echo "YOUR NODE VERSION IS $(NODE_VERSION_RAW) / $(NODE_VERSION)"
+	@echo "Fun fact: At the time of writing swig doesn't support Node v7 and up."
+	@echo "Watch https://github.com/swig/swig/issues/804 for progress in supporting Node v7,"
+	@echo "or use an older version of Node"
+	@echo "Unsupported NODE version"
+	@false
+else
+	@true	
+endif
 
 
 

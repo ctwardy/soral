@@ -26,6 +26,7 @@ In order to run `make all` you will need:
  * swig 3: apt-get install swig
  * python-dev: apt-get install python-dev
    - Or a distribution like Anaconda Python
+ * node: apt-get install node
  * node-gyp: apt-get install node-gyp
  
 ### MacOS: 
@@ -34,7 +35,21 @@ In order to run `make all` you will need:
  * Anaconda Python: see https://www.continuum.io/why-anaconda
    - Other Python can work, but this is what we used.
  * Node.js: https://nodejs.org/en/
+ * node: sudo npm install -g node
  * node-gyp: sudo npm install -g node-gyp
+ 
+
+### Makefile Tweaks
+
+You may need to know which Node V8 version you're using. This is not simply the Node version but the V8 system under Node.
+Easiest way to check is:
+    $ sudo npm install -g node-v8-version
+    $ v8v -s 
+or check the table at
+    https://nodejs.org/en/download/releases/
+    
+    
+ 
  
 ### Generated Files (do not hand edit)
 
