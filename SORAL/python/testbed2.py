@@ -62,6 +62,14 @@ class Resource():
 #              '     speed: %r' % self.speed,
               '    speeds: %r' % self.speeds]
         return '\n'.join(r0)
+
+    def __getitem__(self, reg_id):
+        """[] operator: return (W, speed) for region `reg_id`"""
+        try:
+            return self.Ws[reg_id], self.speeds[reg_id]
+        except KeyError:
+            print("** Either W or speed undefined for resource %s." % self.id)
+            return None, None
     
     def set_Ws(self, W, Ws):
         """Ensure self.Ws is well-defined."""
@@ -88,7 +96,21 @@ class Resource():
         else:
             self.speeds = defaultdict(lambda: 1)
 
+class Alloc():
+    """Try to wrap SORAL allocation to use Python index operators.
+    When this works, move to SWIG stuff.
+    
+    """
+    def __init__(self, soral_alloc):
+        pass
 
+    def __getitem__(self, key):
+        pass
+
+    def __repr__(self):
+        pass
+
+    
 class TestCase():
     """TestCase has regions and resources.
     :param regions: sequence of Region
@@ -167,11 +189,11 @@ class TestCase():
         activeItr = soral.ActiveAreasIterator(theAllocation)
         
         # While there are still areas with assignments
-        while ( not activeItr.atEnd() ):
+        while not activeItr.atEnd():
             areaIndex = activeItr.getCurrentActiveAreaNum()
             area = soral.ActiveArea(areaIndex)
             resItr = soral.ResourceIterator(theAllocation, areaIndex)
-            while ( not resItr.atEnd() ):
+            while not resItr.atEnd():
                 resAssign = resItr.getResourceAssignment()
                 resIndex = resAssign.getResourceNum()
                 time = resAssign.getTime()

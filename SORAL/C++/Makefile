@@ -1,23 +1,23 @@
-# crt 18Feb03 This is the cleaned-up simplified Makefile for SORAL
-# It doesn't build the test programs like the old one did, so the old one
-# is still around in Makefile.old. It has a lot of good ideas.
+# SORAL Makefile
 #
-# I've added a line to build a library libsoral.a under *nix.
-#
-# I've removed lines for testing programs but left lines for TESTMODE
-# versions of these files. But I haven't checked that TESTMODE calls
-# work. Mostly I just "make". 
-#
-#
-# ASO 18feb03 - Added TestBed to what Charles had.
-# ASO 19feb03 - Added userDef to the makefile
-# crt 06mar03 - Alphabetized .o listing. 
-#			   Added Alloc-W.o entry. (?!) How was it compiling before? (?!)
-#			   Removed extraneous mentions of .h files. 
-#			   They're included by the .cpp!
-# crt 19apr03 - Added "make test" to compile exec in testmode.
-# crt 01may03 - Added "make sample" to make the sample prog. Modified so
-#			   you can make both exec and sample.
+# ChangeLog (Oldest First)
+# -------------------------
+# 
+# 2003-02-18 crt - "cleaned-up simplified Makefile for SORAL"
+#   * Removed lines for testing programs, but kept for TESTMODE versions.
+#   * Old version kept around as Makefile.old. "It has a lot of good ideas."
+#   * Added target libsoral.a under *nix. (The actual *library*.)
+# 2003-02-18 ASO - Added TestBed to what Charles had.
+# 2003-02-19 ASO - Added userDef to the makefile
+# 2003-03-06 crt - Alphabetized .o listing. Added Alloc-W.o. (How was it working b4?)
+# 2003-04-19 crt - Added "make test" to compile exec in testmode.
+# 2003-05-01 crt - Added "make sample" to make the sample prog.
+#   * Modified so you can make both exec and sample.
+# ...
+# 2017-01 - Heartfelt apps hired to refresh SORAL from 2003-era snapshots
+# 2017-04: ...
+# 
+
 
 OBJS = Allocatn.o Array2D.o Alloc-CC.o Alloc-W.o userDef.o itr_area.o itr_activ.o itr_res.o con_area.o con_activ.o con_res.o 
 TB1  = TestBed.o
@@ -67,7 +67,7 @@ node: libsoral.a ../node/soral_wrap.cpp
 
 runtests: runtests.cpp
 	$(CPP) $(CPPFLAGS) runtests.cpp -L. -lSoral -o runtests
-	
+
 
 # To use the library:  $(CPP) mycode.cc -o mycode -lSoral
 # If the library isn't in the current dir (or path), you'll need to 
@@ -86,7 +86,7 @@ clean: clean-CPP clean-python clean-node
 clean-CPP:
 	rm -f $(OBJS) $(TB1) $(S1) libsoral.a
 	rm -f $(TESTOBJS) $(TB2) $(S2)
-	
+
 clean-python:
 	rm -rf ../python/build/temp*
 	rm -f ../python/soral.pyc

@@ -1,22 +1,39 @@
 Installation Notes for SORAL library
 ====================================
 
+The SORAL library is written in C++. It has been tested with
+gcc on LInux and gcc/clang Mac.  [Windows?]
 
-The SORAL library is written in C++ and the ports for Python and Node are generated from that using SWIG.
+SORAL includes SWIG profiles for generating Python and Node
+wrappers.
 
-Dependencies: 
+It uses Doxygen to generate documentation.
+
+Dependencies:
 -------------
 
-### Linux
+C++: `make` and `gcc` or compatible C++ compiler.
 
- * python-dev: apt-get install python-dev
+In order to run `make all` you will need:
+ * doxygen 
+ * SWIG
+ * Python
+ * Node
+
+### Linux (Debian variants)
+
+ * doxygen: apt-get install doxygen
  * swig 3: apt-get install swig
+ * python-dev: apt-get install python-dev
+   - Or a distribution like Anaconda Python
  * node-gyp: apt-get install node-gyp
  
 ### MacOS: 
 
- * Anaconda Python: see https://www.continuum.io/why-anaconda
  * Swig: see http://macappstore.org/swig/
+ * Anaconda Python: see https://www.continuum.io/why-anaconda
+   - Other Python can work, but this is what we used.
+ * Node.js: https://nodejs.org/en/
  * node-gyp: sudo npm install -g node-gyp
  
 ### Generated Files (do not hand edit)
@@ -24,7 +41,7 @@ Dependencies:
 These files are made by swig via Makefile and should not be hand edited:
 
  * python/soral.py
- * python/soral_wrap.cpp
+ * python/soral\_wrap.cpp
  
 You will need python_dev or equivalent package for your OS.
 
