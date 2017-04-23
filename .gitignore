@@ -1,0 +1,12 @@
+
+*.o
+
+*.a
+
+*.pyc
+
+*.so
+
+SORAL/python/soral_wrap.cpp
+
+SORAL/python/soral.py

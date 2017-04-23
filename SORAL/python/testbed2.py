@@ -54,13 +54,11 @@ class Resource():
 
     def __repr__(self):
         """Unambiguous representation of object."""
-        r0 = ['Resource():',
-              '        id: %r' % self.id,
-              '     hours: %r' % self.hours,
+        r0 = ['Resource(%r): %r hours' % (self.id, self.hours),
 #              '         W: %r' % self.W,
-              '        Ws: %r' % self.Ws,
+              '        Ws: %r' % dict(self.Ws),
 #              '     speed: %r' % self.speed,
-              '    speeds: %r' % self.speeds]
+              '    speeds: %r' % dict(self.speeds)]
         return '\n'.join(r0)
 
     def __getitem__(self, reg_id):
@@ -76,7 +74,8 @@ class Resource():
         if Ws:
             # print(type(Ws.values()), Ws.values())
             assert Ws is None or isinstance(Ws, dict)
-            assert all(np.array(Ws.values()) >= 0)
+            ws = np.array([w for w in Ws.values()])
+            assert all(ws >= 0)
             self.Ws = Ws
         elif W:
             assert W >= 0
@@ -113,16 +112,18 @@ class Alloc():
     
 class TestCase():
     """TestCase has regions and resources.
+    :param id: TestCase identifier
     :param regions: sequence of Region
     :param resources: sequence of Resource
 
     """
-    def __init__(self, regions, resources):
+    def __init__(self, id, regions, resources):
         for region in regions:
             assert(isinstance(region, Region)) # assert(type(region) == Region)
         for resource in resources:
             assert(isinstance(resource, Resource)) # assert(type(resource) == Resource)
 
+        self.id = id
         self.regions = regions
         self.resources = resources
         # self.hours = hours # hours are part of Resource not TestCase
@@ -155,24 +156,23 @@ class TestCase():
             for j in range(N_reg):
                 region = self.regions[j]
                 reg_id = region.id
-                print("Reg_id: ")
-                print(reg_id, resource.Ws.items())
+                #print("Reg_id: ")
+                #print(reg_id, resource.Ws.items())
                 W, v = resource.Ws[reg_id], resource.speeds[reg_id]
                 self._speeds.set(j, i, v)
                 self._effectiveness.set(j, i, W * v / region.area)
                 
         self.allocate()
-        print('Done with init.')
              
     def __repr__(self):
         """Unambiguous representation of the TestCase.
         Arguably it should not include the resulting allocation.
         But hey. Convenience.
         """
-        r0 = ["TestCase:",
-              "Regions  : %r" % self.regions,
+        region_str = '\n\t   '.join([str(x) for x in self.regions])
+        r0 = ["\n::::: TestCase %s :::::::" % self.id,
+              "Regions  : %s" % region_str,
               "Resources: %r" % self.resources,
-              "::::::::::",
               "TotalPOS : %7.2f" % self.getTotalPOS(),
               "PODs     : %s" % str(self.POD),
               "POCnew   : %s" % str(self.POCnew),
@@ -261,10 +261,12 @@ def case_0():
     regions = [Region(id=1, POA=4)]
     resources = [Resource(id='A', W=4, speed=1, hours=0.05)]
     answer = 0.05
-    case = TestCase(regions, resources)
+    case = TestCase(0, regions, resources)
     print(case)
     np.testing.assert_allclose(case._charnes_cooper(), answer)
     np.testing.assert_allclose(case._washburn(), answer)
+    np.testing.assert_allclose(case.POD, 0.18127, rtol=1e-4)
+    np.testing.assert_allclose(case.POCnew, 3.2749, rtol=1e-4)
     
 def case_1():
     """4 areas, 1 resource"""
@@ -273,7 +275,7 @@ def case_1():
     resources = [Resource(id='A', Ws={0:1, 1:4, 2:12, 3:8}, hours=0.05)]
     answer = np.array([[0, 0.033333, 0, 0.01666667]])
 
-    case = TestCase(regions, resources)
+    case = TestCase(1, regions, resources)
     print(case)
     # assert case._charnes_cooper() == answer
     # assert case._washburn() == answer
@@ -290,7 +292,7 @@ def case_7():
     answer = np.array([[10.30365, 13.9],
                        [5.79635, 0]])
 
-    case = TestCase(regions, resources)
+    case = TestCase(7, regions, resources)
     print(case)
     np.testing.assert_allclose(case.allocate(), answer)
 
@@ -300,7 +302,7 @@ def case_tom():
                Region(id=3, POA=.2903, area=14),
                Region(id=4, POA=.2581, area=12)]
     resources = [Resource(id='A', W=1, speed=1, hours=40)]
-    case = TestCase(regions, resources)
+    case = TestCase('tom', regions, resources)
     #assert case._charnes_cooper() == answer
     #assert case._washburn() == answer
     print(case)
