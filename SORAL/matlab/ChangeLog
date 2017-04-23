@@ -1,0 +1,42 @@
+2003-02-06  Charles R. Twardy  <ctwardy@csse.monash.edu.au>
+
+	* testcases.m: Put all test cases into testcases.m so we no longer
+	load binary files. Much easier to see what the test cases
+	are. I've left the old binary .mat files around for comparison. I
+	had to make the comparisons approximate: round(temp*10000).
+
+2002-02-07  Charles R. Twardy  <ctwardy@csse.monash.edu.au>
+
+	* pivot.m: Condensed comments. Small bugfix and efficiency
+	change. Tested OK.
+
+2002-02-06  Charles R. Twardy  <ctwardy@csse.monash.edu.au>
+
+	* pivot.m: Added a check at the beginning that
+	sumMu(Rnew_subtreeRoot) < TOL. Added many comments about exit
+	conditions relevant to TOL and tests thereby required. You know, I
+	really should have used smaller release numbers.
+
+	* chkMuSum.m (Rnew_subtreeSum): Fixed a cut-and-paste bug. Added
+	some comments.
+
+2002-01-22  Charles R. Twardy  <ctwardy@csse.monash.edu.au>
+
+	* optimum.m (): Added check for 'Mu(i) > TOL'.
+	Added check for 'Lambda(j) > TOL'
+	Added a large comment block explaining why I added these things.
+
+	* pivot.m (Solve for t_l): Added check for 'Lambda(Rnew) > TOL' when
+	assigning t_l
+
+Release 2.0	Now compatible with Octave. 
+	dwa split the functions into separate .m files and replaced Matlab
+	structs with normal arrays. Other minor changes.
+
+	testcases.m added to load all the sample .mat files and test them.
+	The .mat files are currently in Matlab v6 format and so cannot be
+	read by Octave 2.0. Therefore Octave 2.1 must be used.
+
+Release 1.0	First stable version
+	Found to work with the example in Washburn's paper. Tested on
+	other cases. 

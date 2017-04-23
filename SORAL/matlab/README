@@ -1,0 +1,42 @@
+SORAL = SARbayes Optimal Resource Allocation Library
+18 Jan 2002
+
+Currently the directory contains Matlab / Octave code implementing
+Washburn's algorithm for multiple resources and a stationary target.
+In particular, this version assumes all resources have an exponential
+detection function.
+
+From within Matlab or Octave, change to this directory and type "help
+washburn.m" for instructions. Basically, if your area probabilities
+are in p, your resource times are in T, and your effectiveness values
+are in w, you type "washburn(p,T,w)".
+
+=============
+   Files
+=============
+
+   washburn.m   --              The main function. Type "help washburn".
+                                Most of the other .m files are subroutines
+                                for washburn.m.
+
+   testcases.m  --              Runs through all the test cases we have
+                                defined and compares the answers with 
+                                the correct answers. Now has test
+								cases in the file as text.
+
+   randsar.m    --              For stress testing. Generates random data
+                                for p, T, and w. Useful for testing very
+                                large problems.
+
+   *.m          --              If not named above, it's a supporting
+                                function for washburn.m.
+
+   ChangeLog    --              Hopefully a current change log.
+                                                
+
+
+   *.mat        --              Test cases stored as Matlab v6 binaries.
+								But Octave 2.0 cannot read v6
+								binaries, and neither can humans. 
+								Test cases are now in testcases.m by hand.
+
