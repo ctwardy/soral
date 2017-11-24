@@ -54,14 +54,17 @@ AGMSAR is a text-based resource-allocation program that uses SORAL.
 Perhaps it should get its own repository that refers to SORAL.
 
 # Status
-* 2017-11: Changed to MIT License, more cleanup.
+* 2017-11: Changed to MIT License: updated this file and LICENSE.md.
 * 2017-04: Cleaned code uploaded to GitHub
-    * Code cleaned by Sarah George at Heartfelt Tech.
-    * Using two snapshots from 200x, and Tom Russo's site [link]
+    * Code cleaned by Sarah George at [Heartfelt Tech](http://www.heartfelttech.com)
+    * Using a 2003? snapshot, the 2008 delivery, and [Tom Russo's 2007 snapshot](https://github.com/tvrusso/SORAL_Archived)
     * Wrapped for Python and Node (using SWIG to wrap)
     * Need to update docs
-* 201x: Tom Russo's site [link]
-* 2003 - 201(2?): Available on sarbayes.org
+* 2015: Tom Russo's ESCAPE 2015 presentation on his [Search Theory Page](http://pages.swcp.com/~russo/searchtheoryrefs.html) includes detailed SORAL examples.
+* 2011: Hosting Revolution vanished overnight taking down the SARBayes website. They were also my backup service, so I totally lost the CVStrac version history, as well as some non-SORAL content. 
+* 2008-02: Charles purchased rights from AGM and got a slightly updated version of the code & docs.
+  - AGMSARpackage20080222.zip
+* 2003 - 2011: Available on sarbayes.org
   - Self-hosted CVStrac and I believe CVSdude
   - Ported to Google Code, and failed to migrate therefrom
   - SARBayes' hosting company vanished, with hosted copy
