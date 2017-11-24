@@ -54,28 +54,26 @@ AGMSAR is a text-based resource-allocation program that uses SORAL.
 Perhaps it should get its own repository that refers to SORAL.
 
 # Status
+* 2017-11: Changed to MIT License, more cleanup.
 * 2017-04: Cleaned code uploaded to GitHub
     * Code cleaned by Sarah George at Heartfelt Tech.
     * Using two snapshots from 200x, and Tom Russo's site [link]
     * Wrapped for Python and Node (using SWIG to wrap)
     * Need to update docs
 * 201x: Tom Russo's site [link]
-* 200x - 201x: Available on sarbayes.org
-  - Self-hosted CVStrac 
-  - CVSdude?
-  - Google Code
-  - Failed to migrate from Google Code
-  - SARBayes hosting company vanished, with hosted copy
-200x: Code Review and Release of v__
-200x: Development
+* 2003 - 201(2?): Available on sarbayes.org
+  - Self-hosted CVStrac and I believe CVSdude
+  - Ported to Google Code, and failed to migrate therefrom
+  - SARBayes' hosting company vanished, with hosted copy
+2003: Code Review and Release of vX.x under the Gnu GPL, copyright AGM.
+2001: SORAL begun as a summer project at Monash University.
+  - Advisors: Charles Twardy, Ph.D. & David Albrecht, Ph.D.
+  - AGM Team: Andre Oboler, Gareth Thompson, Michael Eldridge
 
 # License
- SORAL is free (<em>libre</em>) software available under the GNU
- General Public License (GPL). Unless you secure a separate
- license, this requires any software which uses SORAL to 
- also be GPL. In order to ensure that
- using SORAL will not adversely affect the licensing status of your
- own software, please see the the file COPYING for the full
- text of the GPL.
+ SORAL is free (<em>libre</em>) software available under the MIT
+ License. It was changed from Gnu GPL in November 2017. The MIT
+ license is more permissive: code using SORAL no longer needs to 
+ be released under the Gnu GPL. You may incorporate SORAL into
+ proprietary code. 
 
-TODO: Create a LICENSE file, and update to state ownership & history. 
