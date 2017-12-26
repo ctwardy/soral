@@ -22,21 +22,21 @@
 OBJS = Allocatn.o Array2D.o Alloc-CC.o Alloc-W.o userDef.o itr_area.o itr_activ.o itr_res.o con_area.o con_activ.o con_res.o 
 TB1  = TestBed.o
 S1   = sample.o
-CPP = g++
-# CPPFLAGS=-fPIC
+CXX = g++
+# CXXFLAGS=-fPIC
 export MACOSX_DEPLOYMENT_TARGET=10.12
 
 OS := $(shell uname)
 ifeq ($(OS),Darwin)
-	# MacOS commands 
+# MacOS commands
 	USE_OSX_SDK = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
 	export CFLAGS=-fPIC --sysroot=$(USE_OSX_SDK)
-	export CPPFLAGS=-fPIC --sysroot=$(USE_OSX_SDK) 
+	export CXXFLAGS=-fPIC --sysroot=$(USE_OSX_SDK)
 	export LDFLAGS=-L$(USE_OSX_SDK)/usr/lib
 else
-	# Linux
-	export CFLAGS=-fPIC  
-	export CPPFLAGS=-fPIC 
+# Linux
+	export CFLAGS=-fPIC
+	export CXXFLAGS=-fPIC
 endif
 
 
@@ -102,10 +102,10 @@ node: nodeVersionCheck libsoral.a ../node/soral_wrap.cpp
 
 
 runtests: runtests.cpp
-	$(CPP) $(CPPFLAGS) runtests.cpp -L. -lSoral -o runtests
+	$(CXX) $(CXXFLAGS) runtests.cpp -L. -lSoral -o runtests
 
 
-# To use the library:  $(CPP) mycode.cc -o mycode -lSoral
+# To use the library:  $(CXX) mycode.cc -o mycode -lSoral
 # If the library isn't in the current dir (or path), you'll need to 
 # use -L and -I to specify libpath and includepath for Soral.
 #
@@ -139,111 +139,111 @@ clean-node:
 	rm -f ../node/soral_wrap.cpp
 
 exec: libsoral.a $(TB1)
-	$(CPP) $(CPPFLAGS) -o SORALtestBed $(OBJS) $(TB1)
+	$(CXX) $(CXXFLAGS) -o SORALtestBed $(OBJS) $(TB1)
 
 test: $(TESTOBJS) $(TB2)
 	ar -r libSoral.a $(TESTOBJS)
-	$(CPP) $(CPPFLAGS) -o SORALtestBed $(TESTOBJS) $(TB2)
+	$(CXX) $(CXXFLAGS) -o SORALtestBed $(TESTOBJS) $(TB2)
 
 sample: libsoral.a $(S1)
-	$(CPP) $(CPPFLAGS) -o sample $(OBJS) $(S1)
+	$(CXX) $(CXXFLAGS) -o sample $(OBJS) $(S1)
 
 #-----------------------
 
 
 Alloc-CC.o: Alloc-CC.cpp 
-	$(CPP) $(CPPFLAGS) -c Alloc-CC.cpp
+	$(CXX) $(CXXFLAGS) -c Alloc-CC.cpp
 
 Alloc-CCTESTMODE.o: Alloc-CC.cpp 
-	$(CPP) $(CPPFLAGS) -o Alloc-CCTESTMODE.o -c Alloc-CC.cpp -D _ALLOCATION_TESTMODE
+	$(CXX) $(CXXFLAGS) -o Alloc-CCTESTMODE.o -c Alloc-CC.cpp -D _ALLOCATION_TESTMODE
 
 Alloc-W.o: Alloc-W.cpp 
-	$(CPP) $(CPPFLAGS) -c Alloc-W.cpp
+	$(CXX) $(CXXFLAGS) -c Alloc-W.cpp
 
 Alloc-WTESTMODE.o: Alloc-W.cpp 
-	$(CPP) $(CPPFLAGS) -o Alloc-WTESTMODE.o -c Alloc-W.cpp -D _ALLOCATION_TESTMODE
+	$(CXX) $(CXXFLAGS) -o Alloc-WTESTMODE.o -c Alloc-W.cpp -D _ALLOCATION_TESTMODE
 
 
 Allocatn.o: Allocatn.cpp 
-	$(CPP) $(CPPFLAGS) -c Allocatn.cpp
+	$(CXX) $(CXXFLAGS) -c Allocatn.cpp
 
 AllocatnTESTMODE.o: Allocatn.cpp 
-	$(CPP) $(CPPFLAGS) -o AllocatnTESTMODE.o -c Allocatn.cpp -D _ALLOCATION_TESTMODE
+	$(CXX) $(CXXFLAGS) -o AllocatnTESTMODE.o -c Allocatn.cpp -D _ALLOCATION_TESTMODE
 
 
 Array2D.o: Array2D.cpp 
-	$(CPP) $(CPPFLAGS) -c Array2D.cpp
+	$(CXX) $(CXXFLAGS) -c Array2D.cpp
 
 Array2DTESTMODE.o: Array2D.cpp 
-	$(CPP) $(CPPFLAGS) -o Array2DTESTMODE.o -c Array2D.cpp -D _ALLOCATION_TESTMODE
+	$(CXX) $(CXXFLAGS) -o Array2DTESTMODE.o -c Array2D.cpp -D _ALLOCATION_TESTMODE
 
 
 
 CC-test.o: CC-test.cpp 
-	$(CPP) $(CPPFLAGS) -c CC-test.cpp -D _ALLOCATION_TESTMODE
+	$(CXX) $(CXXFLAGS) -c CC-test.cpp -D _ALLOCATION_TESTMODE
 
 CC-testTESTMODE.o: CC-test.cpp 
-	$(CPP) $(CPPFLAGS) -o CC-testTESTMODE.o -c CC-test.cpp -D _ALLOCATION_TESTMODE
+	$(CXX) $(CXXFLAGS) -o CC-testTESTMODE.o -c CC-test.cpp -D _ALLOCATION_TESTMODE
 
 
 con_area.o: con_area.cpp 
-	$(CPP) $(CPPFLAGS) -c con_area.cpp
+	$(CXX) $(CXXFLAGS) -c con_area.cpp
 
 con_areaTESTMODE.o: con_area.cpp
-	$(CPP) $(CPPFLAGS) -o con_areaTESTMODE.o -c con_area.cpp -D _ALLOCATION_TESTMODE
+	$(CXX) $(CXXFLAGS) -o con_areaTESTMODE.o -c con_area.cpp -D _ALLOCATION_TESTMODE
 
 
 con_activ.o: con_activ.cpp 
-	$(CPP) $(CPPFLAGS) -c con_activ.cpp
+	$(CXX) $(CXXFLAGS) -c con_activ.cpp
 
 con_activTESTMODE.o: con_activ.cpp 
-	$(CPP) $(CPPFLAGS) -o con_activTESTMODE.o -c con_activ.cpp -D _ALLOCATION_TESTMODE
+	$(CXX) $(CXXFLAGS) -o con_activTESTMODE.o -c con_activ.cpp -D _ALLOCATION_TESTMODE
 
 
 con_res.o: con_res.cpp 
-	$(CPP) $(CPPFLAGS) -c con_res.cpp
+	$(CXX) $(CXXFLAGS) -c con_res.cpp
 
 con_resTESTMODE.o: con_res.cpp 
-	$(CPP) $(CPPFLAGS) -o con_resTESTMODE.o -c con_res.cpp -D _ALLOCATION_TESTMODE
+	$(CXX) $(CXXFLAGS) -o con_resTESTMODE.o -c con_res.cpp -D _ALLOCATION_TESTMODE
 
 
 
 itr_area.o: itr_area.cpp 
-	$(CPP) $(CPPFLAGS) -c itr_area.cpp
+	$(CXX) $(CXXFLAGS) -c itr_area.cpp
 
 itr_areaTESTMODE.o: itr_area.cpp 
-	$(CPP) $(CPPFLAGS) -o itr_areaTESTMODE.o -c itr_area.cpp -D _ALLOCATION_TESTMODE
+	$(CXX) $(CXXFLAGS) -o itr_areaTESTMODE.o -c itr_area.cpp -D _ALLOCATION_TESTMODE
 
 
 
 itr_activ.o: itr_activ.cpp 
-	$(CPP) $(CPPFLAGS) -c itr_activ.cpp
+	$(CXX) $(CXXFLAGS) -c itr_activ.cpp
 
 itr_activTESTMODE.o: itr_activ.cpp 
-	$(CPP) $(CPPFLAGS) -o itr_activTESTMODE.o -c itr_activ.cpp -D _ALLOCATION_TESTMODE
+	$(CXX) $(CXXFLAGS) -o itr_activTESTMODE.o -c itr_activ.cpp -D _ALLOCATION_TESTMODE
 
 
 
 itr_res.o: itr_res.cpp 
-	$(CPP) $(CPPFLAGS) -c itr_res.cpp
+	$(CXX) $(CXXFLAGS) -c itr_res.cpp
 
 itr_resTESTMODE.o: itr_res.cpp 
-	$(CPP) $(CPPFLAGS) -o itr_resTESTMODE.o -c itr_res.cpp -D _ALLOCATION_TESTMODE
+	$(CXX) $(CXXFLAGS) -o itr_resTESTMODE.o -c itr_res.cpp -D _ALLOCATION_TESTMODE
 
 sample.o: sample.cpp
-	$(CPP) $(CPPFLAGS) -c sample.cpp
+	$(CXX) $(CXXFLAGS) -c sample.cpp
 
 userDef.o: userDef.cpp 
-	$(CPP) $(CPPFLAGS) -c userDef.cpp
+	$(CXX) $(CXXFLAGS) -c userDef.cpp
 
 userDefTESTMODE.o: userDef.cpp
-	$(CPP) $(CPPFLAGS) -o userDefTESTMODE.o -c userDef.cpp -D _ALLOCATION_TESTMODE
+	$(CXX) $(CXXFLAGS) -o userDefTESTMODE.o -c userDef.cpp -D _ALLOCATION_TESTMODE
 
 
 TestBed.o: TestBed.cpp
-	$(CPP) $(CPPFLAGS) -c TestBed.cpp
+	$(CXX) $(CXXFLAGS) -c TestBed.cpp
 TestBedTESTMODE.o: 
-	$(CPP) $(CPPFLAGS) -o TestBedTESTMODE.o -c TestBed.cpp -D _ALLOCATION_TESTMODE
+	$(CXX) $(CXXFLAGS) -o TestBedTESTMODE.o -c TestBed.cpp -D _ALLOCATION_TESTMODE
 
 
 
